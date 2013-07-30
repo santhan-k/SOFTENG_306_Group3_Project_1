@@ -7,10 +7,9 @@ import java.io.PrintWriter;
 
 public class Main {
     
-    public static final String FILE_NAME = "generated_world.world";
-    
     private static int numRobots;
     private static String robotName;
+    private static String fileName;
     private static PrintWriter out;
     
     public static void main(String [] args) {
@@ -19,6 +18,7 @@ public class Main {
             WGConfig.load();
             numRobots = WGConfig.configuration.getInteger("number_of_robots", 1); //default to 1 robot
             robotName = WGConfig.configuration.getString("robot_name", "era"); //default name is era
+            fileName = WGConfig.configuration.getString("file_name", "generated_world.world"); //default file name is generated_world.world
         } else {
             System.out.println("[Main] Could not find " + WGConfig.CONFIGURATION_FILE + ", using default number of robots of 1 and robot name \"era\"");
             numRobots = 1;
