@@ -1,0 +1,7 @@
+To use, double click on wg.jar
+
+To remake wg.jar after recompiling, use
+    jar cvmf MANIFEST.MF wg.jar wg/*.class
+from the /bin foler
+
+Config file name is wg.cfg
