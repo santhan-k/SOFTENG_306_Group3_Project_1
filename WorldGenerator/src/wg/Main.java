@@ -28,7 +28,7 @@ public class Main {
         try {
             // FileWriter false argument makes it overwrite previously written file
             // PrintWriter true argument makes it auto flush
-            out = new PrintWriter(new FileWriter(FILE_NAME, false), true);
+            out = new PrintWriter(new FileWriter(fileName, false), true);
         } catch (IOException e) {
             System.out.println("[Main] Error when initiating PrintWriter: " + e.getLocalizedMessage());
             e.printStackTrace();
