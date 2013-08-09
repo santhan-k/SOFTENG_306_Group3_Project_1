@@ -2,7 +2,7 @@
 
 if [ $# -eq 2 ]
 then 
-	grass=$(((($RANDOM+$RANDOM) % 50) + 30))
+	grass=$(((($RANDOM+$RANDOM) % 70) + 30))
 	#rm test4321.txt
 	for (( i=0; i<$grass; i++ ))
 	do
