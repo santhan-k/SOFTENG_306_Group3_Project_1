@@ -63,10 +63,10 @@ floorplan
   name "swarm"
   bitmap "farm.png"
   size [60 60 0.5]
-
-  pose [ 0.28 0.86 0 90.000 ]
+  pose [ 0.3 0.86 0 90.000 ]
 )
 
+#Creating gates between all four fields
 myGate( pose [ 26 0 0 90 ] name "g0" color "gray60")
 myGate( pose [ -25.5 0 0 90 ] name "g0" color "gray60")
 myGate( pose [ 0 27 0 0 ] name "g0" color "gray60")
