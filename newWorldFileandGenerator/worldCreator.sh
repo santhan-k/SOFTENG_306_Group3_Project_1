@@ -2,12 +2,33 @@
 
 if [ $# -eq 2 ]
 then 
-	grass=$(((($RANDOM+$RANDOM) % 50) + 30))
+	grass=$(((($RANDOM+$RANDOM) % 15) + 100))
 	#rm test4321.txt
 	for (( i=0; i<$grass; i++ ))
 	do
-		x=$(((($RANDOM+$RANDOM) % 58) -28))
-		y=$(((($RANDOM+$RANDOM) % 58) -28))
+		x=$(((($RANDOM+$RANDOM) % 28) +1))
+		y=$(((($RANDOM+$RANDOM) % 28) +1))
+		echo "myGrass( pose [ " $x $y "0 0 ] name \"g"$i"\" color \"green\" )" >>test4321.txt
+	done
+	
+	for (( i=0; i<$grass; i++ ))
+	do
+		x=$(((($RANDOM+$RANDOM) % 28) +1))
+		y=-$(((($RANDOM+$RANDOM) % 28) +1))
+		echo "myGrass( pose [ " $x $y "0 0 ] name \"g"$i"\" color \"green\" )" >>test4321.txt
+	done
+
+	for (( i=0; i<$grass; i++ ))
+	do
+		x=-$(((($RANDOM+$RANDOM) % 28) +1))
+		y=-$(((($RANDOM+$RANDOM) % 28) +1))
+		echo "myGrass( pose [ " $x $y "0 0 ] name \"g"$i"\" color \"green\" )" >>test4321.txt
+	done
+
+	for (( i=0; i<$grass; i++ ))
+	do
+		x=-$(((($RANDOM+$RANDOM) % 28) +1))
+		y=$(((($RANDOM+$RANDOM) % 28) +1))
 		echo "myGrass( pose [ " $x $y "0 0 ] name \"g"$i"\" color \"green\" )" >>test4321.txt
 	done
 	

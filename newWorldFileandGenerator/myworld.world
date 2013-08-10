@@ -30,9 +30,11 @@ define floorplan model
   ranger_return 1
 )
 
-define myGate model
+define myGate position
 (
   size [0.3 6.2 0.6]
+  drive "diff"
+  mylaser(pose [ 0.050 0.000 0 0.000 ])
   
 )
 
@@ -63,10 +65,10 @@ floorplan
   name "swarm"
   bitmap "farm.png"
   size [60 60 0.5]
-
-  pose [ 0.28 0.86 0 90.000 ]
+  pose [ 0.3 0.86 0 90.000 ]
 )
 
+#Creating gates between all four fields
 myGate( pose [ 26 0 0 90 ] name "g0" color "gray60")
 myGate( pose [ -25.5 0 0 90 ] name "g0" color "gray60")
 myGate( pose [ 0 27 0 0 ] name "g0" color "gray60")
