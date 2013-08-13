@@ -1,8 +1,0 @@
-prefix=/home/ken/simple_example/install
-
-Name: these_bots
-Description: Description of these_bots
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/ken/simple_example/install/lib 
-Requires: 

@@ -1,7 +1,0 @@
-set(_CATKIN_CURRENT_PACKAGE "these_bots")
-set(these_bots_MAINTAINER "ken <ken@todo.todo>")
-set(these_bots_DEPRECATED "")
-set(these_bots_VERSION "0.0.0")
-set(these_bots_BUILD_DEPENDS "geometry_msgs" "nav_msgs" "roscpp" "sensor_msgs" "std_msgs")
-set(these_bots_RUN_DEPENDS "geometry_msgs" "nav_msgs" "roscpp" "sensor_msgs" "std_msgs")
-set(these_bots_BUILDTOOL_DEPENDS "catkin")
