@@ -67,6 +67,13 @@ floorplan
   bitmap "farm.png"
   size [60 60 0.5]
   pose [ 0.3 0.86 0 90.000 ]
+
+  gui_nose 0
+  gui_grid 0
+  gui_move 0
+  gui_outline 0
+  gripper_return 0
+  fiducial_return 0
 )
 
 #Creating gates between all four fields
