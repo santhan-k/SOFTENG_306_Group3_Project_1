@@ -35,6 +35,7 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
     // TODO rotate to avoid object until a majority of the beams are free, implying that path way forward is open for traversal.
     // TODO Currently the robot only turns clockwise, later on 
     // the sheep should rotate depending on beam density.
+    // TODO find a way to detect type of object that is in view or has collided with.
 	
     ROS_INFO("------------------------ Intensity ----------------------------");
     for(unsigned int i = 0; i < msg.intensities.size(); ++i){
@@ -50,18 +51,21 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
     for(unsigned int j = 0; j < msg.ranges.size(); ++j){
       double curRange = msg.ranges[j];   
    
-      ROS_INFO("Current range is    : %f", curRange);
-      
       // When a beam is 1unit in length the robot stops moving and
       // and begins rotating to avoid the obstacle.
-      if(curRange < 0.25){
-         ROS_INFO("Collision at beam: %d",j);
+      if(curRange < 1.0){
+         ROS_INFO("Collision at beam: %d Range: %f",j,curRange);
          makeMovement = false;
 
 	 // Stop the robot
-         RobotNode_cmdvel.linear.x = 0;
-         RobotNode_cmdvel.angular.z = 0;
+         RobotNode_cmdvel.linear.x = 0.1;
+         RobotNode_cmdvel.angular.z = -(M_PI / 18) * 5;
          RobotNode_stage_pub.publish(RobotNode_cmdvel);
+      }else{
+         // Once no potential collisions can be detected robot(sheep) continues to move forward.
+         RobotNode_cmdvel.linear.x = 0.2;
+         RobotNode_cmdvel.angular.z = 0;
+	 ROS_INFO("Current range is    : %f", curRange);
       }
 
     }	
