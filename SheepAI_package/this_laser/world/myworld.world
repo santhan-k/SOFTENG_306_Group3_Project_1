@@ -54,6 +54,9 @@ window
 ( 
   size [ 745.000 745.000 ] #size of the window in pixels
   scale 30 
+
+  show_data 1 # Show laser
+  show_grid 0 # Turn on/off grid
   
 )
 
