@@ -65,7 +65,7 @@ floorplan
 ( 
   name "swarm"
   bitmap "farm.png"
-  size [60 60 0.5]
+  size [60 60 1]
   pose [ 0.3 0.86 0 90.000 ]
 
   gui_nose 0
