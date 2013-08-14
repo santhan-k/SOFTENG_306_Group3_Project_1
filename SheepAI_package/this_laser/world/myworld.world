@@ -1,9 +1,9 @@
 define mylaser ranger
 (
   sensor(
-  range [ 0.0 30.0 ] # range
+  range [ 0.0 2.0 ] # range
   fov 180       # field of vision
-  samples 180   # samples 
+  samples 10   # samples 
   )
   # generic model properties
   color "black"
