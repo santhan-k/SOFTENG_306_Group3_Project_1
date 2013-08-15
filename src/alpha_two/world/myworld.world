@@ -15,12 +15,24 @@ define mylaser2 ranger
   sensor(
   range [ 0.0 20 ] # range
   fov 180       # field of vision
-  samples 180   # samples 
+  samples 20   # samples 
   )
   #generic model properties
   color "black"
   size [ 0.05 0.05 0.1 ]
   
+)
+
+define myGrasslaser ranger
+(
+  sensor(
+  range [ 0.0 2 ] # range
+  fov 180       # field of vision
+  samples 10   # samples 
+  )
+  # generic model properties
+  color "black"
+  size [ 0.05 0.05 0.1 ]
 )
 
 define myRobot position
@@ -29,6 +41,7 @@ define myRobot position
   drive "diff"
   mylaser(pose [ 0.050 0.000 -0.07 0.000 ])
   bitmap "sheep.png"
+  ranger_return 1
 )
 
 define myFarmer position
@@ -63,7 +76,7 @@ define floorplan model
 
 define myGate position
 (
-  size [6.2 0.3 0.6]
+  size [6.2 0.3 1]
   drive "diff"
   bitmap "gate.png"
   mylaser(pose [ 0.050 0.000 0 0.000 ])
@@ -72,11 +85,14 @@ define myGate position
   
 )
 
-define myGrass model
+define myGrass position
 (
   size [0.4 0.4 0.4]
   bitmap "grass.png"
+  drive "omni"
+  myGrasslaser(pose [ 0.050 0.000 -0.07 0.000 ])
   obstacle_return 0
+  
 )
 
 # set the resolution of the underlying raytrace model in meters
@@ -104,7 +120,7 @@ floorplan
   
 )
 
-myFarmer( pose [ 3 27.5 0 0 ] name "g0" )
+myFarmer( pose [ 2 27.5 0 0 ] name "g0" )
 
 #Creating gates between all four fields
 myGate( pose [ 26 0 0 0 ] name "g0" color "gray60")
@@ -113,4 +129,3 @@ myGate( pose [ 0 27 0 90 ] name "g0" color "gray60")
 myGate( pose [ 0 -25.40 0 90 ] name "g0" color "gray60")
 
 myTruck( pose [ -30 36 0 0 ] name "g1" )
-
