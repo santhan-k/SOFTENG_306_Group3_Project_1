@@ -2,7 +2,7 @@
 #include "std_msgs/String.h"
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
-#include <sensor_msgs/LaserScan.h>
+//#include <sensor_msgs/LaserScan.h>
 #include "angles/angles.h"
 
 #include <sstream>
@@ -40,11 +40,21 @@ void StageOdom_callback(nav_msgs::Odometry msg)
 }
 
 
-void StageLaser_callback(sensor_msgs::LaserScan msg)
-{
+//void StageLaser_callback(sensor_msgs::LaserScan msg)
+//{
 	//This is the callback function to process laser scan messages
 	//you can access the range data from msg.ranges[i]. i = sample number
 	
+//}
+
+void add_instruction(vector<instruction_struct>& instruction_vector, int step_count, double linear_x, double angular_z, int next_step)
+{
+    instruction_struct *Instruction = new instruction_struct; //create a new instruction_struct
+    Instruction->step_count = step_count;
+    Instruction->linear_x = linear_x;
+    Instruction->angular_z = angular_z;
+    Instruction->next_step = next_step;
+    instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
 }
 
 int main(int argc, char **argv)
@@ -72,7 +82,7 @@ ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_0/
 
 //subscribe to listen to messages coming from stage
 ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_0/odom",1000, StageOdom_callback);
-ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_0/base_scan",1000,StageLaser_callback);
+//ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_0/base_scan",1000,StageLaser_callback);
 
 ros::Rate loop_rate(10);
 
@@ -85,68 +95,14 @@ geometry_msgs::Twist RobotNode_cmdvel;
 
 // Step 0
 vector <instruction_struct> instruction_vector; //create new vector of type instruction_struct
-instruction_struct *Instruction = new instruction_struct; //create a new instruction_struct
-Instruction->step_count = 250; //add data
-Instruction->linear_x = 4; //add data
-Instruction->angular_z = 0.0; //add data
-Instruction->next_step = 1; //add data
-instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
-
-// Step 1
-Instruction = new instruction_struct; //create a new instruction_struct
-Instruction->step_count = 18; //add data
-Instruction->linear_x = 0; //add data
-Instruction->angular_z = -(M_PI / 18) * 5; //(M_PI / 18) = 1degree, * 5 = 5 degrees
-Instruction->next_step = 2; //add data
-instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
-
-// Step 2
-Instruction = new instruction_struct; //create a new instruction_struct
-Instruction->step_count = 50; //add data
-Instruction->linear_x = 4; //add data
-Instruction->angular_z = 0.0; //add data
-Instruction->next_step = 3; //add data
-instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
-
-// Step 3
-Instruction = new instruction_struct; //create a new instruction_struct
-Instruction->step_count = 18; //add data
-Instruction->linear_x = 0.0; //add data
-Instruction->angular_z = -(M_PI / 18) * 5; //(M_PI / 18) = 1degree, * 5 = 5 degrees
-Instruction->next_step = 4; //add data
-instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
-
-// Step 4
-Instruction = new instruction_struct; //create a new instruction_struct
-Instruction->step_count = 220; //add data
-Instruction->linear_x = 4; //add data
-Instruction->angular_z = 0.0; //add data
-Instruction->next_step = 5; //add data
-instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
-
-// Step 5
-Instruction = new instruction_struct; //create a new instruction_struct
-Instruction->step_count = 18; //add data
-Instruction->linear_x = 0.0; //add data
-Instruction->angular_z = (M_PI / 18) * 5; //(M_PI / 18) = 1degree, * 5 = 5 degrees
-Instruction->next_step = 6; //add data
-instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
-
-// Step 6
-Instruction = new instruction_struct; //create a new instruction_struct
-Instruction->step_count = 50; //add data
-Instruction->linear_x = 4; //add data
-Instruction->angular_z = 0.0; //add data
-Instruction->next_step = 7; //add data
-instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
-
-// Step 7
-Instruction = new instruction_struct; //create a new instruction_struct
-Instruction->step_count = 18; //add data
-Instruction->linear_x = 0.0; //add data
-Instruction->angular_z = (M_PI / 18) * 5; //(M_PI / 18) = 1degree, * 5 = 5 degrees
-Instruction->next_step = 0; //add data
-instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
+add_instruction(instruction_vector, 250, 4.0, 0.0, 1);
+add_instruction(instruction_vector, 18, 0.0, -(M_PI / 18) * 5, 2);
+add_instruction(instruction_vector, 50, 4.0, 0.0, 3);
+add_instruction(instruction_vector, 18, 0.0, -(M_PI / 18) * 5, 4);
+add_instruction(instruction_vector, 250, 4.0, 0.0, 5);
+add_instruction(instruction_vector, 18, 0.0, (M_PI / 18) * 5, 6);
+add_instruction(instruction_vector, 50, 4.0, 0.0, 7);
+add_instruction(instruction_vector, 18, 0.0, (M_PI / 18) * 5, 0);
 
 //keep track of what step we are up to
 int current_step = 0;
