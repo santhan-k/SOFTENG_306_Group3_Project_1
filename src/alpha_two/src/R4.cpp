@@ -162,7 +162,13 @@ int main(int argc, char **argv)
 		loop_rate.sleep();
 		++count;
 	}//end while()
+	RobotNode_cmdvel.linear.x = 0;
+	RobotNode_cmdvel.angular.z =0;
+        
+	cout << "Current step: " << current_step << "\n";
 
+	//publish the message
+	RobotNode_stage_pub.publish(RobotNode_cmdvel);
 	return 0;
 
 } //end main()
