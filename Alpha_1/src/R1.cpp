@@ -69,7 +69,7 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
             ROS_INFO("Collision at beam: %d Range: %f",j,curRange);
             makeMovement = false;
             
-	  	    // Robot moves forward at a slow pace of 0.1m/s
+	    // Robot moves forward at a slow pace of 0.1m/s
             RobotNode_cmdvel.linear.x = 0.1;
             
             if(curLowestIndex < sampleNumber/2){
