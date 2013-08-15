@@ -1,0 +1,115 @@
+define mylaser ranger
+(
+  sensor(
+  range [ 0.0 2 ] # range
+  fov 180       # field of vision
+  samples 10   # samples 
+  )
+  # generic model properties
+  color "black"
+  size [ 0.05 0.05 0.1 ]
+)
+
+define mylaser2 ranger
+(
+  sensor(
+  range [ 0.0 20 ] # range
+  fov 180       # field of vision
+  samples 180   # samples 
+  )
+  #generic model properties
+  color "black"
+  size [ 0.05 0.05 0.1 ]
+  
+)
+
+define myRobot position
+(
+  size [0.9 0.9 0.7]
+  drive "diff"
+  mylaser(pose [ 0.050 0.000 -0.07 0.000 ])
+  bitmap "sheep.png"
+)
+
+define myFarmer position
+(
+  size [2 3 0.7]
+  drive "diff"
+  mylaser2(pose [ 0.050 0.000 0 0.000 ])
+  bitmap "farmer.png"
+  obstacle_return 0	
+)
+
+define myTruck position
+(
+  size [5 5 5]
+  drive "diff"
+  mylaser2(pose [ 0.050 0.000 -0.05 0.000 ])
+  bitmap "truck.png"
+  obstacle_return 0	
+)
+
+define floorplan model
+(
+  # sombre, sensible, artistic
+  color "gray30"
+
+  # most maps will need a bounding box
+  boundary 1
+  laser_return 1
+  ranger_return 1
+  obstacle_return 1
+)
+
+define myGate position
+(
+  size [6.2 0.3 0.6]
+  drive "diff"
+  bitmap "gate.png"
+  mylaser(pose [ 0.050 0.000 0 0.000 ])
+  ranger_return 1
+  
+)
+
+define myGrass model
+(
+  size [0.4 0.4 0.4]
+  bitmap "grass.png"
+  obstacle_return 0
+)
+
+# set the resolution of the underlying raytrace model in meters
+
+resolution 0.02 #resolution of the underline bitmap model in meters. 
+
+interval_sim 100  # simulation timestep in milliseconds. length of each simulation update cycle.
+
+
+window
+( 
+  size [ 745.000 745.000 ] #size of the window in pixels
+  scale 30 
+  
+)
+
+# load an environment bitmap
+floorplan
+( 
+  name "swarm"
+  bitmap "farm_pgm.pgm"
+  size [60 60 2]
+  pose [ 0.3 0.86 0 90.000 ]
+  gui_move 0
+  
+)
+
+myFarmer( pose [ 2 27.5 0 0 ] name "g0" )
+
+#Creating gates between all four fields
+myGate( pose [ 26 0 0 0 ] name "g0" color "gray60")
+myGate( pose [ -25.5 0 0 0 ] name "g0" color "gray60")
+myGate( pose [ 0 27 0 90 ] name "g0" color "gray60")
+myGate( pose [ 0 -25.40 0 90 ] name "g0" color "gray60")
+
+myTruck( pose [ -30 36 0 0 ] name "g1" )
+
