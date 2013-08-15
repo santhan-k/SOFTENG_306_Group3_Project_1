@@ -1,9 +1,9 @@
 define mylaser ranger
 (
   sensor(
-  range [ 0.0 6 ] # range
+  range [ 0.0 2 ] # range
   fov 180       # field of vision
-  samples 180   # samples 
+  samples 10   # samples 
   )
   # generic model properties
   color "black"
@@ -54,8 +54,9 @@ define floorplan model
 
 define myGate position
 (
-  size [0.3 6.2 0.6]
+  size [0.3 6.2 1]
   drive "diff"
+  bitmap "grass.png"
   mylaser(pose [ 0.050 0.000 0 0.000 ])
   ranger_return 1
   
