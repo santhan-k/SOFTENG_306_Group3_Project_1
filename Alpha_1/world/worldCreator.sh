@@ -61,7 +61,7 @@ then
 	rm test4321.txt
 	rosrun stage stageros newWorld.world &
 			
-	#gnome-terminal -x bash worldCreator_assistant.sh $1
+	gnome-terminal -x bash worldCreator_assistant.sh $1
 	
 
 	echo 
