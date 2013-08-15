@@ -36,6 +36,8 @@ void StageOdom_callback(nav_msgs::Odometry msg)
 	//This is the call back function to process odometry messages coming from Stage. 	
 	px = 5 + msg.pose.pose.position.x;
 	py =10 + msg.pose.pose.position.y;
+	
+	//condition for movement
 	if(px > 11 && state == 0) {
 		state = 1;
 	} else if(px < 5 && state == 2) {
