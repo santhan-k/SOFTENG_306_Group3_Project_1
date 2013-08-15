@@ -63,7 +63,7 @@ define floorplan model
 
 define myGate position
 (
-  size [0.3 6.2 1]
+  size [6.2 0.3 0.6]
   drive "diff"
   bitmap "gate.png"
   mylaser(pose [ 0.050 0.000 0 0.000 ])
@@ -106,10 +106,10 @@ floorplan
 myFarmer( pose [ 2 27.5 0 0 ] name "g0" )
 
 #Creating gates between all four fields
-myGate( pose [ 26 0 0 90 ] name "g0" color "gray60")
-myGate( pose [ -25.5 0 0 90 ] name "g0" color "gray60")
-myGate( pose [ 0 27 0 0 ] name "g0" color "gray60")
-myGate( pose [ 0 -25.40 0 0 ] name "g0" color "gray60")
+myGate( pose [ 26 0 0 0 ] name "g0" color "gray60")
+myGate( pose [ -25.5 0 0 0 ] name "g0" color "gray60")
+myGate( pose [ 0 27 0 90 ] name "g0" color "gray60")
+myGate( pose [ 0 -25.40 0 90 ] name "g0" color "gray60")
 
 myTruck( pose [ -30 36 0 0 ] name "g1" )
 
