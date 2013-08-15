@@ -56,6 +56,7 @@ define myGate position
 (
   size [0.3 6.2 0.6]
   drive "diff"
+  bitmap "gate.png"
   mylaser(pose [ 0.050 0.000 0 0.000 ])
   ranger_return 1
   
