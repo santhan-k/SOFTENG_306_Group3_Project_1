@@ -1,7 +1,7 @@
 #!/bin/bash
 source ../../../devel/setup.bash
 echo $1
-nohup rosrun alpha_two R0 &
+gnome-terminal -x bash worldCreator_assistant3.sh
 
 for (( i=0; i<$1; i++ ))
 do
