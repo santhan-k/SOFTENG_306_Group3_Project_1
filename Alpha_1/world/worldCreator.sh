@@ -59,14 +59,10 @@ then
 	
 	cat myworld.world test4321.txt > newWorld.world
 	rm test4321.txt
-	rosrun stage stageros newWorld.world 
-	#rosrun sheepAI R0 &
-	for (( i=0; i<$1; i++ ))
-	do
-		sheepNumber=$((5+$i))
-		echo $sheepNumber		
-		#rosrun sheepAI R1 $sheepNumber &
-	done
+	rosrun stage stageros newWorld.world &
+			
+	#gnome-terminal -x bash worldCreator_assistant.sh $1
+	
 
 	echo 
 else 
