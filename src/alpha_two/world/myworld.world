@@ -103,7 +103,7 @@ floorplan
   
 )
 
-myFarmer( pose [ 2 27.5 0 0 ] name "g0" )
+myFarmer( pose [ 3 27.5 0 0 ] name "g0" )
 
 #Creating gates between all four fields
 myGate( pose [ 26 0 0 0 ] name "g0" color "gray60")
