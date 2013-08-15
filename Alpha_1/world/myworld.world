@@ -3,7 +3,7 @@ define mylaser ranger
   sensor(
   range [ 0.0 6 ] # range
   fov 180       # field of vision
-  samples 10   # samples 
+  samples 180   # samples 
   )
   # generic model properties
   color "black"
@@ -15,7 +15,7 @@ define mylaser2 ranger
   sensor(
   range [ 0.0 20 ] # range
   fov 180       # field of vision
-  samples 10   # samples 
+  samples 180   # samples 
   )
   #generic model properties
   color "black"
@@ -56,7 +56,6 @@ define myGate position
 (
   size [0.3 6.2 0.6]
   drive "diff"
-  bitmap "gate.png"
   mylaser(pose [ 0.050 0.000 0 0.000 ])
   ranger_return 1
   
