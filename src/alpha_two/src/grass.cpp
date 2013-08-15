@@ -4,7 +4,7 @@
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/LaserScan.h>
 #include "angles/angles.h"
-#include "Alpha_1/grassState.h"
+#include "alpha_two/grassState.h"
 #include <sstream>
 #include "math.h"
 
@@ -76,7 +76,7 @@ ros::NodeHandle n;
 //to stage
 ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_7/cmd_vel",1000); 
 
-ros::Publisher grassNode_pub = n.advertise<Alpha_1::grassState>("Grass_msg", 1000);
+ros::Publisher grassNode_pub = n.advertise<alpha_two::grassState>("Grass_msg", 1000);
 
 //subscribe to listen to messages coming from stage
 ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_7/odom",1000, StageOdom_callback);
@@ -95,7 +95,7 @@ geometry_msgs::Twist RobotNode_cmdvel;
 
 while (ros::ok())
 {
-	Alpha_1::grassState msg;
+	alpha_two::grassState msg;
 	msg.G_State = 0;
 	msg.G_ID = atoi(argv[1]);
 	msg.x = px;
