@@ -63,8 +63,8 @@ int main(int argc, char **argv)
  //initialize robot parameters
 	//Initial pose. This is same as the pose that you used in the world file to set	the robot pose.
 	theta = M_PI/2.0;
-	px = 10;
-	py = 20;
+	px = 2;
+	py = 27.5;
 	
 	//Initial velocity
 	linear_x = 0;
