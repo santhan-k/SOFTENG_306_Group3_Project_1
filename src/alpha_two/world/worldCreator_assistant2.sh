@@ -1,2 +1,2 @@
 source ../../../devel/setup.bash
-rosrun Alpha_1 R1 $1
+rosrun alpha_two R1 $1
