@@ -14,6 +14,8 @@ using namespace std;
 ros::Publisher RobotNode_stage_pub;
 geometry_msgs::Twist RobotNode_cmdvel;
 
+bool showDebug = false;
+
 bool makeMovement = true;
 #define sampleNumber 10 // represents number of samples in world file.
 void StageOdom_callback(nav_msgs::Odometry msg)
@@ -36,14 +38,14 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
     // the sheep should rotate depending on beam density.
     // TODO find a way to detect type of object that is in view or has collided with.
 	
-    ROS_INFO("------------------------ Intensity ----------------------------");
+    if(showDebug)ROS_INFO("------------------------ Intensity ----------------------------");
     for(unsigned int i = 0; i < msg.intensities.size(); ++i){
     	// Either 1 or 0 is returned. 1 if an object is view 0 otherwise.
     	double curRange = msg.intensities[i];   
-    	ROS_INFO("Current intensity is    : %f", curRange);
+    	if(showDebug)ROS_INFO("Current intensity is    : %f", curRange);
     }	
 
-    ROS_INFO("-------------------------- Range -----------------------------");
+    if(showDebug)ROS_INFO("-------------------------- Range -----------------------------");
     //publish the message
     RobotNode_stage_pub.publish(RobotNode_cmdvel);
     
@@ -60,13 +62,13 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
       
         double curRange = msg.ranges[j];
         
-        ROS_INFO("index: %d", curLowestIndex);
+        if(showDebug)ROS_INFO("index: %d", curLowestIndex);
 
    
         // When a beam is 1unit in length the robot stops moving and
         // and begins rotating to avoid the obstacle.
-        if(curRange < 1.0 && curRange > 0.5){
-            ROS_INFO("Collision at beam: %d Range: %f",j,curRange);
+        if(curRange < 1.5 && curRange > 0.5){
+            if(showDebug)ROS_INFO("Collision at beam: %d Range: %f",j,curRange);
             makeMovement = false;
             
 	    // Robot moves forward at a slow pace of 0.1m/s
@@ -85,15 +87,15 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
          // Once no potential collisions can be detected robot(sheep) continues to move forward.
             RobotNode_cmdvel.linear.x = 0;
             RobotNode_cmdvel.angular.z = (M_PI / 18) * 5;
-            ROS_INFO("Current range is    : %f", curRange);
+            if(showDebug)ROS_INFO("Current range is    : %f", curRange);
       }else{
         // Once no potential collisions can be detected robot(sheep) continues to move forward.
             RobotNode_cmdvel.linear.x = 1;
             RobotNode_cmdvel.angular.z = 0;
-            ROS_INFO("Current range is    : %f", curRange);
+           if(showDebug) ROS_INFO("Current range is    : %f", curRange);
       }
     }	
-    ROS_INFO("-------------------------- END -----------------------------");
+    if(showDebug)ROS_INFO("-------------------------- END -----------------------------");
 }
 
 
