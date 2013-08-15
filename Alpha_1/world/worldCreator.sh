@@ -24,8 +24,9 @@ then
 			x=-$(((($RANDOM+$RANDOM) % 28) + 1))
 			y=$(((($RANDOM+$RANDOM) % 28) + 1))
 		fi
+		angle=$(((($RANDOM+$RANDOM) % 358) + 1))
 		echo $x $y
-		echo "myRobot( pose [" $x $y "0 0 ] name \"r"$c"\" color \"red\" )" >>test4321.txt
+		echo "myRobot( pose [" $x $y "0 "$angle" ] name \"r"$c"\" color \"red\" )" >>test4321.txt
 		
 	done
 	for (( i=0; i<$grass; i++ ))
