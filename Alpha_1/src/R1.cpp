@@ -20,15 +20,7 @@ bool makeMovement = true;
 #define sampleNumber 10 // represents number of samples in world file.
 void StageOdom_callback(nav_msgs::Odometry msg)
 {
-    // The robot will continue to move forward until
-    // a collision is detected.
-    if(makeMovement){	
-        // Make it go straight 
-    	RobotNode_cmdvel.linear.x = 1;
-        RobotNode_cmdvel.angular.x = 0;
 
-        RobotNode_stage_pub.publish(RobotNode_cmdvel);
-    }
 }
 
 void StageLaser_callback(sensor_msgs::LaserScan msg)
@@ -43,7 +35,7 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
     	// Either 1 or 0 is returned. 1 if an object is view 0 otherwise.
     	double curRange = msg.intensities[i];   
     	if(showDebug)ROS_INFO("Current intensity is    : %f", curRange);
-    }	
+    }
 
     if(showDebug)ROS_INFO("-------------------------- Range -----------------------------");
     //publish the message
@@ -67,28 +59,30 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
    
         // When a beam is 1unit in length the robot stops moving and
         // and begins rotating to avoid the obstacle.
-        if(curRange < 1.5 && curRange > 0.5){
+        if(msg.ranges[curLowestIndex] < 1.5 && msg.ranges[curLowestIndex] > 0.8){
             if(showDebug)ROS_INFO("Collision at beam: %d Range: %f",j,curRange);
             makeMovement = false;
             
-	    // Robot moves forward at a slow pace of 0.1m/s
+	        // Robot moves forward at a slow pace of 0.1m/s
             RobotNode_cmdvel.linear.x = 0.1;
             
             if(curLowestIndex < sampleNumber/2){
-            
                 RobotNode_cmdvel.angular.z = (M_PI / 18) * 5;
-            }else{
+            }
+            else{
                 RobotNode_cmdvel.angular.z = -(M_PI / 18) * 5;
             }
             
             RobotNode_stage_pub.publish(RobotNode_cmdvel);
             
-      }else if(curRange <= 0.5){
+      }
+      else if(msg.ranges[curLowestIndex] <= 0.8){
          // Once no potential collisions can be detected robot(sheep) continues to move forward.
             RobotNode_cmdvel.linear.x = 0;
             RobotNode_cmdvel.angular.z = (M_PI / 18) * 5;
             if(showDebug)ROS_INFO("Current range is    : %f", curRange);
-      }else{
+      }
+      else{
         // Once no potential collisions can be detected robot(sheep) continues to move forward.
             RobotNode_cmdvel.linear.x = 1;
             RobotNode_cmdvel.angular.z = 0;
