@@ -32,7 +32,8 @@ define floorplan model
 
 define myGate model
 (
-  size [0.3 6.2 0.6]
+  size [0.3 6.2 1]
+  bitmap "gate.png"
   
 )
 
@@ -77,14 +78,14 @@ floorplan
 )
 
 #Creating gates between all four fields
-myRobot( pose [ 15 2 0 90 ] name "g0" color "red")
-myRobot( pose [ 9 2 0 90 ] name "g0" color "blue")
-myRobot( pose [ 3 1 0 90 ] name "g1" color "green")
-myRobot( pose [ 10 3 0 90 ] name "g2" color "yellow")
-myGrass( pose [ 30 5 0 90 ] name "g3" color "gray60")
-myGrass( pose [ 27 12 0 90 ] name "g4" color "gray60")
-myGrass( pose [ 31 0 0 90 ] name "g5" color "gray60")
-myGrass( pose [ 2 9 0 90 ] name "g6" color "gray60")
+myRobot( pose [ 15 2 0 90 ] name "r0" color "red")
+myRobot( pose [ 9 2 0 90 ] name "r1" color "blue")
+myRobot( pose [ 3 1 0 90 ] name "r2" color "green")
+myRobot( pose [ 10 3 0 90 ] name "r3" color "yellow")
+myGrass( pose [ 30 5 0 90 ] name "r4" color "gray60")
+myGrass( pose [ 27 12 0 90 ] name "r5" color "gray60")
+myGrass( pose [ 31 0 0 90 ] name "r6" color "gray60")
+myGrass( pose [ 2 9 0 90 ] name "r7" color "gray60")
 
 myGate( pose [ 26 0 0 90 ] name "g0" color "gray60")
 myGate( pose [ -25.5 0 0 90 ] name "g0" color "gray60")
