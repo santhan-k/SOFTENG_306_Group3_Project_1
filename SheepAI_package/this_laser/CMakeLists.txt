@@ -16,17 +16,4 @@ include_directories(
 
 # Build the laser_scan_publisher executable
 add_executable(laser_scan_listener src/laser_scan_listener.cpp)
-
-# Add a build order dependency on sensor_msgs
-# This ensures that sensor_msgs' msg headers are built before your executable
-if(sensor_msgs_EXPORTED_TARGETS)
-  add_dependencies(laser_scan_listener ${sensor_msgs_EXPORTED_TARGETS})
-endif()
-# Link against the catkin_LIBRARIES
 target_link_libraries(laser_scan_listener ${catkin_LIBRARIES})
-
-# Mark executables and/or libraries for installation
-install(TARGETS laser_scan_listener
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
