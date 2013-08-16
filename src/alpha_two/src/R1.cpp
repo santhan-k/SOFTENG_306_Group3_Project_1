@@ -14,9 +14,10 @@ using namespace std;
 ros::Publisher RobotNode_stage_pub;
 geometry_msgs::Twist RobotNode_cmdvel;
 
-bool showDebug = false;
+bool showDebug = false; //Show/hide ROS log messages
 vector<float> previous_ranges;
 #define SAMPLE_NUMBER 10 // represents number of samples in world file.
+
 
 void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int current_lowest_index);
 
@@ -137,7 +138,7 @@ int main(int argc, char** argv){
 
   while(n.ok()){
     ++count;
-    ros::spinOnce();
+    ros::spinOnce(); //Must Have this statement in the program
     r.sleep();
   }
 }
