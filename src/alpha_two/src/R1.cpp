@@ -15,8 +15,10 @@ ros::Publisher RobotNode_stage_pub;
 geometry_msgs::Twist RobotNode_cmdvel;
 
 bool showDebug = false;
-
+vector<float> prevRanges;
 #define SAMPLE_NUMBER 10 // represents number of samples in world file.
+
+void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int current_lowest_index);
 
 void StageOdom_callback(nav_msgs::Odometry msg)
 {
@@ -42,13 +44,9 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
   if(showDebug)
     ROS_INFO("-------------------------- Range -----------------------------");
 
-  //publish the message
-  RobotNode_stage_pub.publish(RobotNode_cmdvel);
-
-
   int current_lowest_index = 0;
   double smallest_range = msg.ranges[current_lowest_index];
-
+  prevRanges.push_back(msg.ranges[0]);
   // Iterate through LaserScan messages and find the smallest range
   for(unsigned int i = 1; i < msg.ranges.size(); ++i)
   {
@@ -60,8 +58,21 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
       current_lowest_index = i;
       smallest_range = msg.ranges[current_lowest_index];
     }
-  }
+    prevRanges.push_back(msg.ranges[i]);
+  }  
+  
+  collisionAvoidance(smallest_range, msg, current_lowest_index);
 
+  // Publish the message
+  RobotNode_stage_pub.publish(RobotNode_cmdvel);
+
+  if(showDebug)
+    ROS_INFO("-------------------------- END -----------------------------");
+}
+
+// This function prevents robot(sheep) from colliding with stage objects.
+void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int current_lowest_index){
+    
   if(showDebug)
     ROS_INFO("Lowest index: %d", current_lowest_index);
 
@@ -103,11 +114,6 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
     RobotNode_cmdvel.angular.z = 0;
   }
 
-  // Publish the message
-  RobotNode_stage_pub.publish(RobotNode_cmdvel);
-
-  if(showDebug)
-    ROS_INFO("-------------------------- END -----------------------------");
 }
 
 int main(int argc, char** argv){
