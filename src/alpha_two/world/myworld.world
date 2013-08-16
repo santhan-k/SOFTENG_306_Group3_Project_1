@@ -76,7 +76,7 @@ define floorplan model
 
 define myGate position
 (
-  size [6.2 0.3 1]
+  size [6.3 0.3 1]
   drive "diff"
   bitmap "gate.png"
   mylaser(pose [ 0.050 0.000 0 0.000 ])
