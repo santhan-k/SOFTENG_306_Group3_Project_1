@@ -15,7 +15,7 @@ ros::Publisher RobotNode_stage_pub;
 geometry_msgs::Twist RobotNode_cmdvel;
 
 bool showDebug = false;
-vector<float> prevRanges;
+vector<float> previous_ranges;
 #define SAMPLE_NUMBER 10 // represents number of samples in world file.
 
 void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int current_lowest_index);
@@ -46,7 +46,7 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
 
   int current_lowest_index = 0;
   double smallest_range = msg.ranges[current_lowest_index];
-  prevRanges.push_back(msg.ranges[0]);
+  previous_ranges.push_back(msg.ranges[0]);
   // Iterate through LaserScan messages and find the smallest range
   for(unsigned int i = 1; i < msg.ranges.size(); ++i)
   {
@@ -58,7 +58,7 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
       current_lowest_index = i;
       smallest_range = msg.ranges[current_lowest_index];
     }
-    prevRanges.push_back(msg.ranges[i]);
+    previous_ranges.push_back(msg.ranges[i]);
   }  
   
   collisionAvoidance(smallest_range, msg, current_lowest_index);
@@ -78,14 +78,14 @@ void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int c
 
   // If the lowest range is less than 1.5 in length, the robot will begin
   // rotating to attempt to avoid the obstacle
-  if(smallest_range < 1.5 && smallest_range > 0.8) //between 0.8 and 1.5 exclusive
+  if(smallest_range < 1.4) //between 0.8 and 1.5 exclusive
   {
     // We are getting close to an obstacle, start turning
     if(showDebug)
       ROS_INFO("Collision at beam: %d | Range: %f", current_lowest_index, smallest_range);
 
     // Slow the robot down to 0.1m/s
-    RobotNode_cmdvel.linear.x = 0.1;
+    RobotNode_cmdvel.linear.x = 0.5;
 
     // Decide whether to turn anti-clockwise or clockwise depending on which
     // side of the robot is closest to the object
@@ -97,15 +97,10 @@ void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int c
     {
       RobotNode_cmdvel.angular.z = -(M_PI / 18) * 5; //clockwise
     }
-  }
-  else if(smallest_range <= 0.8) // less than 0.8 inclusive
-  {
-    // We are really close to an obstacle, stop moving forward and rotate on the spot
-    if(showDebug)
-      ROS_INFO("Collision at beam: %d | Range: %f", current_lowest_index, smallest_range);
-
-    RobotNode_cmdvel.linear.x = 0;
-    RobotNode_cmdvel.angular.z = (M_PI / 18) * 5; // just turn, don't care what direction
+    if(smallest_range <= 0.8) //we are really close to colliding, stop moving forward
+    {
+      RobotNode_cmdvel.linear.x = 0;
+    }
   }
   else
   {
