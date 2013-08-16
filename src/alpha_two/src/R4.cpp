@@ -58,6 +58,15 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
 	
 }
 
+void addInstruction(vector<instruction_struct>& instruction_vector, int step_count, double linear_x, double angular_z, int next_step)
+{
+  instruction_struct *Instruction = new instruction_struct; //create a new instruction_struct
+  Instruction->step_count = step_count;
+  Instruction->linear_x = linear_x;
+  Instruction->angular_z = angular_z;
+  Instruction->next_step = next_step;
+  instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
+}
 
 int main(int argc, char **argv)
 {
@@ -97,30 +106,11 @@ int main(int argc, char **argv)
 	//velocity of this RobotNode
 	geometry_msgs::Twist RobotNode_cmdvel;
 
-	// Step 0
-	vector <instruction_struct> instruction_vector; //create new vector of type instruction_struct
-	instruction_struct *Instruction = new instruction_struct; //create a new instruction_struct
-	Instruction->step_count = 75; //add data
-	Instruction->linear_x = 1; //add data
-	Instruction->angular_z = 0.0; //add data
-	Instruction->next_step = 1; //goes to step 1
-	instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
+	vector <instruction_struct> instruction_vector;
+  	addInstruction(instruction_vector, 75, 1, 0.0, 1);
+  	addInstruction(instruction_vector, 0, 0, 0.0, 2);
+  	addInstruction(instruction_vector, 75, -1, 0.0, 0);
 
-	// Step 1
-	Instruction = new instruction_struct; //create a new instruction_struct
-	Instruction->step_count = 0; //add data
-	Instruction->linear_x = 0; //add data
-	Instruction->angular_z = 0.0;
-	Instruction->next_step = 2; //goes to step 2
-	instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
-
-	// Step 2
-	Instruction = new instruction_struct; //create a new instruction_struct
-	Instruction->step_count = 75; //add data
-	Instruction->linear_x = -1; //add data
-	Instruction->angular_z = 0.0;
-	Instruction->next_step = 0; //goes back to step 0
-	instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
 
 	//keep track of what step we are up to
 	int current_step = 0;
