@@ -5,6 +5,7 @@
 #include <sensor_msgs/LaserScan.h>
 #include "angles/angles.h"
 #include "alpha_two/grassState.h"
+#include "alpha_two/sheepState.h"
 #include <sstream>
 #include "math.h"
 
@@ -19,9 +20,11 @@ double px;
 double py;
 double ptheta;
 double theta;
-
+alpha_two::grassState newmsg;
 int state;
-
+double initialPosx;
+double initialPosy;
+double initialTheta;
 struct instruction_struct
 {
 	int step_count; //how many times do we execute this step before we move to the next step
@@ -35,16 +38,21 @@ void StageOdom_callback(nav_msgs::Odometry msg)
 	//This is the call back function to process odometry messages coming from Stage. 	
 	px = 5 + msg.pose.pose.position.x;
 	py =10 + msg.pose.pose.position.y;
-	if(py > 50 && state == 0) {
-		state = 1;
-	} 	
-
-//	ptheta = fmod((2*M_PI) + theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2), 2*M_PI) * (180/M_PI);
-	//ROS_INFO("Current x position is: %f", px);
-	//ROS_INFO("Current y position is: %f", py);
-//	ROS_INFO("Current theta is: %f", ptheta);
+	//float onex = msg.pose.pose.orientation.x;
+	//float oney = msg.pose.pose.orientation.y;
+	//printf("px = %f   py = %f x = %f  y = %f",px, py, onex, oney);
 }
 
+void StageSheep_callback(alpha_two::sheepState msg)
+{
+	 //ROS_INFO("RECEIVED Sheep MESSAGE FROM: %d",msg.S_ID);
+	 if(msg.S_State==1 && msg.grass_locked==newmsg.G_ID && newmsg.G_State == 0){
+		newmsg.G_State=1;
+		newmsg.lockedBy = msg.S_ID;
+		ROS_INFO("LOCKED by SHEEP: %d",msg.S_ID);
+	}
+
+}
 
 void StageLaser_callback(sensor_msgs::LaserScan msg)
 {
@@ -67,20 +75,34 @@ int main(int argc, char **argv)
 	angular_z = 0;
 	
 //You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument is the name of the node
-ros::init(argc, argv, "RobotNode0");
+std::stringstream rName;
+rName.str("");
+rName << "GrassNode" << argv[1];
+ros::init(argc, argv, rName.str());
+
 
 //NodeHandle is the main access point to communicate with ros.
 ros::NodeHandle n;
 
 //advertise() function will tell ROS that you want to publish on a given topic_
 //to stage
-ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_7/cmd_vel",1000); 
+
+rName.str("");
+rName << "robot_" << argv[1]<<"/cmd_vel";
+ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>(rName.str(),1000); 
 
 ros::Publisher grassNode_pub = n.advertise<alpha_two::grassState>("Grass_msg", 1000);
 
+ros::Subscriber sheepState_sub = n.subscribe<alpha_two::sheepState>("Sheep_msg", 1000, StageSheep_callback); 
+
 //subscribe to listen to messages coming from stage
-ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_7/odom",1000, StageOdom_callback);
-ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_7/base_scan",1000,StageLaser_callback);
+rName.str("");
+rName << "robot_" << argv[1]<<"/odom";
+ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>(rName.str(),1000, StageOdom_callback);
+
+rName.str("");
+rName << "robot_" << argv[1]<<"/base_scan";
+ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>(rName.str(),1000,StageLaser_callback);
 
 ros::Rate loop_rate(10);
 
@@ -92,18 +114,19 @@ state = atoi(argv[1]);
 ////messages
 //velocity of this RobotNode
 geometry_msgs::Twist RobotNode_cmdvel;
-
+newmsg.G_State = 0;
+newmsg.G_ID = atoi(argv[1]);
+initialPosx = atoi(argv[2]);
+initialPosy = atoi(argv[3]);
 while (ros::ok())
 {
-	alpha_two::grassState msg;
-	msg.G_State = 0;
-	msg.G_ID = atoi(argv[1]);
-	msg.x = px;
-	msg.y = py;
+	
+	newmsg.x = initialPosx;
+	newmsg.y = initialPosy;
 
 	//publish the message
 	RobotNode_stage_pub.publish(RobotNode_cmdvel);
-	grassNode_pub.publish(msg);
+	grassNode_pub.publish(newmsg);
 	ros::spinOnce();
 
 	loop_rate.sleep();
