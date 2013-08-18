@@ -1,3 +1,4 @@
+threads 4
 define mylaser ranger
 (
   sensor(
