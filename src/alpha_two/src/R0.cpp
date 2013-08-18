@@ -2,9 +2,10 @@
 #include "std_msgs/String.h"
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
-//#include <sensor_msgs/LaserScan.h>
+#include <sensor_msgs/LaserScan.h>
 #include "angles/angles.h"
-
+#include "alpha_two/grassState.h"
+#include "alpha_two/sheepState.h"
 #include <sstream>
 #include "math.h"
 
@@ -39,7 +40,11 @@ void StageOdom_callback(nav_msgs::Odometry msg)
   ROS_INFO("Current theta is: %f", ptheta);
 }
 
-
+void StageGrass_callback(alpha_two::grassState msg)
+{
+ //ROS_INFO("RECEIVED GRASS MESSAGE FROM: %d",msg.G_ID);
+	
+}
 //void StageLaser_callback(sensor_msgs::LaserScan msg)
 //{
 //  //This is the callback function to process laser scan messages
@@ -82,6 +87,8 @@ int main(int argc, char **argv)
   //subscribe to listen to messages coming from stage
   ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_0/odom",1000, StageOdom_callback);
   //ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_0/base_scan",1000,StageLaser_callback);
+
+  ros::Subscriber grassNode_sub = n.subscribe<alpha_two::grassState>("Grass_msg", 1000, StageGrass_callback); 
 
   ros::Rate loop_rate(10);
 
