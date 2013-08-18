@@ -25,7 +25,7 @@ double theta;
 double grassX;
 double grassY;
 double initialPosx;
-double initialPosY;
+double initialPosy;
 double initialTheta;
 alpha_two::sheepState newmsg;
 
@@ -33,16 +33,19 @@ void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int c
 float CalculateAnglularVelocity();
 void StageOdom_callback(nav_msgs::Odometry msg)
 {
-	px = 5 + msg.pose.pose.position.x;
-  	py =10 + msg.pose.pose.position.y;
+	py = msg.pose.pose.position.x;
+  	px = -msg.pose.pose.position.y;
   	//ptheta = fmod((2*M_PI) + theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2), 2*M_PI) * (180/M_PI);
-	theta = msg.pose.pose.position.z;
+	theta = msg.pose.pose.orientation.z;
 	theta = floorf(theta * 1000) / 1000;  //Rounding to 3dp
-	if(theta<0.00){
-		theta = 360.00 - fabs(theta*(180.00/PI));
-	}else{
-		theta = theta*(180.00/PI);
-	}
+	//if(theta<0.00){
+	//	theta = 360.00 - fabs(theta*(180.00/PI));
+	//}else{
+	//	theta = theta*(180.00/PI);
+	//}
+	//theta = fmod((2.0*PI) + theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2.0), 2.0*PI) * (180.0/M_PI);
+	ROS_INFO("INITIAL THETA = %f",initialTheta);
+	ROS_INFO("px: %f	py: %f		theta: %f", px, py, theta);
 }
 
 void StageGrass_callback(alpha_two::grassState msg)
@@ -203,6 +206,9 @@ float CalculateAnglularVelocity() {
 
 
 int main(int argc, char** argv){
+  initialPosx = atoi(argv[2]);
+  initialPosy = atoi(argv[3]);
+  initialTheta = atoi(argv[4]);
   std::stringstream rName;
   rName.str("");
   rName << "RobotNode" << argv[1];
@@ -221,7 +227,7 @@ int main(int argc, char** argv){
   ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>(rName.str(),1000,StageLaser_callback);
 
   rName.str("");
-  rName << "robot_" << argv[1]<<"/odom";
+  rName << "robot_" << argv[1]<<"/base_pose_ground_truth";
   ros::Subscriber StageOdom_sub = n.subscribe<nav_msgs::Odometry>(rName.str(),1000,StageOdom_callback);
 
   //ros::Subscriber grassNode_sub = n.subscribe<alpha_two::grassState>("Grass_msg", 1000, StageGrass_callback); 
