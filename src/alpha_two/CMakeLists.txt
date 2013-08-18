@@ -23,7 +23,7 @@ find_package(catkin REQUIRED COMPONENTS geometry_msgs nav_msgs roscpp sensor_msg
 add_message_files(
   FILES
   grassState.msg
-#   Message2.msg
+  sheepState.msg
 )
 
 ## Generate services in the 'srv' folder
