@@ -2,9 +2,9 @@
 
 if [ $# -eq 2 ]
 then 
-	grass=30
+	grass=20
 	#rm test4321.txt
-
+ 
 	for (( c=0; c<= $1-1; c++ ))
 	do
 		if [ $2 -eq 1 ]
@@ -27,6 +27,8 @@ then
 		angle=$(((($RANDOM+$RANDOM) % 358) + 1))
 		echo $x $y
 		echo "myRobot( pose [" $x $y "0 "$angle" ] name \"r"$c"\" color \"red\" )" >>test4321.txt
+		sheepNumber=$((6+$c))
+		gnome-terminal -x bash worldCreator_assistant2.sh $sheepNumber $x $y $angle
 		
 	done
 	for (( i=0; i<$grass; i++ ))
