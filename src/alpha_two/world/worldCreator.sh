@@ -27,7 +27,7 @@ then
 		angle=$(((($RANDOM+$RANDOM) % 358) + 1))
 		echo $x $y
 		echo "myRobot( pose [" $x $y "0 "$angle" ] name \"r"$c"\" color \"red\" )" >>test4321.txt
-		sheepNumber=$((6+$c))
+		sheepNumber=$((10+$c))
 		gnome-terminal -x bash worldCreator_assistant2.sh $sheepNumber $x $y $angle
 		
 	done

@@ -96,6 +96,18 @@ define myGrass position
   
 )
 
+
+define myField position
+(
+  size [30 31 0.1]
+  drive "diff"
+  myGrasslaser(pose [ 0.050 0.000 0 0.000 ])
+  obstacle_return 0
+	
+)
+
+
+
 # set the resolution of the underlying raytrace model in meters
 
 resolution 0.02 #resolution of the underline bitmap model in meters. 
@@ -122,6 +134,10 @@ floorplan
 )
 
 myFarmer( pose [ 2 27.5 0 0 ] name "g0" )
+myField( pose [ 14.93 15.23 0 0 ] name "f0" color_rgba [0.20874 0.780392 0.149019 0.9] )
+myField( pose [ -14.93 15.23 0 0 ] name "f0" color_rgba [0.5 0.698 0.10588 0.9] )
+myField( pose [ -14.93 -15.23 0 0 ] name "f0" color_rgba [0.77647 0.823529 0.0.02359 0.9] )
+myField( pose [ 14.93 -15.23 0 0 ] name "f0" color_rgba [0.811764 0.69411 0.07409 0.9] )
 
 #Creating gates between all four fields
 myGate( pose [ 26 0 0 0 ] name "g0" color "gray60")
@@ -130,3 +146,8 @@ myGate( pose [ 0 27 0 90 ] name "g0" color "gray60")
 myGate( pose [ 0 -25.40 0 90 ] name "g0" color "gray60")
 
 myTruck( pose [ -30 36 0 0 ] name "g1" )
+
+# robot_0 = farmer
+# robot_1-4 = Fields
+# robot_5-8 = Gates
+# robot_9 = Truck
