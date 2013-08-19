@@ -1,0 +1,27 @@
+grassState
+
+int64 G_State - State of grass
+	0 = not locked by a sheep
+	1 = locked by a sheep
+	2 = eaten
+	3 = dead
+int64 G_ID - GrassID (robot_x)
+int64 x - x co0rdinate
+int64 y - y coordinate
+int64 lockedBy - ID (robot_x) of sheep that is locked on to a grassNode
+
+
+sheepState
+
+int64 S_State - State of sheep
+	0 = searching for grass/roaming around freely
+	1 = locked onto a grassNode/ going to grassNode
+	2 = eating grass
+	3 = being herded
+	4 = Going to next field/truck
+
+int64 S_ID - sheepID (robot_x)
+int64 health - health level of sheep (0-100, 0 being dead and 100 being healthy)
+int64 grass_locked - ID (robot_x) of grassNode locked by the sender of this message
+
+
