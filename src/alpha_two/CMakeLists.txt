@@ -24,6 +24,7 @@ add_message_files(
   FILES
   grassState.msg
   sheepState.msg
+  farmState.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -145,3 +146,5 @@ add_executable(R5 src/R5.cpp)
 target_link_libraries(R5 ${catkin_LIBRARIES})
 add_executable(grass src/grass.cpp)
 target_link_libraries(grass ${catkin_LIBRARIES})
+add_executable(farm src/farm.cpp)
+target_link_libraries(farm ${catkin_LIBRARIES})
