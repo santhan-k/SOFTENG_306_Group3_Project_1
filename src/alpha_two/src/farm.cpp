@@ -35,12 +35,21 @@ int main(int argc, char **argv)
   //geometry_msgs::Twist RobotNode_cmdvel;
   while (ros::ok())
   {
+    new_farm_msg.rainfall = 10;
+    new_farm_msg.f1_soil_condition = 1;
+    
+    new_farm_msg.f2_soil_condition = 2;
+    
+    new_farm_msg.f3_soil_condition = 3;
+    
+    new_farm_msg.f4_soil_condition = 4;
+    
 	  //newmsg.x = initialPosx;
 	  //newmsg.y = initialPosy;
 
 	  //publish the message
 	  //grassNode_pub.publish(newmsg);
-	  
+	  farmNode_pub.publish(new_farm_msg);
 	  
 	  
 	  ros::spinOnce();
