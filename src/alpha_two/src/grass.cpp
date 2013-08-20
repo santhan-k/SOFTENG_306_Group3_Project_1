@@ -6,6 +6,7 @@
 #include "angles/angles.h"
 #include "alpha_two/grassState.h"
 #include "alpha_two/sheepState.h"
+#include "alpha_two/farmState.h"
 #include <sstream>
 #include "math.h"
 
@@ -54,6 +55,11 @@ void StageSheep_callback(alpha_two::sheepState msg)
 
 }
 
+void FarmNode_callback(alpha_two::farmState msg)
+{
+	ROS_INFO("Farm 1: %d",msg.f1_soil_condition);
+}
+
 void StageLaser_callback(sensor_msgs::LaserScan msg)
 {
 	//This is the callback function to process laser scan messages
@@ -99,6 +105,8 @@ ros::Subscriber sheepState_sub = n.subscribe<alpha_two::sheepState>("Sheep_msg",
 rName.str("");
 rName << "robot_" << argv[1]<<"/odom";
 ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>(rName.str(),1000, StageOdom_callback);
+
+ros::Subscriber FarmNode_sub = n.subscribe<alpha_two::farmState>("farm_msg",1000, FarmNode_callback);
 
 rName.str("");
 rName << "robot_" << argv[1]<<"/base_scan";
