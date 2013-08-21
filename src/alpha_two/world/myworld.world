@@ -77,7 +77,7 @@ define floorplan model
 
 define myGate position
 (
-  size [6.3 0.3 1]
+  size [7.1 0.4 2]
   drive "diff"
   bitmap "gate.png"
   mylaser(pose [ 0.050 0.000 0 0.000 ])
@@ -99,13 +99,23 @@ define myGrass position
 
 define myField position
 (
-  size [30 31 0.1]
+  size [30 30 0.1]
   drive "diff"
   myGrasslaser(pose [ 0.050 0.000 0 0.000 ])
   obstacle_return 0
-	
+   gui_move 0	
 )
 
+define myMaze model
+(
+  size [60 60 2]
+  bitmap "maze.png"
+  boundary 1
+  laser_return 1
+  ranger_return 1
+  obstacle_return 1	
+  gui_move 0
+)
 
 
 # set the resolution of the underlying raytrace model in meters
@@ -118,7 +128,7 @@ interval_sim 100  # simulation timestep in milliseconds. length of each simulati
 window
 ( 
   size [ 745.000 745.000 ] #size of the window in pixels
-  scale 30 
+  scale 16
   
 )
 
@@ -126,26 +136,30 @@ window
 floorplan
 ( 
   name "swarm"
-  bitmap "farm_pgm.pgm"
+  #bitmap "farm_pgm.pgm"
+  bitmap "newFarm.png"
   size [60 60 2]
-  pose [ 0.3 0.86 0 90.000 ]
+  pose [ 0 0 0 0 ]
   gui_move 0
   
 )
 
-myFarmer( pose [ 2 27.5 0 0 ] name "g0" )
-myField( pose [ 14.93 15.23 0 0 ] name "f0" color_rgba [0.20874 0.780392 0.149019 0.9] )
-myField( pose [ -14.93 15.23 0 0 ] name "f0" color_rgba [0.5 0.698 0.10588 0.9] )
-myField( pose [ -14.93 -15.23 0 0 ] name "f0" color_rgba [0.77647 0.823529 0.0.02359 0.9] )
-myField( pose [ 14.93 -15.23 0 0 ] name "f0" color_rgba [0.811764 0.69411 0.07409 0.9] )
+myMaze( pose [-65 0 0 0] name "maze0" color "black")
+
+myFarmer( pose [ 2 27.5 0 0 ] name "farmer0" )
+myField( pose [ 15 15 0 0 ] name "f0" color_rgba [0.20874 0.780392 0.149019 0.9] )
+myField( pose [ -15 15 0 0 ] name "f1" color_rgba [0.5 0.698 0.10588 0.9] )
+myField( pose [ -15 -15 0 0 ] name "f2" color_rgba [0.77647 0.823529 0.0.02359 0.9] )
+myField( pose [ 15 -15 0 0 ] name "f3" color_rgba [0.811764 0.69411 0.07409 0.9] )
 
 #Creating gates between all four fields
-myGate( pose [ 26 0 0 0 ] name "g0" color "gray60")
-myGate( pose [ -25.5 0 0 0 ] name "g0" color "gray60")
-myGate( pose [ 0 27 0 90 ] name "g0" color "gray60")
-myGate( pose [ 0 -25.40 0 90 ] name "g0" color "gray60")
+myGate( pose [ 25.91 0 0 0 ] name "g0" color "gray60")
+myGate( pose [ -26.01 0 0 0 ] name "g1" color "gray60")
+myGate( pose [ 0 25.91 0 90 ] name "g2" color "gray60")
+myGate( pose [ 0 -25.92 0 90 ] name "g3" color "gray60")
+myGate( pose [ -26 29.73 0 0 ] name "g4" color "gray60")
 
-myTruck( pose [ -30 36 0 0 ] name "g1" )
+myTruck( pose [ -30 36 0 0 ] name "t1" )
 
 # robot_0 = farmer
 # robot_1-4 = Fields
