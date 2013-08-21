@@ -64,13 +64,20 @@ void FarmNode_callback(alpha_two::farmState msg)
   //ROS_INFO("Farm 2: %d",msg.f2_soil_condition);
   //ROS_INFO("Farm 3: %d",msg.f3_soil_condition);
   //ROS_INFO("Farm 4: %d",msg.f4_soil_condition);
-
+  
+  //Field 1
   if (initialPosx>0 && initialPosy>0){
     growthRate = (float(msg.f1_soil_condition)/100.0);
+
+  //Field 2
   }else if (initialPosx>0 && initialPosy<0){
     growthRate = (float(msg.f2_soil_condition)/100.0);
+
+  //Field 3
   }else if (initialPosx<0 && initialPosy<0){
     growthRate = (float(msg.f3_soil_condition)/100.0);
+
+  //Field 4
   }else if (initialPosx<0 && initialPosy>0){
     growthRate = (float(msg.f4_soil_condition)/100.0);
   }
