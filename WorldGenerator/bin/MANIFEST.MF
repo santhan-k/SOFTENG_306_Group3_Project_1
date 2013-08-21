@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Ant-Version: Apache Ant 1.8.1
-X-COMMENT: Main-Class will be added automatically by build
-Class-Path: lib\commons-codec-1.6.jar lib\commons-collections-3.2.1.jar lib\commons-configuration-1.6.jar lib\commons-io-2.4.jar lib\commons-lang-2.5.jar lib\commons-logging-1.1.1.jar
-Created-By: 1.6.0_24-b07 (Sun Microsystems Inc.)
-Main-Class: wg.Main
