@@ -26,6 +26,9 @@ int state;
 double initialPosx;
 double initialPosy;
 double initialTheta;
+float growthRate;
+
+
 struct instruction_struct
 {
 	int step_count; //how many times do we execute this step before we move to the next step
@@ -57,7 +60,21 @@ void StageSheep_callback(alpha_two::sheepState msg)
 
 void FarmNode_callback(alpha_two::farmState msg)
 {
-	ROS_INFO("Farm 1: %d",msg.f1_soil_condition);
+	//ROS_INFO("Farm 1: %d",msg.f1_soil_condition);
+  //ROS_INFO("Farm 2: %d",msg.f2_soil_condition);
+  //ROS_INFO("Farm 3: %d",msg.f3_soil_condition);
+  //ROS_INFO("Farm 4: %d",msg.f4_soil_condition);
+
+  if (initialPosx>0 && initialPosy>0){
+    growthRate = (float(msg.f1_soil_condition)/100.0);
+  }else if (initialPosx>0 && initialPosy<0){
+    growthRate = (float(msg.f2_soil_condition)/100.0);
+  }else if (initialPosx<0 && initialPosy<0){
+    growthRate = (float(msg.f3_soil_condition)/100.0);
+  }else if (initialPosx<0 && initialPosy>0){
+    growthRate = (float(msg.f4_soil_condition)/100.0);
+  }
+  printf("GROWTH RATE: %f\n",growthRate);
 }
 
 void StageLaser_callback(sensor_msgs::LaserScan msg)
@@ -69,7 +86,8 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
 
 int main(int argc, char **argv)
 {
-
+  
+  growthRate = 1;
  //initialize robot parameters
 	//Initial pose. This is same as the pose that you used in the world file to set	the robot pose.
 	theta = M_PI/2.0;
