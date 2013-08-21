@@ -13,10 +13,46 @@
 using namespace std;
 
 alpha_two::farmState new_farm_msg;
+int dayCounter;
+
+// Changes the weather conditions of the farm
+void changeWeather(){
+  
+  dayCounter = dayCounter%366;
+  dayCounter++;
+  //Rainfall is determined randomly according to the current season.
+  //Spring
+  if(dayCounter < 100){
+    new_farm_msg.rainfall = rand()%10-5;
+
+  //Winter
+  }else if (dayCounter < 230){
+    new_farm_msg.rainfall = rand()%40-10;
+
+  //Summer
+  }else if (dayCounter < 366){        
+    new_farm_msg.rainfall = rand()%10-5; 
+  //Autumn
+  }else if (dayCounter < 366){        
+    new_farm_msg.rainfall = rand()%10-10; 
+  }
+
+  
+  //Weather changes applied to each field.  
+  new_farm_msg.f1_soil_condition = abs((new_farm_msg.f1_soil_condition +new_farm_msg.rainfall)%100);
+  new_farm_msg.f2_soil_condition = abs((new_farm_msg.f2_soil_condition +new_farm_msg.rainfall)%100);
+  new_farm_msg.f3_soil_condition = abs((new_farm_msg.f3_soil_condition +new_farm_msg.rainfall)%100);
+  new_farm_msg.f4_soil_condition = abs((new_farm_msg.f4_soil_condition +new_farm_msg.rainfall)%100);
+  
+  
+  //new_farm_msg.f4_soil_condition += int(float(new_farm_msg.f4_soil_condition)*(float(new_farm_msg.rainfall)/100.0)) -5.0;
+
+}
+
 
 int main(int argc, char **argv)
 {
-	
+	dayCounter = 0;
   //You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument   is the name of the node
   ros::init(argc, argv, "Farm_Control");
 
@@ -29,26 +65,25 @@ int main(int argc, char **argv)
   ros::Publisher farmNode_pub = n.advertise<alpha_two::farmState>("farm_msg", 1000);
 
   ros::Rate loop_rate(10);
-
+  
+  new_farm_msg.rainfall = 0;
+  new_farm_msg.f1_soil_condition = 100;
+   
+  new_farm_msg.f2_soil_condition = 50;
+  
+  new_farm_msg.f3_soil_condition = 70;
+   
+  new_farm_msg.f4_soil_condition = 85;
   ////messages
   //velocity of this RobotNode
   //geometry_msgs::Twist RobotNode_cmdvel;
   while (ros::ok())
   {
-    new_farm_msg.rainfall = 10;
-    new_farm_msg.f1_soil_condition = 1;
-    
-    new_farm_msg.f2_soil_condition = 2;
-    
-    new_farm_msg.f3_soil_condition = 3;
-    
-    new_farm_msg.f4_soil_condition = 4;
-    
-	  //newmsg.x = initialPosx;
-	  //newmsg.y = initialPosy;
-
-	  //publish the message
+ 
+    //publish the message
 	  //grassNode_pub.publish(newmsg);
+
+    changeWeather();
 	  farmNode_pub.publish(new_farm_msg);
 	  
 	  
