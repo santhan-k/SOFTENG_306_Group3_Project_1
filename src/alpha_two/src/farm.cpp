@@ -101,7 +101,7 @@ int main(int argc, char **argv)
       RobotNode_cmdvel.linear.y = -1;
     }
 
-    RobotNode_stage_pub.publish(RobotNode_cmdvel);
+    //RobotNode_stage_pub.publish(RobotNode_cmdvel);
 	  farmNode_pub.publish(new_farm_msg);
 	  
 	  
