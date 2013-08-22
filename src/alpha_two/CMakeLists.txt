@@ -150,4 +150,5 @@ add_executable(grass src/grass.cpp)
 target_link_libraries(grass ${catkin_LIBRARIES})
 add_executable(farm src/farm.cpp)
 target_link_libraries(farm ${catkin_LIBRARIES})
-
+add_executable(cloud src/farm.cpp)
+target_link_libraries(cloud ${catkin_LIBRARIES})
