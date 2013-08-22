@@ -23,18 +23,19 @@ void changeWeather(){
   //Rainfall is determined randomly according to the current season.
   //Spring
   if(dayCounter < 100){
-    new_farm_msg.rainfall = rand()%10-5;
+
+    new_farm_msg.rainfall = rand()%3;
 
   //Winter
   }else if (dayCounter < 230){
-    new_farm_msg.rainfall = rand()%40-10;
+    new_farm_msg.rainfall = rand()%4;
 
   //Summer
   }else if (dayCounter < 366){        
-    new_farm_msg.rainfall = rand()%10-5; 
+    new_farm_msg.rainfall = rand()%1; 
   //Autumn
   }else if (dayCounter < 366){        
-    new_farm_msg.rainfall = rand()%10-10; 
+    new_farm_msg.rainfall = rand()%2;
   }
 
   
