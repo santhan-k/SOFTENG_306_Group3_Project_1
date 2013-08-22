@@ -18,6 +18,7 @@ alpha_two::farmState new_farm_msg;
 int dayCounter;
 double px,py;
 
+
 int velX = 0;
 int velY = 0;
 bool raining;
