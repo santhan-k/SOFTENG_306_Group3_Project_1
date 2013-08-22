@@ -59,19 +59,20 @@ int main(int argc, char **argv)
 
   //velocity of this RobotNode
   geometry_msgs::Twist RobotNode_cmdvel;
-  bool reachedLimit = true;
+  bool reachedLimit = false;
   while (ros::ok())
   {
  
     //publish the message
-    if((px < -50 && py < -50) && reachedLimit){
+    if((px < -40 && py < -40) && !reachedLimit){
       reachedLimit = true;
       velX = 1;
       velY = 1;
-    }else if (px>50 && py>50) {
-      reachedLimit = false;
+    }else if (!reachedLimit) {
       velX = -1;
       velY = -1;
+    }else if (px>40 && py>40){
+      reachedLimit = false;
     }
     if(raining){
     RobotNode_cmdvel.linear.x = velX;
@@ -93,4 +94,3 @@ int main(int argc, char **argv)
 return 0;
 
 }
-
