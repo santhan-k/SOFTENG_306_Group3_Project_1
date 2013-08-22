@@ -48,8 +48,7 @@ int main(int argc, char **argv)
 
   //NodeHandle is the main access point to communicate with ros.
   ros::NodeHandle n;
-
-
+  
   
   ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_11/cmd_vel",1000);
   ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_11/odom",1000, StageOdom_cloudcallback); 
@@ -76,17 +75,15 @@ int main(int argc, char **argv)
       reachedLimit = false;
     }
     if(raining){
-    RobotNode_cmdvel.linear.x = velX;
-    RobotNode_cmdvel.linear.y = velY;}
+      RobotNode_cmdvel.linear.x = velX;
+      RobotNode_cmdvel.linear.y = velY;}
     else{
-    RobotNode_cmdvel.linear.x = 0;
-    RobotNode_cmdvel.linear.y = 0;
+      RobotNode_cmdvel.linear.x = 0;
+      RobotNode_cmdvel.linear.y = 0;
     }
 
-    RobotNode_stage_pub.publish(RobotNode_cmdvel);
-	  //farmNode_pub.publish(new_farm_msg);
-	  
-	  
+      RobotNode_stage_pub.publish(RobotNode_cmdvel);
+     
 	  ros::spinOnce();
 
 	  loop_rate.sleep();
