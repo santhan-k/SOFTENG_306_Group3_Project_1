@@ -174,5 +174,6 @@ myTruck( pose [ -30 36 0 0 ] name "t1" )
 myCloud( pose [ 30 36 20 0] name "c0" color_rgba [0.752941176 0.752941176 0.752941176 0.6])
 # robot_0 = farmer
 # robot_1-4 = Fields
-# robot_5-8 = Gates
-# robot_9 = Truck
+# robot_5-9 = Gates
+# robot_10 = Truck
+# robot_11 =  Cloud
