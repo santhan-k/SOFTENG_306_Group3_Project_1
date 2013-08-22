@@ -7,15 +7,17 @@
 #include "alpha_two/grassState.h"
 #include "alpha_two/sheepState.h"
 #include "alpha_two/farmState.h"
+#include "alpha_two/rainFall.h"
 #include <sstream>
 #include "math.h"
 
 using namespace std;
 
 alpha_two::farmState new_farm_msg;
+alpha_two::rainFall new_rain_msg;
 int dayCounter;
 double px,py;
-
+bool raining = false;
 // Changes the weather conditions of the farm
 void changeWeather(){
   
@@ -23,22 +25,31 @@ void changeWeather(){
   dayCounter++;
   //Rainfall is determined randomly according to the current season.
   //Spring
-  if(dayCounter < 200){
+  if(dayCounter < 100){
 
-    new_farm_msg.rainfall = rand()%3;
+    new_farm_msg.rainfall = rand()%5;
 
   //Winter
   }else if (dayCounter < 460){
-    new_farm_msg.rainfall = rand()%4;
+    new_farm_msg.rainfall = rand()%6;
 
   //Summer
   }else if (dayCounter < 532){        
-    new_farm_msg.rainfall = rand()%1; 
+    new_farm_msg.rainfall = rand(); 
   //Autumn
   }else if (dayCounter < 732){        
-    new_farm_msg.rainfall = rand()%2;
+    new_farm_msg.rainfall = rand()%3;
+  }else{
+    dayCounter = 0;
   }
-
+  printf("day counter: %d\n",dayCounter);
+  if(dayCounter>0 && dayCounter<300){
+    raining = true;
+  } else if (dayCounter >= 300 && dayCounter < 600){
+    raining = false;
+  } else{
+    raining = true;
+  }
   
   //Weather changes applied to each field.  
   new_farm_msg.f1_soil_condition = abs((new_farm_msg.f1_soil_condition +new_farm_msg.rainfall)%100);
@@ -48,14 +59,8 @@ void changeWeather(){
   
   
   //new_farm_msg.f4_soil_condition += int(float(new_farm_msg.f4_soil_condition)*(float(new_farm_msg.rainfall)/100.0)) -5.0;
-
+  
 }
-
-void StageOdom_cloudcallback(nav_msgs::Odometry msg){
-  px = 30 + msg.pose.pose.position.x;
-  py = 36 + msg.pose.pose.position.y;
-}
-
 
 int main(int argc, char **argv)
 {
@@ -70,9 +75,10 @@ int main(int argc, char **argv)
   //to stage
 
   ros::Publisher farmNode_pub = n.advertise<alpha_two::farmState>("farm_msg", 1000);
+
+  ros::Publisher farmNoderain_pub = n.advertise<alpha_two::rainFall>("rain_msg", 1000);
   
-  ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_11/cmd_vel",1000);
-  ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_11/odom",1000, StageOdom_cloudcallback); 
+  
   ros::Rate loop_rate(10);
   
   new_farm_msg.rainfall = 0;
@@ -88,20 +94,16 @@ int main(int argc, char **argv)
   geometry_msgs::Twist RobotNode_cmdvel;
   while (ros::ok())
   {
- 
-    //publish the message
-	  //grassNode_pub.publish(newmsg);
 
     changeWeather();
-    if(px < -60 && py < -60){
-      RobotNode_cmdvel.linear.x = 0;
-      RobotNode_cmdvel.linear.y = 0;
-    }else {
-      RobotNode_cmdvel.linear.x = -1;
-      RobotNode_cmdvel.linear.y = -1;
+    if (raining){
+      new_rain_msg.rain = 1;
+      farmNoderain_pub.publish(new_rain_msg);
+    }else{
+      new_rain_msg.rain = 0;
+      farmNoderain_pub.publish(new_rain_msg);
     }
-
-    //RobotNode_stage_pub.publish(RobotNode_cmdvel);
+     
 	  farmNode_pub.publish(new_farm_msg);
 	  
 	  

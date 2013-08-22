@@ -7,23 +7,35 @@
 #include "alpha_two/grassState.h"
 #include "alpha_two/sheepState.h"
 #include "alpha_two/farmState.h"
+#include "alpha_two/rainFall.h"
 #include <sstream>
 #include "math.h"
 
 using namespace std;
 
 alpha_two::farmState new_farm_msg;
+
 int dayCounter;
 double px,py;
 
 int velX = 0;
-int velY = 0
-
+int velY = 0;
+bool raining;
 
 
 void StageOdom_cloudcallback(nav_msgs::Odometry msg){
   px = 30 + msg.pose.pose.position.x;
   py = 36 + msg.pose.pose.position.y;
+  //printf("HELLO\n");
+}
+
+void StageRain_callback(alpha_two::rainFall msg){
+  printf("RAINFALL = %d \n", msg.rain);
+  if(msg.rain == 1){
+    raining = true;
+  }else{
+    raining = false;
+  }
 }
 
 
@@ -31,7 +43,7 @@ int main(int argc, char **argv)
 {
 	dayCounter = 0;
   //You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument   is the name of the node
-  ros::init(argc, argv, "Farm_Control");
+  ros::init(argc, argv, "Cloud");
 
   //NodeHandle is the main access point to communicate with ros.
   ros::NodeHandle n;
@@ -42,33 +54,32 @@ int main(int argc, char **argv)
   ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_11/odom",1000, StageOdom_cloudcallback); 
   ros::Rate loop_rate(10);
   
-  new_farm_msg.rainfall = 0;
-  new_farm_msg.f1_soil_condition = 100;
-   
-  new_farm_msg.f2_soil_condition = 50;
-  
-  new_farm_msg.f3_soil_condition = 70;
-   
-  new_farm_msg.f4_soil_condition = 85;
-  ////messages
+
+  ros::Subscriber rainFall_sub = n.subscribe<alpha_two::rainFall>("rain_msg", 1000, StageRain_callback); 
+
   //velocity of this RobotNode
   geometry_msgs::Twist RobotNode_cmdvel;
+  bool reachedLimit = true;
   while (ros::ok())
   {
  
     //publish the message
-
-    changeWeather();
-    if(px < -60 && py < -60){
-      velX = 0;
-      velY = 0;
-    }else {
+    if((px < -50 && py < -50) && reachedLimit){
+      reachedLimit = true;
+      velX = 1;
+      velY = 1;
+    }else if (px>50 && py>50) {
+      reachedLimit = false;
       velX = -1;
       velY = -1;
     }
-    
+    if(raining){
     RobotNode_cmdvel.linear.x = velX;
-    RobotNode_cmdvel.linear.y = velY;
+    RobotNode_cmdvel.linear.y = velY;}
+    else{
+    RobotNode_cmdvel.linear.x = 0;
+    RobotNode_cmdvel.linear.y = 0;
+    }
 
     RobotNode_stage_pub.publish(RobotNode_cmdvel);
 	  //farmNode_pub.publish(new_farm_msg);
