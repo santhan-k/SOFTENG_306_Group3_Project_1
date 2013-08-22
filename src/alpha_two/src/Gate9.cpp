@@ -82,7 +82,7 @@ int main(int argc, char **argv)
 	angular_z = 0;
 	
 	//You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument is the name of the node
-	ros::init(argc, argv, "RobotNode0");
+	ros::init(argc, argv, "ExitGateNode");
 
 	//NodeHandle is the main access point to communicate with ros.
 	ros::NodeHandle n;
@@ -93,7 +93,7 @@ int main(int argc, char **argv)
 
 	//subscribe to listen to messages coming from stage
 	ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_9/odom",1000, StageOdom_callback);
-	ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_5/base_scan",1000,StageLaser_callback);
+	ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>("robot_9/base_scan",1000,StageLaser_callback);
 
 	ros::Rate loop_rate(10);
 
@@ -107,9 +107,9 @@ int main(int argc, char **argv)
 	geometry_msgs::Twist RobotNode_cmdvel;
 
 	vector <instruction_struct> instruction_vector;
-  	addInstruction(instruction_vector, 75, -1, 0.0, 1);
+  	addInstruction(instruction_vector, 75, 1, 0.0, 1);
   	addInstruction(instruction_vector, 0, 0, 0.0, 2);
-  	addInstruction(instruction_vector, 75, 1, 0.0, 0);
+  	addInstruction(instruction_vector, 75, -1, 0.0, 0);
 
 
 	//keep track of what step we are up to
