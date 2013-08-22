@@ -157,7 +157,8 @@ myMaze( pose [-65 0 0 0] name "maze0" color "black")
 
 
 
-myFarmer( pose [ 2 27.5 0 0 ] name "farmer0" )
+#myFarmer( pose [ 2 27.5 0 0 ] name "farmer0" )
+myFarmer( pose [ -2 -27.5 0 0 ] name "farmer0" )
 myField( pose [ 15 15 0 0 ] name "f0" color_rgba [0.20874 0.780392 0.149019 0.9] )
 myField( pose [ -15 15 0 0 ] name "f1" color_rgba [0.5 0.698 0.10588 0.9] )
 myField( pose [ -15 -15 0 0 ] name "f2" color_rgba [0.77647 0.823529 0.0.02359 0.9] )
@@ -172,6 +173,8 @@ myGate( pose [ -26 29.73 0 0 ] name "g4" color "gray60")
 
 myTruck( pose [ -30 36 0 0 ] name "t1" )
 myCloud( pose [ 30 36 20 0] name "c0" color_rgba [0.752941176 0.752941176 0.752941176 0.6])
+myFarmer( pose [ 25 25 0 0 ] name "sheepDog0" )
+myFarmer( pose [ 5 5 0 0 ] name "sheepDog1" )
 # robot_0 = farmer
 # robot_1-4 = Fields
 # robot_5-9 = Gates
