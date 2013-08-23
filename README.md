@@ -17,5 +17,6 @@ Instructions for Setting up a workspace and running the simulation.
 5. Source this workspace by adding it to bashrc (source <pathtoyourrepo>/devel/setup.bash>
 6. Navigate to the world directory (roscd alpha_two/world)
 7. run the python generator script to start simulation (python pygen.py <num of sheep> <Field number (1-4)>)
+8. Run kill.py to kill the simulation.
 
 
