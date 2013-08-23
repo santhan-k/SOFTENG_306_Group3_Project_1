@@ -67,17 +67,22 @@ void initiateSheepHerding(nav_msgs::Odometry msg){
     px = -msg.pose.pose.position.y;
     py = msg.pose.pose.position.x;
     
-    //ROS_INFO("px: %f",px);
-    //ROS_INFO("dogx: %f",sheepDog1_x);
-    
     ROS_INFO("PX: %f",sheepDog1_x);
     ROS_INFO("shPX: %f",px);
     ROS_INFO("shPY: %f",py);
-    if(px < sheepDog1_x){
-         ROS_INFO("This SheepDog1 is behind enemy lines.");
+    
+    
+    
+    if(px < sheepDog1_y){
+         ROS_INFO("This Sheep is behind enemy lines.");
+         linear_x = 0;
+         angular_z = (M_PI / 18) * 5; 
     }else{
-         ROS_INFO("SAFE!");   
+         ROS_INFO("SAFE!");
+         linear_x = 1;
+         angular_z = 0;
     }
+    ROS_INFO("diff: %f",px-sheepDog1_y);
 }
 
 void StageBasePose_callback(nav_msgs::Odometry msg)
@@ -175,7 +180,6 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
 
   // Publish the message
   RobotNode_stage_pub.publish(RobotNode_cmdvel);
-
   if(showDebug)
     ROS_INFO("-------------------------- END -----------------------------");
 }
@@ -195,38 +199,36 @@ void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int c
 	  if(showDebug)
 	    ROS_INFO("Lowest index: %f", current_lowest_index);
 
-	  // If the lowest range is less than 1.5 in length, the robot will begin
-	  // rotating to attempt to avoid the obstacle
-	  if(smallest_range < 1.4) //between 0.8 and 1.5 exclusive
-	  {
-	    // We are getting close to an obstacle, start turning
-	    if(showDebug)
-	      ROS_INFO("Collision at beam: %d | Range: %f", current_lowest_index, smallest_range);
+	      // If the lowest range is less than 1.5 in length, the robot will begin
+	      // rotating to attempt to avoid the obstacle
+    	  if(smallest_range < 1.4) //between 0.8 and 1.5 exclusive
+	      {
+            // We are getting close to an obstacle, start turning
+	        if(showDebug)
+	          ROS_INFO("Collision at beam: %d | Range: %f", current_lowest_index, smallest_range);
 
-      // Slow the robot down to 0.1m/s
-      linear_x = 0.5;
+            // Slow the robot down to 0.1m/s
+            linear_x = 0.5;
 
-      // Decide whether to turn anti-clockwise or clockwise depending on which
-      // side of the robot is closest to the object
-      if(current_lowest_index < SAMPLE_NUMBER/2) // sample_number is the number of beams
-      {
-        angular_z = (M_PI / 18) * 5; //anti-clockwise
+            // Decide whether to turn anti-clockwise or clockwise depending on which
+            // side of the robot is closest to the object
+            if(current_lowest_index < SAMPLE_NUMBER/2) // sample_number is the number of beams
+            {
+                angular_z = (M_PI / 18) * 5; //anti-clockwise
+            }else{
+                angular_z = -(M_PI / 18) * 5; //clockwise
+          }
+          
+          if(smallest_range <= 0.8) //we are really close to colliding, stop moving forward
+          {
+            linear_x = 0;
+          }
+          
+      }else{
+          // If no potential collisions are detected, move forward normally
+          linear_x = 1;
+          angular_z = 0;
       }
-      else
-      {
-        angular_z = -(M_PI / 18) * 5; //clockwise
-      }
-      if(smallest_range <= 0.8) //we are really close to colliding, stop moving forward
-      {
-        linear_x = 0;
-      }
-    }
-    else
-    {
-      // If no potential collisions are detected, move forward normally
-      linear_x = 1;
-      angular_z = 0;
-    }
   }
   else if(newmsg.S_State==1)
   {
