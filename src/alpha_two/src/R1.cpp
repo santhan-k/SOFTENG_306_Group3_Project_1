@@ -52,10 +52,10 @@ float CalculateAngularVelocity();
 void StageOdom_callback(nav_msgs::Odometry msg)
 {
      ptheta = fmod((2*M_PI) + initial_theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2), 2*M_PI) * (180/M_PI);
-     ROS_INFO("PX: %f", msg.pose.pose.position.x);
-
-     if (herdingMode == true)
-         initiateSheepHerding(msg);
+     
+     if(showDebug){
+          ROS_INFO("PX: %f", msg.pose.pose.position.x);
+     }
 }
 
 // Gets current x and y position relative to the world
@@ -64,29 +64,33 @@ void StageOdom_callback(nav_msgs::Odometry msg)
 void initiateSheepHerding(nav_msgs::Odometry msg){
     // Check current position of the sheep and compare with
     // broadcasted x and y position of the sheep dog and farmer.
-    px = msg.pose.pose.position.x;
-    py = msg.pose.pose.position.y;
+    px = -msg.pose.pose.position.y;
+    py = msg.pose.pose.position.x;
     
     //ROS_INFO("px: %f",px);
     //ROS_INFO("dogx: %f",sheepDog1_x);
     
-    
-    
-    //if(px < sheepDog1_x){
-         //ROS_INFO("This SheepDog1 is behind enemy lines.");
-    //}
-    
-    
+    ROS_INFO("PX: %f",sheepDog1_x);
+    ROS_INFO("shPX: %f",px);
+    ROS_INFO("shPY: %f",py);
+    if(px < sheepDog1_x){
+         ROS_INFO("This SheepDog1 is behind enemy lines.");
+    }else{
+         ROS_INFO("SAFE!");   
+    }
 }
 
 void StageBasePose_callback(nav_msgs::Odometry msg)
 {
   px = msg.pose.pose.position.y;
   py = -msg.pose.pose.position.x;
-  //if (showDebug){
+  if (showDebug){
       ROS_INFO("Current x position is: %f", px);
       ROS_INFO("Current y position is: %f", py);
-  //}
+  }
+  
+  if (herdingMode == true)
+         initiateSheepHerding(msg);
 }
 
 void StageGrass_callback(alpha_two::grassState msg)
