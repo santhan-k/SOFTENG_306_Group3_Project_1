@@ -1,10 +1,11 @@
 #! /usr/bin/env python
 from subprocess import Popen, PIPE
 import subprocess
+import sys
 import random
-numSheep = 10
+numSheep = int(sys.argv[1])
 numGrass = 20
-fieldNumber = 1
+fieldNumber = int(sys.argv[2])
 ins = open( "myworld.world", "r" )
 array = []
 for line in ins:
