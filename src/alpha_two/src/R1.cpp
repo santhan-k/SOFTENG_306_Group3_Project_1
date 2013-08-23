@@ -39,7 +39,7 @@ double sheepDog1_x;
 double sheepDog1_y;
 
 // Toggle herding mode
-bool herdingMode = true;
+bool herdingMode = false;
 
 // Laser data for custom usage during herding mode
 sensor_msgs::LaserScan laserData_msg;
@@ -54,7 +54,7 @@ void StageOdom_callback(nav_msgs::Odometry msg)
   ptheta = fmod((2*M_PI) + initial_theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2), 2*M_PI) * (180/M_PI);
   ROS_INFO("Current theta is: %f", ptheta);
 
-  if (herdingMode)
+  if (herdingMode == true)
       initiateSheepHerding(msg);
 }
 
