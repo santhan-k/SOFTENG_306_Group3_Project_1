@@ -147,6 +147,7 @@ state = atoi(argv[1]);
 ////messages
 //velocity of this RobotNode
 geometry_msgs::Twist RobotNode_cmdvel;
+RobotNode_cmdvel.angular.z = 0.3;
 newmsg.G_State = 0;
 newmsg.G_ID = atoi(argv[1]);
 initialPosx = atoi(argv[2]);
