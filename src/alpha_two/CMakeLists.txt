@@ -148,6 +148,9 @@ target_link_libraries(R5 ${catkin_LIBRARIES})
 #truck gate fix
 add_executable(R6 src/R6.cpp)
 target_link_libraries(R6 ${catkin_LIBRARIES})
+
+add_executable(Gates src/Gates.cpp)
+target_link_libraries(Gates ${catkin_LIBRARIES})
 # -----------------
 #add_executable(ExitGateNode src/Gate9.cpp)
 #target_link_libraries(ExitGateNode ${catkin_LIBRARIES})
