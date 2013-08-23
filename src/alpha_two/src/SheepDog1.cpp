@@ -44,8 +44,11 @@ void SheepDogPosition_callback(nav_msgs::Odometry msg)
         sheepDog_msg.x = px;
         sheepDog_msg.y = py;
         sheepDog_Pub.publish(sheepDog_msg);
-        ROS_INFO("X = %f",px);
-        ROS_INFO("Y = %f",py);        
+        
+        if (showDebug){
+            ROS_INFO("X = %f",px);
+            ROS_INFO("Y = %f",py);
+        }        
 }
 
 void StageLaser_callback(sensor_msgs::LaserScan msg)
@@ -58,7 +61,7 @@ int main(int argc, char** argv){
   ros::NodeHandle n;
    
   //RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>(rName.str(),1000);
-  sheepDog_Pub = n.advertise<alpha_two::sheepDogState>("sheepDog1_msg",1000);
+  sheepDog_Pub = n.advertise<alpha_two::sheepDogState>("sheepDog1_msg",1000);  
 
   ros::Subscriber sheepDog_odom = n.subscribe<nav_msgs::Odometry>("/robot_13/base_pose_ground_truth",1000, SheepDogPosition_callback);
 
