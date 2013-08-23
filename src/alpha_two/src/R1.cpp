@@ -127,7 +127,7 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
     }
   }  
   
-  if (!herdingMode)
+  if (!herdingMode){
       collisionAvoidance(smallest_range, msg, current_lowest_index);
   }else{
        // Store laser data for custom herding mode
