@@ -36,26 +36,19 @@ double sheepDog1_y;
 // Toggle herding mode
 bool herdingMode = true;
 
-// Laser data for usage with herding
+// Laser data for custom usage during herding mode
 sensor_msgs::LaserScan laserData_msg;
 
 void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int current_lowest_index);
 void initiateSheepHerding(nav_msgs::Odometry msg);
-float CalculateAnglularVelocity();
+float CalculateAngularVelocity();
 
 void StageOdom_callback(nav_msgs::Odometry msg)
 {
 	  py = msg.pose.pose.position.x;
   	px = -msg.pose.pose.position.y;
-  	//ptheta = fmod((2*M_PI) + theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2), 2*M_PI) * (180/M_PI);
 	  theta = msg.pose.pose.orientation.z;
 	  theta = floorf(theta * 1000) / 1000;  //Rounding to 3dp
-	  //if(theta<0.00){
-	  //	theta = 360.00 - fabs(theta*(180.00/PI));
-	  //}else{
-	  //	theta = theta*(180.00/PI);
-	  //}
-	  //theta = fmod((2.0*PI) + theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2.0), 2.0*PI) * (180.0/M_PI);
 	  if (showDebug){
 	    ROS_INFO("INITIAL THETA = %f",initialTheta);
 	    ROS_INFO("px: %f	py: %f		theta: %f", px, py, theta);	
@@ -72,27 +65,29 @@ void initiateSheepHerding(nav_msgs::Odometry msg){
     // broadcasted x and y position of the sheep dog and farmer.
     py = msg.pose.pose.position.x;
     px = -msg.pose.pose.position.y;
-    ROS_INFO("SheepDog1 position x: %d",sheepDog1_x);
-    ROS_INFO("SheepDog1 position y: %d",sheepDog1_y);
-     
+    if(showDebug){
+        ROS_INFO("SheepDog1 position x: %d",sheepDog1_x);
+        ROS_INFO("SheepDog1 position y: %d",sheepDog1_y);
+    } 
 }
 
 void StageGrass_callback(alpha_two::grassState msg)
 {
- //ROS_INFO("RECEIVED GRASS MESSAGE FROM: %d",msg.G_ID);
 	if(newmsg.S_State == 1 && newmsg.grass_locked==msg.G_ID && msg.lockedBy != newmsg.S_ID){
 		newmsg.S_State = 0;
-		//ROS_INFO("CHANGED STATE BACK TO LOOKING FOR GRASS");
 	}else if(msg.G_State == 0 && newmsg.S_State == 0){
 		grassX = msg.x;
 		grassY = msg.y;
 		newmsg.S_State=1;
                 newmsg.grass_locked = msg.G_ID;
-		//ROS_INFO("LOCKED GRASS: %d",msg.G_ID);
+		
+		if(showDebug)
+		    ROS_INFO("LOCKED GRASS: %d",msg.G_ID);
 	}
 	if(newmsg.grass_locked == msg.G_ID){
 		//newmsg.grass_locked = 0;
-		//ROS_INFO("STILL HAVE GRASS! YAY!");
+		if (showDebug)
+		    ROS_INFO("STILL HAVE GRASS! YAY!");
 	}
 }
 
@@ -130,8 +125,8 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
   if (!herdingMode){
       collisionAvoidance(smallest_range, msg, current_lowest_index);
   }else{
-       // Store laser data for custom herding mode
-       // collision avoidance
+       // Store laser data as global variable
+       // This allows custom usage of the laser during herding mode.
        laserData_msg = msg;
       
   }
@@ -142,7 +137,6 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
   if(showDebug)
     ROS_INFO("-------------------------- END -----------------------------");
 }
-
 
 void sheepDog1_callback(alpha_two::sheepDogState msg){
     sheepDog1_x = msg.x;
@@ -192,14 +186,16 @@ void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int c
 	    RobotNode_cmdvel.angular.z = 0;
 	  }
   }else if(newmsg.S_State==1){
-	//ROS_INFO("GOING TO GRASS");
+
 	RobotNode_cmdvel.linear.x = float(1) * atan2(grassX-px,grassY-py);
-	RobotNode_cmdvel.angular.z = CalculateAnglularVelocity();
-	//ROS_INFO("linear velocity: %f   angular velocity: %f", RobotNode_cmdvel.linear.x,RobotNode_cmdvel.angular.z);
+	RobotNode_cmdvel.angular.z = CalculateAngularVelocity();
+	
+	if(showDebug)
+	    ROS_INFO("linear velocity: %f   angular velocity: %f", RobotNode_cmdvel.linear.x,RobotNode_cmdvel.angular.z);
   }
 }
 
-float CalculateAnglularVelocity() {
+float CalculateAngularVelocity() {
 
 	float deltaX = grassX - px;
 	float deltaY = grassY-py;
@@ -286,7 +282,7 @@ int main(int argc, char** argv){
 
   while(n.ok()){
     ++count;
-   // sheepNode_state.publish(newmsg);
+    // sheepNode_state.publish(newmsg);
     ros::spinOnce(); //Must Have this statement in the program
     r.sleep();
   }
