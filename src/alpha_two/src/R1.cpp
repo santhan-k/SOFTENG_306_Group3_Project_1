@@ -76,8 +76,10 @@ void StageBasePose_callback(nav_msgs::Odometry msg)
 {
   px = msg.pose.pose.position.y;
   py = -msg.pose.pose.position.x;
-  ROS_INFO("Current x position is: %f", px);
-  ROS_INFO("Current y position is: %f", py);
+  if (showDebug){
+      ROS_INFO("Current x position is: %f", px);
+      ROS_INFO("Current y position is: %f", py);
+  }
 }
 
 void StageGrass_callback(alpha_two::grassState msg)
@@ -86,7 +88,8 @@ void StageGrass_callback(alpha_two::grassState msg)
   if(newmsg.S_State == 1 && newmsg.grass_locked==msg.G_ID && msg.lockedBy != newmsg.S_ID)
   {
     newmsg.S_State = 0;
-    ROS_INFO("CHANGED STATE BACK TO LOOKING FOR GRASS");
+    if(showDebug)
+        ROS_INFO("CHANGED STATE BACK TO LOOKING FOR GRASS");
   }
   else if(msg.G_State == 0 && newmsg.S_State == 0)
   {
@@ -99,7 +102,8 @@ void StageGrass_callback(alpha_two::grassState msg)
   if(newmsg.grass_locked == msg.G_ID)
   {
     newmsg.grass_locked = 0;
-    ROS_INFO("STILL HAVE GRASS! YAY!");
+    if(showDebug)
+        ROS_INFO("STILL HAVE GRASS! YAY!");
   }
 	if(newmsg.S_State == 1 && newmsg.grass_locked==msg.G_ID && msg.lockedBy != newmsg.S_ID){
 		newmsg.S_State = 0;
@@ -156,7 +160,6 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
        // Store laser data as global variable
        // This allows custom usage of the laser during herding mode.
        laserData_msg = msg;
-      
   }
 
   // Publish the message
