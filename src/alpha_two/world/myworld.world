@@ -54,6 +54,15 @@ define myFarmer position
   obstacle_return 0	
 )
 
+define mySheepDog position
+(
+  size [2 3 0.7]
+  drive "diff"
+  mylaser2(pose [ 0.050 0.000 0 0.000 ])
+  #bitmap "farmer.png"
+  obstacle_return 0	
+)
+
 define myTruck position
 (
   size [5 5 5]
@@ -118,16 +127,16 @@ define myMaze model
 )
 
 
-#define myBarrier model
-#(
-#  size [0.000000001 30 2]
-#  color_rgba [0.20874 0.780392 0.149019 0.9]
-#  gui_boundary 0
-#  laser_return 1
-#  ranger_return 1
-#  obstacle_return 1	
-#  gui_move 1
-#)
+define myBarrier model
+(
+  size [0.000000001 30 2]
+  color_rgba [0.20874 0.780392 0.149019 0.9]
+  gui_boundary 0
+  laser_return 1
+  ranger_return 1
+  obstacle_return 1	
+  gui_move 1
+)
 
 define myCloud position
 (
@@ -203,7 +212,7 @@ floorplan
 
 
 myMaze( pose [-65 0 0 0] name "maze0" color "black")
-#myBarrier( pose [10 0 0 0] name "bar0")
+myBarrier( pose [10 0 0 0] name "bar0")
 
 myFarmer( pose [ 2 27.5 0 0 ] name "farmer0" )
 myField( pose [ 15 15 0 0 ] name "f0" color_rgba [0.20874 0.780392 0.149019 0.9] )
@@ -221,6 +230,7 @@ myGate( pose [ -26 29.73 0 0 ] name "g4" color "gray60")
 myTruck( pose [ -26 33 0 0 ] name "t1" )
 myCloud( pose [ 30 36 20 0] name "c0" color_rgba [0.752941176 0.752941176 0.752941176 0.6])
 
+mySheepDog( pose [ 1 1 0 0 ] name "Dog1" )
 
 myMessageHouse(pose [-10.49 36 1 90] name "mes1" color "white")
 rainMessage( pose [-15 35 0 0] color "black")
@@ -228,8 +238,10 @@ SummerMessage( pose [-15 35 0 0] color "black")
 WinterMessage( pose [-15 35 0 0] color "black")
 SpringMessage( pose [-15 35 0 0] color "black")
 AutumnMessage( pose [-15 35 0 0] color "black")
+
 # robot_0 = farmer
 # robot_1-4 = Fields
 # robot_5-9 = Gates
 # robot_10 = Truck
 # robot_11 =  Cloud
+# robot_12 = SheepDog
