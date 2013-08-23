@@ -13,7 +13,7 @@ for line in ins:
 ins.close()
 
 commandArray =  []
-sheepNum = 17
+sheepNum = 18
 for i in range(0,numSheep):
     command =  []
     if (fieldNumber == 1):
