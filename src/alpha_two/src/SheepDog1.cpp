@@ -34,8 +34,8 @@ alpha_two::sheepDogState sheepDog_msg;
 
 void SheepDogPosition_callback(nav_msgs::Odometry msg)
 {
-	  px = msg.pose.pose.position.x;
-  	py = msg.pose.pose.position.y;
+	  px = -msg.pose.pose.position.y;
+  	py = msg.pose.pose.position.x;
 	theta = msg.pose.pose.orientation.z;
 	theta = floorf(theta * 1000) / 1000;  //Rounding to 3dp
 	//ROS_INFO("INITIAL THETA = %f",initialTheta);
