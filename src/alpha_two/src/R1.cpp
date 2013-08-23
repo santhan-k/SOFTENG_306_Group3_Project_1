@@ -17,15 +17,21 @@ geometry_msgs::Twist RobotNode_cmdvel;
 
 bool showDebug = false; //Show/hide ROS log messages
 #define SAMPLE_NUMBER 10 // represents number of samples in world file.
+
+//velocity of the robot
+double linear_x;
+double angular_z;
+
+//pose of the robot
 double px;
 double py;
 double ptheta;
-double theta;
+
 double grassX;
 double grassY;
-double initialPosx;
-double initialPosy;
-double initialTheta;
+double initial_position_x;
+double initial_position_y;
+double initial_theta;
 alpha_two::sheepState newmsg;
 
 // X and Y position values of sheepDog1
@@ -76,7 +82,6 @@ void StageBasePose_callback(nav_msgs::Odometry msg)
 
 void StageGrass_callback(alpha_two::grassState msg)
 {
-<<<<<<< .mine
   ROS_INFO("RECEIVED GRASS MESSAGE FROM: %d",msg.G_ID);
   if(newmsg.S_State == 1 && newmsg.grass_locked==msg.G_ID && msg.lockedBy != newmsg.S_ID)
   {
@@ -213,7 +218,7 @@ void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int c
   {
     ROS_INFO("GOING TO GRASS");
     linear_x = float(1) * atan2(grassX-px,grassY-py);
-    angular_z = CalculateAnglularVelocity();
+    angular_z = CalculateAngularVelocity();
     ROS_INFO("linear velocity: %f   angular velocity: %f", linear_x, angular_z);
   }
 }
