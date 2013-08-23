@@ -66,7 +66,6 @@ void initiateSheepHerding(nav_msgs::Odometry msg){
     } 
 }
 
->>>>>>> .r206
 void StageBasePose_callback(nav_msgs::Odometry msg)
 {
   px = msg.pose.pose.position.y;
@@ -97,7 +96,6 @@ void StageGrass_callback(alpha_two::grassState msg)
     newmsg.grass_locked = 0;
     ROS_INFO("STILL HAVE GRASS! YAY!");
   }
-=======
 	if(newmsg.S_State == 1 && newmsg.grass_locked==msg.G_ID && msg.lockedBy != newmsg.S_ID){
 		newmsg.S_State = 0;
 	}else if(msg.G_State == 0 && newmsg.S_State == 0){
@@ -114,7 +112,6 @@ void StageGrass_callback(alpha_two::grassState msg)
 		if (showDebug)
 		    ROS_INFO("STILL HAVE GRASS! YAY!");
 	}
->>>>>>> .r206
 }
 
 
