@@ -128,17 +128,20 @@ int main(int argc, char **argv)
 
     ros::Rate loop_rate(10);
 
-
-    //a count of how many messages we have sent
+    //count of how many messages we have sent
     int count = 0;
 
+    //Argument for opening or closing (second argument)
     state = atoi(argv[2]);
+    //Argument for gate number (first argument)
     gateNumber = atoi(argv[1]);
 
+	  //velocity of this RobotNode
    	geometry_msgs::Twist RobotNode_cmdvel;
 
 	  vector <instruction_struct> instruction_vector;
 
+    //Conditions to check gate to move, and call addInstruction
     if(gateNumber == 5) {
       addInstruction(instruction_vector, 75, -1, 0.0, 1);
   	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
@@ -161,8 +164,6 @@ int main(int argc, char **argv)
  	    addInstruction(instruction_vector, 75, -1, 0.0, 0);
     }
 
-
-
     //keep track of what step we are up to
     int current_step = 0;
     int current_step_count = 0;
@@ -173,10 +174,6 @@ int main(int argc, char **argv)
         linear_x = instruction_vector[current_step].linear_x;
         angular_z = instruction_vector[current_step].angular_z;
         ++current_step_count;
-	//	if(current_step_count == instruction_vector[current_step].step_count) {
-	//		current_step = instruction_vector[current_step].next_step;
-	//		current_step_count = 0;
-	//	}
 
         if(state == 0) {
             linear_x = instruction_vector[0].linear_x;
