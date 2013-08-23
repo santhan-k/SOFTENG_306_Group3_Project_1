@@ -11,7 +11,6 @@
 #include "math.h"
 
 using namespace std;
-#define PI 3.14159265
 // Global variables and objects
 ros::Publisher RobotNode_stage_pub;
 geometry_msgs::Twist RobotNode_cmdvel;
@@ -43,6 +42,7 @@ void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int c
 void initiateSheepHerding(nav_msgs::Odometry msg);
 float CalculateAngularVelocity();
 
+// Gets current angle between 0 and 360. Right is 0 (North)
 void StageOdom_callback(nav_msgs::Odometry msg)
 {
   ptheta = fmod((2*M_PI) + initial_theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2), 2*M_PI) * (180/M_PI);
@@ -52,6 +52,9 @@ void StageOdom_callback(nav_msgs::Odometry msg)
       initiateSheepHerding(msg);
 }
 
+<<<<<<< .mine
+// Gets current x and y position relative to the world
+=======
 // Sheep are limited to the boundaries set by the current
 // position of the sheep dog.
 void initiateSheepHerding(nav_msgs::Odometry msg){
@@ -65,6 +68,7 @@ void initiateSheepHerding(nav_msgs::Odometry msg){
     } 
 }
 
+>>>>>>> .r206
 void StageBasePose_callback(nav_msgs::Odometry msg)
 {
   px = msg.pose.pose.position.y;
@@ -75,6 +79,27 @@ void StageBasePose_callback(nav_msgs::Odometry msg)
 
 void StageGrass_callback(alpha_two::grassState msg)
 {
+<<<<<<< .mine
+  ROS_INFO("RECEIVED GRASS MESSAGE FROM: %d",msg.G_ID);
+  if(newmsg.S_State == 1 && newmsg.grass_locked==msg.G_ID && msg.lockedBy != newmsg.S_ID)
+  {
+    newmsg.S_State = 0;
+    ROS_INFO("CHANGED STATE BACK TO LOOKING FOR GRASS");
+  }
+  else if(msg.G_State == 0 && newmsg.S_State == 0)
+  {
+    grassX = msg.x;
+    grassY = msg.y;
+    newmsg.S_State=1;
+    newmsg.grass_locked = msg.G_ID;
+    ROS_INFO("LOCKED GRASS: %d", msg.G_ID);
+  }
+  if(newmsg.grass_locked == msg.G_ID)
+  {
+    newmsg.grass_locked = 0;
+    ROS_INFO("STILL HAVE GRASS! YAY!");
+  }
+=======
 	if(newmsg.S_State == 1 && newmsg.grass_locked==msg.G_ID && msg.lockedBy != newmsg.S_ID){
 		newmsg.S_State = 0;
 	}else if(msg.G_State == 0 && newmsg.S_State == 0){
@@ -91,6 +116,7 @@ void StageGrass_callback(alpha_two::grassState msg)
 		if (showDebug)
 		    ROS_INFO("STILL HAVE GRASS! YAY!");
 	}
+>>>>>>> .r206
 }
 
 
@@ -206,7 +232,7 @@ float CalculateAngularVelocity() {
 
 	//Angle from origin
 	float angle = atan(deltaY / deltaX);
-	angle = 180 * angle / PI;
+	angle = 180 * angle / M_PI;
 
 	//Find the quadrant to work out difference
 	if (deltaX >= 0 && deltaY >= 0) { // right and up
