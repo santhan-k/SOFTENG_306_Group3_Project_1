@@ -6,6 +6,7 @@
 #include "angles/angles.h"
 #include "alpha_two/grassState.h"
 #include "alpha_two/sheepState.h"
+#include "alpha_two/sheepDogState.h"
 #include <sstream>
 #include "math.h"
 
@@ -16,32 +17,52 @@ ros::Publisher RobotNode_stage_pub;
 geometry_msgs::Twist RobotNode_cmdvel;
 
 bool showDebug = false; //Show/hide ROS log messages
-vector<float> previous_ranges;
 #define SAMPLE_NUMBER 10 // represents number of samples in world file.
-
-//velocity of the robot
-double linear_x = 1;
-double angular_z = 0;
-
-//pose of the robot
 double px;
 double py;
 double ptheta;
-
+double theta;
 double grassX;
 double grassY;
-double initial_position_x;
-double initial_position_y;
-double initial_theta;
+double initialPosx;
+double initialPosy;
+double initialTheta;
 alpha_two::sheepState newmsg;
 
+// X and Y position values of sheepDog1
+double sheepDog1_x;
+double sheepDog1_y;
+
+// Toggle herding mode
+bool herdingMode = true;
+
+// Laser data for custom usage during herding mode
+sensor_msgs::LaserScan laserData_msg;
+
 void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int current_lowest_index);
-float CalculateAnglularVelocity();
+void initiateSheepHerding(nav_msgs::Odometry msg);
+float CalculateAngularVelocity();
 
 void StageOdom_callback(nav_msgs::Odometry msg)
 {
   ptheta = fmod((2*M_PI) + initial_theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2), 2*M_PI) * (180/M_PI);
   ROS_INFO("Current theta is: %f", ptheta);
+
+  if (herdingMode)
+      initiateSheepHerding(msg);
+}
+
+// Sheep are limited to the boundaries set by the current
+// position of the sheep dog.
+void initiateSheepHerding(nav_msgs::Odometry msg){
+    // Check current position of the sheep and compare with
+    // broadcasted x and y position of the sheep dog and farmer.
+    py = msg.pose.pose.position.x;
+    px = -msg.pose.pose.position.y;
+    if(showDebug){
+        ROS_INFO("SheepDog1 position x: %d",sheepDog1_x);
+        ROS_INFO("SheepDog1 position y: %d",sheepDog1_y);
+    } 
 }
 
 void StageBasePose_callback(nav_msgs::Odometry msg)
@@ -54,34 +75,27 @@ void StageBasePose_callback(nav_msgs::Odometry msg)
 
 void StageGrass_callback(alpha_two::grassState msg)
 {
-  //ROS_INFO("RECEIVED GRASS MESSAGE FROM: %d",msg.G_ID);
-  if(newmsg.S_State == 1 && newmsg.grass_locked==msg.G_ID && msg.lockedBy != newmsg.S_ID)
-  {
-    newmsg.S_State = 0;
-    //ROS_INFO("CHANGED STATE BACK TO LOOKING FOR GRASS");
-  }
-  else if(msg.G_State == 0 && newmsg.S_State == 0)
-  {
-    grassX = msg.x;
-    grassY = msg.y;
-    newmsg.S_State=1;
-    newmsg.grass_locked = msg.G_ID;
-    //ROS_INFO("LOCKED GRASS: %d",msg.G_ID);
-  }
-  if(newmsg.grass_locked == msg.G_ID)
-  {
-    //newmsg.grass_locked = 0;
-    //ROS_INFO("STILL HAVE GRASS! YAY!");
-  }
+	if(newmsg.S_State == 1 && newmsg.grass_locked==msg.G_ID && msg.lockedBy != newmsg.S_ID){
+		newmsg.S_State = 0;
+	}else if(msg.G_State == 0 && newmsg.S_State == 0){
+		grassX = msg.x;
+		grassY = msg.y;
+		newmsg.S_State=1;
+                newmsg.grass_locked = msg.G_ID;
+		
+		if(showDebug)
+		    ROS_INFO("LOCKED GRASS: %d",msg.G_ID);
+	}
+	if(newmsg.grass_locked == msg.G_ID){
+		//newmsg.grass_locked = 0;
+		if (showDebug)
+		    ROS_INFO("STILL HAVE GRASS! YAY!");
+	}
 }
 
 
 void StageLaser_callback(sensor_msgs::LaserScan msg)
 {
-  // TODO rotate to avoid object until a majority of the beams are free,
-  // implying that path way forward is open for traversal.
-  // TODO find a way to detect type of object that is in view or has collided with.
-
   if(showDebug)
     ROS_INFO("------------------------ Intensity ----------------------------");
 
@@ -97,7 +111,6 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
 
   int current_lowest_index = 0;
   double smallest_range = msg.ranges[current_lowest_index];
-  previous_ranges.push_back(msg.ranges[0]);
   // Iterate through LaserScan messages and find the smallest range
   for(unsigned int i = 1; i < msg.ranges.size(); ++i)
   {
@@ -109,29 +122,46 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
       current_lowest_index = i;
       smallest_range = msg.ranges[current_lowest_index];
     }
-    previous_ranges.push_back(msg.ranges[i]);
+  }  
+  
+  if (!herdingMode){
+      collisionAvoidance(smallest_range, msg, current_lowest_index);
+  }else{
+       // Store laser data as global variable
+       // This allows custom usage of the laser during herding mode.
+       laserData_msg = msg;
+      
   }
 
-  collisionAvoidance(smallest_range, msg, current_lowest_index);
+  // Publish the message
+  RobotNode_stage_pub.publish(RobotNode_cmdvel);
 
   if(showDebug)
     ROS_INFO("-------------------------- END -----------------------------");
 }
 
+void sheepDog1_callback(alpha_two::sheepDogState msg){
+    sheepDog1_x = msg.x;
+    sheepDog1_y = msg.y;
+    if(showDebug){
+        ROS_INFO("SheepDog1 position x: %d",sheepDog1_x);
+        ROS_INFO("SheepDog1 position y: %d",sheepDog1_y);
+    }
+}
+
 // This function prevents robot(sheep) from colliding with stage objects.
 void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int current_lowest_index){
-  if(newmsg.S_State!=1)
-  {
-    if(showDebug)
-      ROS_INFO("Lowest index: %d", current_lowest_index);
+  if(newmsg.S_State!=1){  
+	  if(showDebug)
+	    ROS_INFO("Lowest index: %f", current_lowest_index);
 
-    // If the lowest range is less than 1.5 in length, the robot will begin
-    // rotating to attempt to avoid the obstacle
-    if(smallest_range < 1.4) //between 0.8 and 1.5 exclusive
-    {
-      // We are getting close to an obstacle, start turning
-      if(showDebug)
-        ROS_INFO("Collision at beam: %d | Range: %f", current_lowest_index, smallest_range);
+	  // If the lowest range is less than 1.5 in length, the robot will begin
+	  // rotating to attempt to avoid the obstacle
+	  if(smallest_range < 1.4) //between 0.8 and 1.5 exclusive
+	  {
+	    // We are getting close to an obstacle, start turning
+	    if(showDebug)
+	      ROS_INFO("Collision at beam: %d | Range: %f", current_lowest_index, smallest_range);
 
       // Slow the robot down to 0.1m/s
       linear_x = 0.5;
@@ -167,7 +197,7 @@ void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int c
   }
 }
 
-float CalculateAnglularVelocity() {
+float CalculateAngularVelocity() {
 
 	float deltaX = grassX - px;
 	float deltaY = grassY-py;
@@ -205,11 +235,11 @@ float CalculateAnglularVelocity() {
 		angularZ = -0.5;
 	} else if (changeInAngle <= -180) {
 		angularZ = 0.5;
-	}
+	} 
 	ROS_INFO("grassX: %f   grassY: %f  px:%f   py:%f changeInAngle: %f",grassX,grassY, px, py, changeInAngle);
 	return angularZ;
+	
 }
-
 
 int main(int argc, char** argv){
   initial_position_x = atoi(argv[2]);
@@ -223,15 +253,16 @@ int main(int argc, char** argv){
   ros::init(argc, argv, rName.str());
   ros::NodeHandle n;
 
+  // Advertise new velocity of sheep to stageros
   rName.str("");
   rName << "robot_" << argv[1]<<"/cmd_vel";
   RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>(rName.str(),1000);
 
-
+  // Obtain laser data from stageros  
   rName.str("");
   rName << "robot_" << argv[1]<<"/base_scan";
   ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>(rName.str(),1000,StageLaser_callback);
-
+  
   rName.str("");
   rName << "robot_" << argv[1]<<"/odom";
   ros::Subscriber StageOdom_sub = n.subscribe<nav_msgs::Odometry>(rName.str(),1000,StageOdom_callback);
@@ -240,7 +271,10 @@ int main(int argc, char** argv){
   rName << "robot_" << argv[1]<<"/base_pose_ground_truth";
   ros::Subscriber StageOdom_base_pose_sub = n.subscribe<nav_msgs::Odometry>(rName.str(),1000,StageBasePose_callback);
 
-  //ros::Subscriber grassNode_sub = n.subscribe<alpha_two::grassState>("Grass_msg", 1000, StageGrass_callback);
+// Listen to custom location messages from SheepDog1
+  ros::Subscriber sheepDog1_position = n.subscribe<alpha_two::sheepDogState>("/sheepDog1_msg",1000,sheepDog1_callback);
+
+  //ros::Subscriber grassNode_sub = n.subscribe<alpha_two::grassState>("Grass_msg", 1000, StageGrass_callback); 
 
   //ros::Publisher sheepNode_state = n.advertise<alpha_two::sheepState>("Sheep_msg",1000);
 
@@ -248,7 +282,7 @@ int main(int argc, char** argv){
   newmsg.S_ID = atoi(argv[1]);
   newmsg.health = 100;
   newmsg.grass_locked = 0;
-
+  
   int count = 0;
   ros::Rate r(10); // 10 cycles per second
 
@@ -264,3 +298,4 @@ int main(int argc, char** argv){
     ++count;
   }
 }
+
