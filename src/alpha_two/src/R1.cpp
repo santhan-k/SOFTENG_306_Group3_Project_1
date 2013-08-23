@@ -51,11 +51,11 @@ float CalculateAngularVelocity();
 // Gets current angle between 0 and 360. Right is 0 (North)
 void StageOdom_callback(nav_msgs::Odometry msg)
 {
-  ptheta = fmod((2*M_PI) + initial_theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2), 2*M_PI) * (180/M_PI);
-  ROS_INFO("Current theta is: %f", ptheta);
+     ptheta = fmod((2*M_PI) + initial_theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2), 2*M_PI) * (180/M_PI);
+     ROS_INFO("PX: %f", msg.pose.pose.position.x);
 
-  if (herdingMode == true)
-      initiateSheepHerding(msg);
+     if (herdingMode == true)
+         initiateSheepHerding(msg);
 }
 
 // Gets current x and y position relative to the world
@@ -64,27 +64,34 @@ void StageOdom_callback(nav_msgs::Odometry msg)
 void initiateSheepHerding(nav_msgs::Odometry msg){
     // Check current position of the sheep and compare with
     // broadcasted x and y position of the sheep dog and farmer.
-    py = msg.pose.pose.position.x;
-    px = -msg.pose.pose.position.y;
-    if(showDebug){
-        ROS_INFO("SheepDog1 position x: %d",sheepDog1_x);
-        ROS_INFO("SheepDog1 position y: %d",sheepDog1_y);
-    } 
+    px = msg.pose.pose.position.x;
+    py = msg.pose.pose.position.y;
+    
+    //ROS_INFO("px: %f",px);
+    //ROS_INFO("dogx: %f",sheepDog1_x);
+    
+    
+    
+    //if(px < sheepDog1_x){
+         //ROS_INFO("This SheepDog1 is behind enemy lines.");
+    //}
+    
+    
 }
 
 void StageBasePose_callback(nav_msgs::Odometry msg)
 {
   px = msg.pose.pose.position.y;
   py = -msg.pose.pose.position.x;
-  if (showDebug){
+  //if (showDebug){
       ROS_INFO("Current x position is: %f", px);
       ROS_INFO("Current y position is: %f", py);
-  }
+  //}
 }
 
 void StageGrass_callback(alpha_two::grassState msg)
 {
-  ROS_INFO("RECEIVED GRASS MESSAGE FROM: %d",msg.G_ID);
+  //ROS_INFO("RECEIVED GRASS MESSAGE FROM: %d",msg.G_ID);
   if(newmsg.S_State == 1 && newmsg.grass_locked==msg.G_ID && msg.lockedBy != newmsg.S_ID)
   {
     newmsg.S_State = 0;
@@ -300,7 +307,7 @@ int main(int argc, char** argv){
   rName << "robot_" << argv[1]<<"/base_pose_ground_truth";
   ros::Subscriber StageOdom_base_pose_sub = n.subscribe<nav_msgs::Odometry>(rName.str(),1000,StageBasePose_callback);
 
-// Listen to custom location messages from SheepDog1
+  // Listen to custom location messages from SheepDog1
   ros::Subscriber sheepDog1_position = n.subscribe<alpha_two::sheepDogState>("/sheepDog1_msg",1000,sheepDog1_callback);
 
   //ros::Subscriber grassNode_sub = n.subscribe<alpha_two::grassState>("Grass_msg", 1000, StageGrass_callback); 
