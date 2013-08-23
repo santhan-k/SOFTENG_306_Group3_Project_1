@@ -52,9 +52,7 @@ void StageOdom_callback(nav_msgs::Odometry msg)
       initiateSheepHerding(msg);
 }
 
-<<<<<<< .mine
 // Gets current x and y position relative to the world
-=======
 // Sheep are limited to the boundaries set by the current
 // position of the sheep dog.
 void initiateSheepHerding(nav_msgs::Odometry msg){
