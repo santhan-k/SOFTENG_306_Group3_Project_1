@@ -30,7 +30,7 @@ for i in range(0,numSheep):
     angle  = random.randint(1,359)
     line = "myRobot( pose [" +str(x)+" "+str(y) + " 0 "+str(angle)+" ] name \"r"+str(i)+"\" color \"red\" )"
     #command.append("source ../../../devel/setup.bash\n")
-    command.append("rosrun alpha_two R1 "+str(sheepNum)+"  "+str(x)+" "+str(y)+" " +str(angle)+"\n")    
+    #command.append("rosrun alpha_two R1 "+str(sheepNum)+"  "+str(x)+" "+str(y)+" " +str(angle)+"\n")    
     array.append(line)
     subprocess.Popen("rosrun alpha_two R1 "+str(sheepNum)+"  "+str(x)+" "+str(y)+" " +str(angle),shell=True,stdout = PIPE)
     sheepNum = sheepNum+1    
