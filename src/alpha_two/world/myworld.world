@@ -212,7 +212,7 @@ floorplan
 
 
 myMaze( pose [-65 0 0 0] name "maze0" color "black")
-myBarrier( pose [10 0 0 0] name "bar0")
+#myBarrier( pose [10 0 0 0] name "bar0")
 
 myFarmer( pose [ 2 27.5 0 0 ] name "farmer0" )
 myField( pose [ 15 15 0 0 ] name "f0" color_rgba [0.20874 0.780392 0.149019 0.9] )
