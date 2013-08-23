@@ -6,6 +6,7 @@
 #include "angles/angles.h"
 #include "alpha_two/grassState.h"
 #include "alpha_two/sheepState.h"
+#include "alpha_two/sheepDogState.h"
 #include <sstream>
 #include "math.h"
 
@@ -16,7 +17,6 @@ ros::Publisher RobotNode_stage_pub;
 geometry_msgs::Twist RobotNode_cmdvel;
 
 bool showDebug = false; //Show/hide ROS log messages
-vector<float> previous_ranges;
 #define SAMPLE_NUMBER 10 // represents number of samples in world file.
 double px;
 double py;
@@ -29,23 +29,52 @@ double initialPosy;
 double initialTheta;
 alpha_two::sheepState newmsg;
 
+// X and Y position values of sheepDog1
+double sheepDog1_x;
+double sheepDog1_y;
+
+// Toggle herding mode
+bool herdingMode = true;
+
+// Laser data for usage with herding
+sensor_msgs::LaserScan laserData_msg;
+
 void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int current_lowest_index);
+void initiateSheepHerding(nav_msgs::Odometry msg);
 float CalculateAnglularVelocity();
+
 void StageOdom_callback(nav_msgs::Odometry msg)
 {
-	py = msg.pose.pose.position.x;
+	  py = msg.pose.pose.position.x;
   	px = -msg.pose.pose.position.y;
   	//ptheta = fmod((2*M_PI) + theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2), 2*M_PI) * (180/M_PI);
-	theta = msg.pose.pose.orientation.z;
-	theta = floorf(theta * 1000) / 1000;  //Rounding to 3dp
-	//if(theta<0.00){
-	//	theta = 360.00 - fabs(theta*(180.00/PI));
-	//}else{
-	//	theta = theta*(180.00/PI);
-	//}
-	//theta = fmod((2.0*PI) + theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2.0), 2.0*PI) * (180.0/M_PI);
-	ROS_INFO("INITIAL THETA = %f",initialTheta);
-	ROS_INFO("px: %f	py: %f		theta: %f", px, py, theta);
+	  theta = msg.pose.pose.orientation.z;
+	  theta = floorf(theta * 1000) / 1000;  //Rounding to 3dp
+	  //if(theta<0.00){
+	  //	theta = 360.00 - fabs(theta*(180.00/PI));
+	  //}else{
+	  //	theta = theta*(180.00/PI);
+	  //}
+	  //theta = fmod((2.0*PI) + theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2.0), 2.0*PI) * (180.0/M_PI);
+	  if (showDebug){
+	    ROS_INFO("INITIAL THETA = %f",initialTheta);
+	    ROS_INFO("px: %f	py: %f		theta: %f", px, py, theta);	
+	  }
+
+	if (herdingMode)
+	    initiateSheepHerding(msg);
+}
+
+// Sheep are limited to the boundaries set by the current
+// position of the sheep dog.
+void initiateSheepHerding(nav_msgs::Odometry msg){
+    // Check current position of the sheep and compare with
+    // broadcasted x and y position of the sheep dog and farmer.
+    py = msg.pose.pose.position.x;
+    px = -msg.pose.pose.position.y;
+    ROS_INFO("SheepDog1 position x: %d",sheepDog1_x);
+    ROS_INFO("SheepDog1 position y: %d",sheepDog1_y);
+     
 }
 
 void StageGrass_callback(alpha_two::grassState msg)
@@ -70,10 +99,6 @@ void StageGrass_callback(alpha_two::grassState msg)
 
 void StageLaser_callback(sensor_msgs::LaserScan msg)
 {
-  // TODO rotate to avoid object until a majority of the beams are free,
-  // implying that path way forward is open for traversal.
-  // TODO find a way to detect type of object that is in view or has collided with.
-
   if(showDebug)
     ROS_INFO("------------------------ Intensity ----------------------------");
 
@@ -89,7 +114,6 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
 
   int current_lowest_index = 0;
   double smallest_range = msg.ranges[current_lowest_index];
-  previous_ranges.push_back(msg.ranges[0]);
   // Iterate through LaserScan messages and find the smallest range
   for(unsigned int i = 1; i < msg.ranges.size(); ++i)
   {
@@ -101,16 +125,32 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
       current_lowest_index = i;
       smallest_range = msg.ranges[current_lowest_index];
     }
-    previous_ranges.push_back(msg.ranges[i]);
   }  
   
-  collisionAvoidance(smallest_range, msg, current_lowest_index);
+  if (!herdingMode)
+      collisionAvoidance(smallest_range, msg, current_lowest_index);
+  }else{
+       // Store laser data for custom herding mode
+       // collision avoidance
+       laserData_msg = msg;
+      
+  }
 
   // Publish the message
   RobotNode_stage_pub.publish(RobotNode_cmdvel);
 
   if(showDebug)
     ROS_INFO("-------------------------- END -----------------------------");
+}
+
+
+void sheepDog1_callback(alpha_two::sheepDogState msg){
+    sheepDog1_x = msg.x;
+    sheepDog1_y = msg.y;
+    if(showDebug){
+        ROS_INFO("SheepDog1 position x: %d",sheepDog1_x);
+        ROS_INFO("SheepDog1 position y: %d",sheepDog1_y);
+    }
 }
 
 // This function prevents robot(sheep) from colliding with stage objects.
@@ -152,12 +192,11 @@ void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int c
 	    RobotNode_cmdvel.angular.z = 0;
 	  }
   }else if(newmsg.S_State==1){
-	ROS_INFO("GOING TO GRASS");
+	//ROS_INFO("GOING TO GRASS");
 	RobotNode_cmdvel.linear.x = float(1) * atan2(grassX-px,grassY-py);
 	RobotNode_cmdvel.angular.z = CalculateAnglularVelocity();
-	ROS_INFO("linear velocity: %f   angular velocity: %f", RobotNode_cmdvel.linear.x,RobotNode_cmdvel.angular.z);
+	//ROS_INFO("linear velocity: %f   angular velocity: %f", RobotNode_cmdvel.linear.x,RobotNode_cmdvel.angular.z);
   }
-
 }
 
 float CalculateAnglularVelocity() {
@@ -204,7 +243,6 @@ float CalculateAnglularVelocity() {
 	
 }
 
-
 int main(int argc, char** argv){
   initialPosx = atoi(argv[2]);
   initialPosy = atoi(argv[3]);
@@ -217,18 +255,22 @@ int main(int argc, char** argv){
   ros::init(argc, argv, rName.str());
   ros::NodeHandle n;
 
+  // Advertise new velocity of sheep to stageros
   rName.str("");
   rName << "robot_" << argv[1]<<"/cmd_vel";
   RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>(rName.str(),1000);
 
-  
+  // Obtain laser data from stageros  
   rName.str("");
   rName << "robot_" << argv[1]<<"/base_scan";
   ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>(rName.str(),1000,StageLaser_callback);
-
+  
   rName.str("");
   rName << "robot_" << argv[1]<<"/base_pose_ground_truth";
   ros::Subscriber StageOdom_sub = n.subscribe<nav_msgs::Odometry>(rName.str(),1000,StageOdom_callback);
+  
+  // Listen to custom location messages from SheepDog1
+  ros::Subscriber sheepDog1_position = n.subscribe<alpha_two::sheepDogState>("/sheepDog1_msg",1000,sheepDog1_callback);
 
   //ros::Subscriber grassNode_sub = n.subscribe<alpha_two::grassState>("Grass_msg", 1000, StageGrass_callback); 
 
