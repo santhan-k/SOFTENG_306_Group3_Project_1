@@ -34,8 +34,8 @@ alpha_two::sheepDogState sheepDog_msg;
 
 void SheepDogPosition_callback(nav_msgs::Odometry msg)
 {
-	py = msg.pose.pose.position.x;
-  	px = msg.pose.pose.position.y;
+	  px = msg.pose.pose.position.x;
+  	py = msg.pose.pose.position.y;
 	theta = msg.pose.pose.orientation.z;
 	theta = floorf(theta * 1000) / 1000;  //Rounding to 3dp
 	//ROS_INFO("INITIAL THETA = %f",initialTheta);
@@ -63,7 +63,7 @@ int main(int argc, char** argv){
   //RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>(rName.str(),1000);
   sheepDog_Pub = n.advertise<alpha_two::sheepDogState>("sheepDog1_msg",1000);  
 
-  ros::Subscriber sheepDog_odom = n.subscribe<nav_msgs::Odometry>("/robot_13/base_pose_ground_truth",1000, SheepDogPosition_callback);
+  ros::Subscriber sheepDog_odom = n.subscribe<nav_msgs::Odometry>("/robot_12/base_pose_ground_truth",1000, SheepDogPosition_callback);
 
   
   //ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>(rName.str(),1000,StageLaser_callback);
