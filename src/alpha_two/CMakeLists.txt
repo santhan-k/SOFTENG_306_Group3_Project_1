@@ -26,6 +26,7 @@ add_message_files(
   sheepState.msg
   farmState.msg
   rainFall.msg
+  sheepDogState.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -154,9 +155,13 @@ target_link_libraries(Gates ${catkin_LIBRARIES})
 # -----------------
 #add_executable(ExitGateNode src/Gate9.cpp)
 #target_link_libraries(ExitGateNode ${catkin_LIBRARIES})
+
 add_executable(grass src/grass.cpp)
 target_link_libraries(grass ${catkin_LIBRARIES})
 add_executable(farm src/farm.cpp)
 target_link_libraries(farm ${catkin_LIBRARIES})
 add_executable(cloud src/cloud.cpp)
 target_link_libraries(cloud ${catkin_LIBRARIES})
+
+add_executable(SheepDog1 src/SheepDog1.cpp)
+target_link_libraries(SheepDog1 ${catkin_LIBRARIES})
