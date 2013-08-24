@@ -149,36 +149,46 @@ define myCloud position
 
 define rainMessage position (
   myGrasslaser(pose [ 0.050 0.000 -0.07 0.000 ])
+  drive "omni"
   size [0.5 0.5 0.5]
   say "Its Raining" 
+  obstacle_return 0
 )
 
 define SummerMessage position (
   myGrasslaser(pose [ 0.050 0.000 -0.07 0.000 ])
+  drive "omni"
   size [0.5 0.5 0.5]
-  say "Its Summer" 
+  say "Its Summer"
+  obstacle_return 0 
 )
 
 define WinterMessage position (
   myGrasslaser(pose [ 0.050 0.000 -0.07 0.000 ])
+  drive "omni"
   size [0.5 0.5 0.5]
   say "Its Winter" 
+  obstacle_return 0
 )
 
 define SpringMessage position (
   myGrasslaser(pose [ 0.050 0.000 -0.07 0.000 ])
+  drive "omni"
   size [0.5 0.5 0.5]
   say "Its Spring" 
+  obstacle_return 0
 )
 
 define AutumnMessage position (
   myGrasslaser(pose [ 0.050 0.000 -0.07 0.000 ])
+  drive "omni"
   size [0.5 0.5 0.5]
   say "Its Autumn" 
+  obstacle_return 0
 )
 
 define myMessageHouse model (
-  size [4 9 0.5] 
+  size [4 20 0.5] 
 
 )
 
@@ -232,12 +242,14 @@ myCloud( pose [ 30 36 20 0] name "c0" color_rgba [0.752941176 0.752941176 0.7529
 
 mySheepDog( pose [ 1 1 0 0 ] name "Dog1" )
 
-myMessageHouse(pose [-10.49 36 1 90] name "mes1" color "white")
-rainMessage( pose [-15 35 0 0] color "black")
-SummerMessage( pose [-15 35 0 0] color "black")
-WinterMessage( pose [-15 35 0 0] color "black")
-SpringMessage( pose [-15 35 0 0] color "black")
-AutumnMessage( pose [-15 35 0 0] color "black")
+myMessageHouse(pose [-12 36 1 90] name "mes1" color "white")
+rainMessage( pose [-10 35 0 0] color "black")
+
+
+SummerMessage( pose [-21 35 0 0] color "black")
+WinterMessage( pose [-21 35 0 0] color "black")
+SpringMessage( pose [-21 35 0 0] color "black")
+AutumnMessage( pose [-21 35 0 0] color "black")
 
 # robot_0 = farmer
 # robot_1-4 = Fields
@@ -245,3 +257,4 @@ AutumnMessage( pose [-15 35 0 0] color "black")
 # robot_10 = Truck
 # robot_11 =  Cloud
 # robot_12 = SheepDog
+# robot_13-17 = messages
