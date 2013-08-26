@@ -16,7 +16,7 @@ ros::Publisher RobotNode_stage_pub;
 ros::Publisher SheepNode_state;
 geometry_msgs::Twist RobotNode_cmdvel;
 
-bool debug = true; //Show/hide ROS log messages
+bool debug = false; //Show/hide ROS log messages
 #define SAMPLE_NUMBER 10 // represents number of samples in world file.
 
 //velocity of the robot
@@ -98,9 +98,10 @@ void StageBasePose_callback(nav_msgs::Odometry msg)
   px = msg.pose.pose.position.y;
   py = -msg.pose.pose.position.x;
   if (debug)
+  {
     ROS_INFO("Current x position is: %f", px);
     ROS_INFO("Current y position is: %f", py);
-
+  }
   if (is_being_herded == true)
     initiateSheepHerding(msg);
 }
@@ -121,6 +122,15 @@ void StageGrass_callback(alpha_two::grassState msg)
   {
     return;
   }
+  
+  /*
+   * Check if sheep is currently locked onto a piece of grass, 
+   * if it is, ignore all other grass messages
+   */
+  if(sheep_message.S_State == 1)
+  {
+    return;
+  } 
 
   /*
    * Check if sheep is currently locked onto this piece of grass
@@ -135,8 +145,6 @@ void StageGrass_callback(alpha_two::grassState msg)
     angular_z = CalculateAngularVelocity();
     //slow down if sheep gets close to the grass
     linear_x = CalculateLinearVelocity();
-    grass_x = msg.x;
-    grass_y = msg.y;
     return;
   }
 
@@ -152,6 +160,9 @@ void StageGrass_callback(alpha_two::grassState msg)
     double distance = sqrt(pow(distance_x, 2.0) + pow(distance_y, 2.0));
     if(distance < grass_distance)
     {
+      sheep_message.S_State = 1;
+      sheep_message.grass_locked = msg.G_ID;
+      ROS_INFO("Attempting to lock onto grass");
       grass_distance = distance;
       grass_x = msg.x;
       grass_y = msg.y;
@@ -165,29 +176,6 @@ void StageGrass_callback(alpha_two::grassState msg)
     if(debug)
       ROS_INFO("CHANGED STATE BACK TO LOOKING FOR GRASS");
 
-  }
-  else if(msg.G_State == 0 && sheep_message.S_State == 0)
-  {
-    grass_x = msg.x;
-    grass_y = msg.y;
-    sheep_message.S_State=1;
-    sheep_message.grass_locked = msg.G_ID;
-    ROS_INFO("LOCKED GRASS: %d", msg.G_ID);
-  }
-
-  if(sheep_message.S_State == 1 && sheep_message.grass_locked==msg.G_ID && msg.lockedBy != sheep_message.S_ID)
-  {
-    sheep_message.S_State = 0;
-  }
-  else if(msg.G_State == 0 && sheep_message.S_State == 0)
-  {
-    grass_x = msg.x;
-    grass_y = msg.y;
-    sheep_message.S_State=1;
-    sheep_message.grass_locked = msg.G_ID;
-
-    if(debug)
-      ROS_INFO("LOCKED GRASS: %d",msg.G_ID);
   }
 }
 
@@ -331,7 +319,7 @@ float CalculateAngularVelocity() {
         } else if (changeInAngle <= -180) {
                 angularZ = 0.5;
         }
-        ROS_INFO("grass_x: %f   grass_y: %f  px:%f   py:%f changeInAngle: %f",grass_x,grass_y, px, py, changeInAngle);
+        //ROS_INFO("grass_x: %f   grass_y: %f  px:%f   py:%f changeInAngle: %f",grass_x,grass_y, px, py, changeInAngle);
         return angularZ;
 
 }
@@ -380,7 +368,7 @@ int main(int argc, char** argv){
 
   ros::Subscriber grassNode_sub = n.subscribe<alpha_two::grassState>("Grass_msg", 1000, StageGrass_callback);
 
-  //ros::Publisher sheepNode_state = n.advertise<alpha_two::sheepState>("Sheep_msg",1000);
+  ros::Publisher sheepNode_state = n.advertise<alpha_two::sheepState>("Sheep_msg",1000);
 
   sheep_message.S_State = 0;
   sheep_message.S_ID = atoi(argv[1]);

@@ -49,7 +49,9 @@ void StageOdom_callback(nav_msgs::Odometry msg)
 
 void StageSheep_callback(alpha_two::sheepState msg)
 {
-  //ROS_INFO("RECEIVED Sheep MESSAGE FROM: %d",msg.S_ID);
+  
+  ROS_INFO("RECEIVED Sheep MESSAGE FROM: %d",msg.S_ID);
+  ROS_INFO("Sheep message: %d, %d, %d, %d", msg.S_State, msg.S_ID, msg.health, msg.grass_locked);
   if(msg.S_State==1 && msg.grass_locked==grass_state.G_ID && grass_state.G_State == 0){
     grass_state.G_State=1;
     grass_state.lockedBy = msg.S_ID;
