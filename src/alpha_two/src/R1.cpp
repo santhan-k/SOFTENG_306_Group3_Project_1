@@ -78,7 +78,7 @@ void initiateSheepHerding(nav_msgs::Odometry msg){
   ROS_INFO("shPX: %f",px);
   ROS_INFO("shPY: %f",py);
 
-  if(px < sheepDog1_y)
+  if(px < sheepDog1_x)
   {
     ROS_INFO("This Sheep is behind enemy lines.");
     linear_x = 0;
@@ -90,7 +90,7 @@ void initiateSheepHerding(nav_msgs::Odometry msg){
     linear_x = 1;
     angular_z = 0;
   }
-  ROS_INFO("diff: %f",px-sheepDog1_y);
+  ROS_INFO("diff: %f",px-sheepDog1_x);
 }
 
 void StageBasePose_callback(nav_msgs::Odometry msg)
