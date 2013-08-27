@@ -24,7 +24,7 @@ geometry_msgs::Twist autumn_cmdvel;
 
 int dayCounter;
 double px,py,rx,ry,smx,smy,wx,wy,ax,ay,spx,spy;
-
+double sunlight;
 // 1 - summer; 2 - winter; 3 - spring; 4 - autumn
 int curSeason;
 
@@ -49,18 +49,22 @@ void changeWeather(){
   if(dayCounter < 183){
     new_farm_msg.rainfall = rand()%5;
     curSeason = 3;
+    sunlight = 80;
   //Winter
   }else if (dayCounter < 366){
     new_farm_msg.rainfall = rand()%6;
     curSeason = 2;
+    sunlight = 40;
   //Summer
   }else if (dayCounter < 549){        
     new_farm_msg.rainfall = rand(); 
     curSeason = 1;
+    sunlight = 100;
   //Autumn
   }else if (dayCounter < 732){        
     new_farm_msg.rainfall = rand()%3;
     curSeason = 4;
+    sunlight = 60;
   }else{
     dayCounter = 0;
   }
@@ -81,12 +85,12 @@ void changeWeather(){
 
   
   //Weather changes applied to each field.  
-  new_farm_msg.f1_soil_condition = abs((new_farm_msg.f1_soil_condition +new_farm_msg.rainfall)%100);
-  new_farm_msg.f2_soil_condition = abs((new_farm_msg.f2_soil_condition +new_farm_msg.rainfall)%100);
-  new_farm_msg.f3_soil_condition = abs((new_farm_msg.f3_soil_condition +new_farm_msg.rainfall)%100);
-  new_farm_msg.f4_soil_condition = abs((new_farm_msg.f4_soil_condition +new_farm_msg.rainfall)%100);
+  new_farm_msg.f1_soil_condition = abs((new_farm_msg.f1_soil_condition + (new_farm_msg.rainfall + 1) + sunlight)%100);
+  new_farm_msg.f2_soil_condition = abs((new_farm_msg.f2_soil_condition + (new_farm_msg.rainfall + 3) + sunlight)%100);
+  new_farm_msg.f3_soil_condition = abs((new_farm_msg.f3_soil_condition + (new_farm_msg.rainfall + 5) + sunlight)%100);
+  new_farm_msg.f4_soil_condition = abs((new_farm_msg.f4_soil_condition + (new_farm_msg.rainfall + 2) + sunlight)%100);
   
-  
+  printf("f1 %d   f2 %d  f3 %d  f4 %d \n",new_farm_msg.f1_soil_condition,new_farm_msg.f2_soil_condition,new_farm_msg.f3_soil_condition,new_farm_msg.f4_soil_condition);
   //new_farm_msg.f4_soil_condition += int(float(new_farm_msg.f4_soil_condition)*(float(new_farm_msg.rainfall)/100.0)) -5.0;
   
 }
@@ -294,10 +298,11 @@ int main(int argc, char **argv)
   
   //Initialising soil and weather conditions
   new_farm_msg.rainfall = 0;
-  new_farm_msg.f1_soil_condition = 100;   
-  new_farm_msg.f2_soil_condition = 50;  
+  new_farm_msg.f1_soil_condition = 95;   
+  new_farm_msg.f2_soil_condition = 40;  
   new_farm_msg.f3_soil_condition = 70;   
-  new_farm_msg.f4_soil_condition = 85;
+  new_farm_msg.f4_soil_condition = 80;
+  sunlight = 80;
 
   ////messages
   //velocity of this RobotNode
