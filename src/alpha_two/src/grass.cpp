@@ -27,7 +27,7 @@ double initial_position_x;
 double initial_position_y;
 double initial_theta;
 double growth_rate;
-bool isGrassLiving;
+//bool isGrassLiving;
 double grass_hp; //variable for determining when the grass dies
 double grass_age; //growth status. ranges from 0-3. also used for rotation speed.
 
@@ -55,26 +55,14 @@ void StageOdom_callback(nav_msgs::Odometry msg)
 
 void StageSheep_callback(alpha_two::sheepState msg)
 {
-  ROS_INFO("Sheep message: %d, %d, %d, %d", msg.S_State, msg.S_ID, msg.health, msg.grass_locked);
-  if(grass_state.G_State == 0) //grass is not locked by a sheep
-  {
-    if(grass_state.G_ID == msg.grass_locked) //grass ID matches the grass ID sheep is locked to
-    {
-      grass_state.G_State = 1; //grass is now locked
-      grass_state.lockedBy = msg.S_ID; //locked to that sheep
-      ROS_INFO("Locked by sheep: %d", msg.S_ID);
-    }
-    else //grass ID does not match the ID sheep is locked to
-    {
-      return; //ignore the sheep msg
-    }
-  }
-  else if(grass_state.G_State == 1) //grass is locked by a sheep
-  {
-    ROS_INFO("Still locked by sheep: %d", grass_state.lockedBy);
-    return; //don't need to do anything
-  }
   
+  //ROS_INFO("RECEIVED Sheep MESSAGE FROM: %d",msg.S_ID);
+  //ROS_INFO("Sheep message: %d, %d, %d, %d", msg.S_State, msg.S_ID, msg.health, msg.grass_locked);
+  if(msg.S_State==1 && msg.grass_locked==grass_state.G_ID && grass_state.G_State == 0){
+    grass_state.G_State=1;
+    grass_state.lockedBy = msg.S_ID;
+    ROS_INFO("LOCKED by SHEEP: %d",msg.S_ID);
+  }
 }
 
 
@@ -82,30 +70,67 @@ void StageSheep_callback(alpha_two::sheepState msg)
 
 void grass_update(double growth_rate)
 {
-    if(!(grass_hp==0))
+ 
+    if (grass_hp==0){
+      grass_age = 0;
+    }
+    // growing in good weather for grass HP
+    else if (growth_rate > 0.07  &&  grass_hp+growth_rate < 20) {
+      grass_hp += growth_rate;
+    }
+
+    // growing in bad weather
+    else if  (growth_rate <= 0.07 && grass_hp-growth_rate >= 0) {
+      grass_hp -= growth_rate;
+    }
+
+
+    // growing in good weather for grass HP
+    if (growth_rate > 0.05  &&  grass_age+growth_rate < 3){
+      grass_age += growth_rate;
+    }
+
+
+
+
+/*
+
+    if(!(grass_hp==0) && grass_age+growth_rate <= 3)
     {
-      grass_age = grass_age +  growth_rate;
-      isGrassLiving = true;
+      grass_age = grass_age + growth_rate;
+    
+    }
+    else if (!grass_hp == 0 && growth_rate <= 0.3/20)
+    {
+      grass_age = growth_rate; // hack; ensures that the age is 
     }
     else if (grass_hp == 0)
     {
-      isGrassLiving = false;
+      grass_age = 0;
+    }
+    else 
+    {
+      grass_age = grass_age;
     }
 
-    if (growth_rate <= 0.3 && grass_hp >= 0) //hp does not go below 0
+
+
+    if (growth_rate <= 0.3/20 && (grass_hp + (-0.31/20 + growth_rate)) >= 0) //hp does not go below 0
     {
-      grass_hp = grass_hp + (-0.31 + growth_rate); //hp decrease rate
+      grass_hp = grass_hp + (-0.31/20 + growth_rate); //hp decrease rate
     }
     
-    else if (growth_rate > 0.3 && grass_hp >= 0)
+    else if (growth_rate > 0.3/20 && grass_hp >= 0)
     {
-      grass_hp = grass_hp + (-0.29 + growth_rate); //hp increase rate
+      grass_hp = grass_hp + (-0.29/20 + growth_rate); //hp increase rate
     } 
 
     else 
     {
       grass_hp = 0;
     }
+*/
+
 }
 
 
@@ -123,9 +148,10 @@ void FarmNode_callback(alpha_two::farmState msg)
 
   //yay grass growth rate
 
+
   if(initial_position_x>0 && initial_position_y>0) //Field 1
   {
-    growth_rate = (double(msg.f1_soil_condition)/100.0);
+    growth_rate = (double(msg.f1_soil_condition)/1000); //0 ~ 0.1
     
     grass_update(growth_rate);
 
@@ -133,28 +159,28 @@ void FarmNode_callback(alpha_two::farmState msg)
 
   else if(initial_position_x>0 && initial_position_y<0) //Field 2
   {
-    growth_rate = (double(msg.f2_soil_condition)/100.0);
+    growth_rate = (double(msg.f2_soil_condition)/1000);
 
     grass_update(growth_rate);
   }
 
   else if(initial_position_x<0 && initial_position_y<0) //Field 3
   {
-    growth_rate = (double(msg.f3_soil_condition)/100.0);
+    growth_rate = (double(msg.f3_soil_condition)/1000);
 
     grass_update(growth_rate);
   }
 
   else if(initial_position_x<0 && initial_position_y>0) //Field 4
   {
-    growth_rate = (double(msg.f4_soil_condition)/100.0);
+    growth_rate = (double(msg.f4_soil_condition)/1000);
 
     grass_update(growth_rate);
   }
 
   //growth rate will be between 0~1
   //soil_condition ranges from 0~100
-  printf("GROWTH RATE: %f\n", growth_rate);
+ 
 }
 
 void StageLaser_callback(sensor_msgs::LaserScan msg)
@@ -184,12 +210,12 @@ void change_spinning_speed_according_to_growth_rate(int growth_rate)
 
 int main(int argc, char **argv)
 {
-  growth_rate = 1;
+  //   growth_rate = 1;
   //initialize robot parameters
   //Initial pose. This is same as the pose that you used in the world file to set the robot pose.
   //initial_theta = M_PI/2.0;
 
-  grass_hp = 50.0; //intial value for grass's hit point
+  grass_hp = 10.0; //intial value for grass's hit point
 
   //Initial velocity
   linear_x = 0;
@@ -236,10 +262,11 @@ int main(int argc, char **argv)
 
   state = atoi(argv[1]);
 
-  ////messages
+  ///messages
   //velocity of this RobotNode
   geometry_msgs::Twist RobotNode_cmdvel;
-  RobotNode_cmdvel.angular.z = 3.0;
+  RobotNode_cmdvel.angular.z = 2.0; // this dynamically updates the age of our grass; spinning it faster the older it is.
+  
   grass_state.G_State = 0;
   grass_state.G_ID = atoi(argv[1]);
   initial_position_x = atoi(argv[2]);
@@ -253,7 +280,9 @@ int main(int argc, char **argv)
     RobotNode_stage_pub.publish(RobotNode_cmdvel);
     grassNode_pub.publish(grass_state);
     ros::spinOnce();
-
+    printf("Grass HP is: %f \n", grass_hp);
+    printf("GROWTH RATE: %f\n", growth_rate);
+    printf("Grass age is: %f \n", grass_age);
     loop_rate.sleep();
     ++count;
   }
