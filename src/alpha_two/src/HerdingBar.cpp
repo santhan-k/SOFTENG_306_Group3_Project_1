@@ -125,11 +125,11 @@ int main(int argc, char **argv)
     // Conditions to check gate to move, and call addInstruction
     // Farm1: Vertical herding bar
     if(heardingBarNumber == 18) {
-      addInstruction(instruction_vector, 300, 0.25, 0.0, 1); // Inward movement
+      addInstruction(instruction_vector, 750, 0.10, 0.0, 1); // Inward movement
   	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
   	  addInstruction(instruction_vector, 75, -1, 0.0, 0); // Outward movement
     }else if(heardingBarNumber == 19) { // Farm1: Horizontal bar
-      addInstruction(instruction_vector, 300, -0.25, 0.0, 1); // Inward movement
+      addInstruction(instruction_vector, 750, -0.10, 0.0, 1); // Inward movement
   	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
   	  addInstruction(instruction_vector, 75, 1, 0.0, 0); // Outward movement
     }
