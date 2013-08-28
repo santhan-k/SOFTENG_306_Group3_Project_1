@@ -17,24 +17,27 @@ sheepNum = 26
 for i in range(0,numSheep):
     command =  []
     if (fieldNumber == 1):
-        x = random.randint(1,29)
-        y = random.randint(1,29)
+        x = random.randint(2,28)
+        y = random.randint(2,28)
     elif (fieldNumber == 2):
-        x = random.randint(1,29)
-        y = -(random.randint(1,29))
+        x = random.randint(2,28)
+        y = -(random.randint(2,28))
     elif (fieldNumber == 3):
-        x = -(random.randint(1,29))
-        y = -(random.randint(1,29))
+        x = -(random.randint(2,28))
+        y = -(random.randint(2,28))
     elif (fieldNumber == 4):
-        x = -(random.randint(1,29))
-        y = random.randint(1,29)
+        x = -(random.randint(2,28))
+        y = random.randint(2,28)
     angle  = random.randint(1,359)
     line = "myRobot( pose [" +str(x)+" "+str(y) + " 0 "+str(angle)+" ] name \"r"+str(i)+"\" color \"red\" )"
+    array.append(line)
+    line = "mySheepsPoop( pose [" +str(x)+" "+str(y) + " 0 "+str(angle)+" ] name \"poop"+str(i)+"\" color \"brown\" )"
+    array.append(line)
     #command.append("source ../../../devel/setup.bash\n")
     command.append("rosrun alpha_two R1 "+str(sheepNum)+"  "+str(x)+" "+str(y)+" " +str(angle)+"\n")    
-    array.append(line)
+
     subprocess.Popen("rosrun alpha_two R1 "+str(sheepNum)+"  "+str(x)+" "+str(y)+" " +str(angle),shell=True,stdout = PIPE)
-    sheepNum = sheepNum+1    
+    sheepNum = sheepNum + 2   
     
 
 for i in range(0,numGrass):
