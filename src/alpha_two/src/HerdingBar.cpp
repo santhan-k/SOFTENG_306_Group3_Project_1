@@ -22,7 +22,7 @@ double ptheta;
 double theta;
 
 int state;
-char gateNumber;
+char heardingBarNumber;
 
 struct instruction_struct
 {
@@ -39,44 +39,19 @@ void StageOdom_callback(nav_msgs::Odometry msg)
     py =10 + msg.pose.pose.position.y;
 	
     //condition for movement
-    if(gateNumber == 5) {
-	    if(px < -2 && state == 0) {
+    if(heardingBarNumber == 18) {
+	    if(px > 16 && state == 0) {
 		    state = 1;
 	    } else if(px > 4.7 && state == 2) {
 		    state = 1;
 	    }
-    } else if(gateNumber == 6) {
-        if(px > 12 && state == 0) {
-          state = 1;
-      } else if(px < 5 && state == 2) {
-          state = 1;
-      }	
-    } else if(gateNumber == 7) {
-	     if(px < -2 && state == 0) {
+    } else if(heardingBarNumber == 19) {
+	     if(px < -18 && state == 0) {
 		      state = 1;
 	     } else if(px > 4.7 && state == 2) {
 		      state = 1;
 	      }	
-    } else if(gateNumber == 8) {
-	      if(px > 12 && state == 0) {
-		      state = 1;
-	    } else if(px < 4.7 && state == 2) {
-		      state = 1;
-	    }
-    } else if(gateNumber == 9) {
-        if(px > 12 && state == 0) {
-           state = 1;
-        } else if(px < 4.7 && state == 2) {
-           state = 1;
-        }	
-    } else if(gateNumber == 16) {
-        if(px > 12 && state == 0) {
-           state = 1;
-        } else if(px < 4.7 && state == 2) {
-           state = 1;
-        }	
     }
-
 
     //displayed on terminal
     ROS_INFO("Current x position is: %f", px);
@@ -140,7 +115,7 @@ int main(int argc, char **argv)
     //Argument for opening or closing (second argument)
     state = atoi(argv[2]);
     //Argument for gate number (first argument)
-    gateNumber = atoi(argv[1]);
+    heardingBarNumber = atoi(argv[1]);
 
 	  //velocity of this RobotNode
    	geometry_msgs::Twist RobotNode_cmdvel;
@@ -148,31 +123,16 @@ int main(int argc, char **argv)
 	  vector <instruction_struct> instruction_vector;
 
     //Conditions to check gate to move, and call addInstruction
-    if(gateNumber == 5) {
+    if(heardingBarNumber == 18) {
+      addInstruction(instruction_vector, 75, 1, 0.0, 1);
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
+  	  addInstruction(instruction_vector, 75, 1, 0.0, 0);
+    }else if(heardingBarNumber == 19) {
       addInstruction(instruction_vector, 75, -1, 0.0, 1);
   	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
   	  addInstruction(instruction_vector, 75, 1, 0.0, 0);
-    }else if(gateNumber == 6) {
-  	  addInstruction(instruction_vector, 75, 1, 0.0, 1);
-  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
- 	    addInstruction(instruction_vector, 75, -1, 0.0, 0);
-    }else if(gateNumber == 7) {
-      addInstruction(instruction_vector, 75, -1, 0.0, 1);
-  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
-  	  addInstruction(instruction_vector, 75, 1, 0.0, 0);
-    }else if(gateNumber == 8) {
-      addInstruction(instruction_vector, 75, 1, 0.0, 1);
-  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
-  	  addInstruction(instruction_vector, 75, -1, 0.0, 0);
-    }else if(gateNumber == 9){
-      addInstruction(instruction_vector, 75, 1, 0.0, 1);
-  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
- 	    addInstruction(instruction_vector, 75, -1, 0.0, 0);
-    }else if(gateNumber == 16){
-      addInstruction(instruction_vector, 75, 1, 0.0, 1);
-  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
- 	    addInstruction(instruction_vector, 75, -1, 0.0, 0);
     }
+
 
     //keep track of what step we are up to
     int current_step = 0;
