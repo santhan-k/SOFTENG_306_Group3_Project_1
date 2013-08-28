@@ -27,6 +27,12 @@ double initial_position_x;
 double initial_position_y;
 double initial_theta;
 float growth_rate;
+bool isGrassLiving;
+int grass_hp; //variable for determining when the grass dies
+int grass_age; //growth status. ranges from 0-3. also used for rotation speed.
+
+//for HP recovery : if soil condtion is above 30. 
+//HP will decrease if soil condition is below 30.
 
 
 struct instruction_struct
@@ -66,22 +72,41 @@ void FarmNode_callback(alpha_two::farmState msg)
   //ROS_INFO("Farm 3: %d",msg.f3_soil_condition);
   //ROS_INFO("Farm 4: %d",msg.f4_soil_condition);
 
+
+
+  //yay grass growth rate
+
   if(initial_position_x>0 && initial_position_y>0) //Field 1
   {
     growth_rate = (float(msg.f1_soil_condition)/100.0);
+    
+    grass_update(growth_rate);
+
   }
+
   else if(initial_position_x>0 && initial_position_y<0) //Field 2
   {
     growth_rate = (float(msg.f2_soil_condition)/100.0);
+
+    grass_update(growth_rate);
   }
+
   else if(initial_position_x<0 && initial_position_y<0) //Field 3
   {
     growth_rate = (float(msg.f3_soil_condition)/100.0);
+
+    grass_update(growth_rate);
   }
+
   else if(initial_position_x<0 && initial_position_y>0) //Field 4
   {
     growth_rate = (float(msg.f4_soil_condition)/100.0);
+
+    grass_update(growth_rate);
   }
+
+  //growth rate will be between 0~1
+  //soil_condition ranges from 0~100
   printf("GROWTH RATE: %f\n", growth_rate);
 }
 
@@ -91,12 +116,64 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
   //you can access the range data from msg.ranges[i]. i = sample number
 }
 
+
+/*
+void change_spinning_speed_according_to_growth_rate(int growth_rate)
+{
+  if (growth_rate == 0)
+  {
+    grass_rotation_speed = 0;
+  }
+  else if (growth_rate > 0 && growth_rate < 0.25)
+  {
+    grass_rotation_speed = 2;
+  }
+  else if (growth_rate > 0.25 && growth_rate
+
+}
+*/
+
+
+
+void grass_update(int growth_rate)
+{
+    if(!(grass_hp==0))
+    {
+      grass_age = grass_age +  growth_rate;
+      isGrassLiving = true;
+    }
+    else if (grass_hp == 0)
+    {
+      isGrassLiving = false;
+    }
+
+    if (growth_rate <= 0.3 && grass_hp >= 0) //hp does not go below 0
+    {
+      grass_hp = grass_hp + (-0.31 + growth_rate); //hp decrease rate
+    }
+    
+    else if (growth_rate > 0.3 && grass_hp >= 0)
+    {
+      grass_hp = grass_hp + (-0.29 + growth_rate); //hp increase rate
+    } 
+
+    else 
+    {
+      grass_hp = 0;
+    }
+}
+
+
+
+
 int main(int argc, char **argv)
 {
   growth_rate = 1;
   //initialize robot parameters
   //Initial pose. This is same as the pose that you used in the world file to set the robot pose.
   //initial_theta = M_PI/2.0;
+
+  grass_hp = 50; //intial value for grass's hit point
 
   //Initial velocity
   linear_x = 0;
