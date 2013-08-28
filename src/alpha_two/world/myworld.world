@@ -152,7 +152,7 @@ define myMaze model
 define herdingBarVertical position
 (
   size [0.1 30 2]
-  color_rgba [0.20874 0.780392 0.149019 0.9]
+  color_rgba [0.20874 0.780392 0.149019 0]
   gui_boundary 0
   herdingBarlaser(pose [ 0.050 0.000 -0.07 0.000 ])
   laser_return 1
@@ -164,7 +164,7 @@ define herdingBarVertical position
 define herdingBarHorizontal position
 (
   size [0.1 30 2]
-  color_rgba [0.20874 0.780392 0.149019 0.9]
+  color_rgba [0.20874 0.780392 0.149019 0]
   gui_boundary 0
   herdingBarlaser(pose [ 0.050 0.000 -0.07 0.000 ])
   laser_return 1
