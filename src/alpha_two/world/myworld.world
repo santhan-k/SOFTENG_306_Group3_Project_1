@@ -276,8 +276,17 @@ WinterMessage( pose [-21 35 0 0] color "black")
 SpringMessage( pose [-21 35 0 0] color "black")
 AutumnMessage( pose [-21 35 0 0] color "black")
 
-herdingBarVertical( pose [0 15 0 0] name "bar0")
-herdingBarHorizontal( pose [15 30 0 90] name "bar1")
+herdingBarVertical( pose [0 15 0 0] name "bar0") # Field1 - Robot_18
+herdingBarHorizontal( pose [15 30 0 90] name "bar1") # Field1 - Robot_19
+
+herdingBarVertical( pose [15 30 0 90] name "bar1") # Field2 - Robot_20
+herdingBarHorizontal( pose [15 30 0 90] name "bar1") # Field2 - Robot_21
+
+herdingBarVertical( pose [15 30 0 90] name "bar1") # Field3 - Robot_22
+herdingBarHorizontal( pose [15 30 0 90] name "bar1") # Field3 - Robot_23
+
+herdingBarVertical( pose [15 30 0 90] name "bar1") # Field4 - Robot_24
+herdingBarHorizontal( pose [15 30 0 90] name "bar1") # Field4 - Robot_25
 
 # robot_0 = farmer
 # robot_1-4 = Fields
