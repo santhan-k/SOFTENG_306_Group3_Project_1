@@ -122,21 +122,16 @@ int main(int argc, char **argv)
 
 	  vector <instruction_struct> instruction_vector;
 
-    //Conditions to check gate to move, and call addInstruction
+    // Conditions to check gate to move, and call addInstruction
+    // Farm1: Vertical herding bar
     if(heardingBarNumber == 18) {
-      // Forward movement of the vertical herding bar
-      addInstruction(instruction_vector, 75, 1, 0.0, 1);
-  	  // Stop movement
-  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
-  	  // Backward movement of the vertical herding bar
-  	  addInstruction(instruction_vector, 75, -1, 0.0, 0);
-    }else if(heardingBarNumber == 19) {
-      // Forward movement of the horizontal herding bar
-      addInstruction(instruction_vector, 75, -1, 0.0, 1);
-  	  // Stop movement
-  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
-  	  // Backward movement of the horizontal herding bar
-  	  addInstruction(instruction_vector, 75, 1, 0.0, 0);
+      addInstruction(instruction_vector, 300, 0.25, 0.0, 1); // Inward movement
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
+  	  addInstruction(instruction_vector, 75, -1, 0.0, 0); // Outward movement
+    }else if(heardingBarNumber == 19) { // Farm1: Horizontal bar
+      addInstruction(instruction_vector, 300, -0.25, 0.0, 1); // Inward movement
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
+  	  addInstruction(instruction_vector, 75, 1, 0.0, 0); // Outward movement
     }
 
 
@@ -150,7 +145,10 @@ int main(int argc, char **argv)
         linear_x = instruction_vector[current_step].linear_x;
         angular_z = instruction_vector[current_step].angular_z;
         ++current_step_count;
-
+        
+        // State 0 stops bar movement
+        // State 1 brings bars inward during herding mode.
+        // State 2 moves bar in the backward direction.
         if(state == 0) {
             linear_x = instruction_vector[0].linear_x;
             angular_z = instruction_vector[0].angular_z;
