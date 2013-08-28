@@ -26,10 +26,10 @@ int state;
 double initial_position_x;
 double initial_position_y;
 double initial_theta;
-float growth_rate;
+double growth_rate;
 bool isGrassLiving;
-int grass_hp; //variable for determining when the grass dies
-int grass_age; //growth status. ranges from 0-3. also used for rotation speed.
+double grass_hp; //variable for determining when the grass dies
+double grass_age; //growth status. ranges from 0-3. also used for rotation speed.
 
 //for HP recovery : if soil condtion is above 30. 
 //HP will decrease if soil condition is below 30.
@@ -65,6 +65,41 @@ void StageSheep_callback(alpha_two::sheepState msg)
   }
 }
 
+
+
+
+void grass_update(double growth_rate)
+{
+    if(!(grass_hp==0))
+    {
+      grass_age = grass_age +  growth_rate;
+      isGrassLiving = true;
+    }
+    else if (grass_hp == 0)
+    {
+      isGrassLiving = false;
+    }
+
+    if (growth_rate <= 0.3 && grass_hp >= 0) //hp does not go below 0
+    {
+      grass_hp = grass_hp + (-0.31 + growth_rate); //hp decrease rate
+    }
+    
+    else if (growth_rate > 0.3 && grass_hp >= 0)
+    {
+      grass_hp = grass_hp + (-0.29 + growth_rate); //hp increase rate
+    } 
+
+    else 
+    {
+      grass_hp = 0;
+    }
+}
+
+
+
+
+
 void FarmNode_callback(alpha_two::farmState msg)
 {
   //ROS_INFO("Farm 1: %d",msg.f1_soil_condition);
@@ -78,7 +113,7 @@ void FarmNode_callback(alpha_two::farmState msg)
 
   if(initial_position_x>0 && initial_position_y>0) //Field 1
   {
-    growth_rate = (float(msg.f1_soil_condition)/100.0);
+    growth_rate = (double(msg.f1_soil_condition)/100.0);
     
     grass_update(growth_rate);
 
@@ -86,21 +121,21 @@ void FarmNode_callback(alpha_two::farmState msg)
 
   else if(initial_position_x>0 && initial_position_y<0) //Field 2
   {
-    growth_rate = (float(msg.f2_soil_condition)/100.0);
+    growth_rate = (double(msg.f2_soil_condition)/100.0);
 
     grass_update(growth_rate);
   }
 
   else if(initial_position_x<0 && initial_position_y<0) //Field 3
   {
-    growth_rate = (float(msg.f3_soil_condition)/100.0);
+    growth_rate = (double(msg.f3_soil_condition)/100.0);
 
     grass_update(growth_rate);
   }
 
   else if(initial_position_x<0 && initial_position_y>0) //Field 4
   {
-    growth_rate = (float(msg.f4_soil_condition)/100.0);
+    growth_rate = (double(msg.f4_soil_condition)/100.0);
 
     grass_update(growth_rate);
   }
@@ -135,37 +170,6 @@ void change_spinning_speed_according_to_growth_rate(int growth_rate)
 
 
 
-void grass_update(int growth_rate)
-{
-    if(!(grass_hp==0))
-    {
-      grass_age = grass_age +  growth_rate;
-      isGrassLiving = true;
-    }
-    else if (grass_hp == 0)
-    {
-      isGrassLiving = false;
-    }
-
-    if (growth_rate <= 0.3 && grass_hp >= 0) //hp does not go below 0
-    {
-      grass_hp = grass_hp + (-0.31 + growth_rate); //hp decrease rate
-    }
-    
-    else if (growth_rate > 0.3 && grass_hp >= 0)
-    {
-      grass_hp = grass_hp + (-0.29 + growth_rate); //hp increase rate
-    } 
-
-    else 
-    {
-      grass_hp = 0;
-    }
-}
-
-
-
-
 int main(int argc, char **argv)
 {
   growth_rate = 1;
@@ -173,7 +177,7 @@ int main(int argc, char **argv)
   //Initial pose. This is same as the pose that you used in the world file to set the robot pose.
   //initial_theta = M_PI/2.0;
 
-  grass_hp = 50; //intial value for grass's hit point
+  grass_hp = 50.0; //intial value for grass's hit point
 
   //Initial velocity
   linear_x = 0;
@@ -223,7 +227,7 @@ int main(int argc, char **argv)
   ////messages
   //velocity of this RobotNode
   geometry_msgs::Twist RobotNode_cmdvel;
-  RobotNode_cmdvel.angular.z = 0.3;
+  RobotNode_cmdvel.angular.z = 3.0;
   grass_state.G_State = 0;
   grass_state.G_ID = atoi(argv[1]);
   initial_position_x = atoi(argv[2]);
