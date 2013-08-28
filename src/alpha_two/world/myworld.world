@@ -134,7 +134,7 @@ define herdingBarVertical model
   gui_boundary 0
   laser_return 1
   ranger_return 1
-  obstacle_return 1	
+  obstacle_return 0	
   gui_move 1
 )
 
@@ -145,7 +145,7 @@ define herdingBarHorizontal model
   gui_boundary 0
   laser_return 1
   ranger_return 1
-  obstacle_return 1	
+  obstacle_return 0	
   gui_move 1
 )
 
