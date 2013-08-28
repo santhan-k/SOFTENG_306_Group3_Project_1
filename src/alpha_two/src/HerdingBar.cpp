@@ -39,18 +39,18 @@ void StageOdom_callback(nav_msgs::Odometry msg)
     py =10 + msg.pose.pose.position.y;
 	
     //condition for movement
-    if(heardingBarNumber == 18) {
+    if(heardingBarNumber == 18) { // 18 refers to robot_18 which is the vertical herdingBar 
 	    if(px > 26 && state == 0) {
 		    state = 1;
 	    } else if(px < 5 && state == 2) {
 		    state = 1;
 	    }
-    } else if(heardingBarNumber == 19) {
+    } else if(heardingBarNumber == 19) { // 19 refers to robot_18, horizontal herdingBar 
 	     if(px < -18 && state == 0) {
 		      state = 1;
 	     } else if(px > 5 && state == 2) {
 		      state = 1;
-	      }	
+	     }	
     }
 
     //displayed on terminal
@@ -124,12 +124,18 @@ int main(int argc, char **argv)
 
     //Conditions to check gate to move, and call addInstruction
     if(heardingBarNumber == 18) {
+      // Forward movement of the vertical herding bar
       addInstruction(instruction_vector, 75, 1, 0.0, 1);
+  	  // Stop movement
   	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
+  	  // Backward movement of the vertical herding bar
   	  addInstruction(instruction_vector, 75, -1, 0.0, 0);
     }else if(heardingBarNumber == 19) {
+      // Forward movement of the horizontal herding bar
       addInstruction(instruction_vector, 75, -1, 0.0, 1);
+  	  // Stop movement
   	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
+  	  // Backward movement of the horizontal herding bar
   	  addInstruction(instruction_vector, 75, 1, 0.0, 0);
     }
 
@@ -179,13 +185,3 @@ int main(int argc, char **argv)
     return 0;
 
 } //ends main()
-
-
-
-
-
-
-
-
-
-
