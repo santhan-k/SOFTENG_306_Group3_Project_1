@@ -40,15 +40,15 @@ void StageOdom_callback(nav_msgs::Odometry msg)
 	
     //condition for movement
     if(heardingBarNumber == 18) {
-	    if(px > 16 && state == 0) {
+	    if(px > 26 && state == 0) {
 		    state = 1;
-	    } else if(px > 4.7 && state == 2) {
+	    } else if(px < 5 && state == 2) {
 		    state = 1;
 	    }
     } else if(heardingBarNumber == 19) {
 	     if(px < -18 && state == 0) {
 		      state = 1;
-	     } else if(px > 4.7 && state == 2) {
+	     } else if(px > 5 && state == 2) {
 		      state = 1;
 	      }	
     }
@@ -126,7 +126,7 @@ int main(int argc, char **argv)
     if(heardingBarNumber == 18) {
       addInstruction(instruction_vector, 75, 1, 0.0, 1);
   	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
-  	  addInstruction(instruction_vector, 75, 1, 0.0, 0);
+  	  addInstruction(instruction_vector, 75, -1, 0.0, 0);
     }else if(heardingBarNumber == 19) {
       addInstruction(instruction_vector, 75, -1, 0.0, 1);
   	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
@@ -153,7 +153,7 @@ int main(int argc, char **argv)
             } else if(state == 2) {
                 linear_x = instruction_vector[2].linear_x;
                 angular_z = instruction_vector[2].angular_z;
-        }
+            }
 
         RobotNode_cmdvel.linear.x = linear_x;
         RobotNode_cmdvel.angular.z = angular_z;
