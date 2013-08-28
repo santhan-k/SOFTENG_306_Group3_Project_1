@@ -55,6 +55,7 @@ define myRobot position
   mylaser(pose [ 0.050 0.000 -0.07 0.000 ])
   bitmap "sheep.png"
   ranger_return 1
+  obstacle_return 0
 )
 
 define mySheepsPoop position
@@ -254,7 +255,7 @@ floorplan
 )
 
 myMaze( pose [-65 0 0 0] name "maze0" color "black")
-myFarmer( pose [ 2 27.5 0 0 ] name "farmer0" )
+myFarmer( pose [ 2 27.5 0 0 ] name "farmer0" color "black" )
 myField( pose [ 15 15 0 0 ] name "f0" color_rgba [0.20874 0.780392 0.149019 0.9] )
 myField( pose [ -15 15 0 0 ] name "f1" color_rgba [0.5 0.698 0.10588 0.9] )
 myField( pose [ -15 -15 0 0 ] name "f2" color_rgba [0.77647 0.823529 0.0.02359 0.9] )
