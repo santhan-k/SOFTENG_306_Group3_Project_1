@@ -9,6 +9,7 @@
 #include "alpha_two/sheepDogState.h"
 #include <sstream>
 #include "math.h"
+#include <time.h>
 
 using namespace std;
 // Global variables and objects
@@ -16,6 +17,7 @@ ros::Publisher RobotNode_stage_pub;
 ros::Publisher RobotNode_stage_poop;
 ros::Publisher SheepNode_state;
 geometry_msgs::Twist RobotNode_cmdvel;
+geometry_msgs::Twist poopNode_cmdvel;
 geometry_msgs::Twist ill_cmdvel;
 
 bool debug = true; //Show/hide ROS log messages
@@ -413,6 +415,15 @@ int main(int argc, char** argv){
   ill_cmdvel.linear.y = 0;
   ill_cmdvel.angular.z = 0.5;  
   
+  //Poop related variables
+  
+  srand (time(NULL));
+
+  int poopCount = 200 + rand()%300;
+  poopNode_cmdvel.linear.x = 0;
+  poopNode_cmdvel.angular.z = 0;
+  bool pooping = false;
+
   bool ill = false;
   int respawn = 0;
   int count = 0;
@@ -435,8 +446,12 @@ int main(int argc, char** argv){
         wellness = 1000;
       } 
     }else if(wellness < 0 && sheep_message.S_State != 0){
+      
       RobotNode_stage_pub.publish(RobotNode_cmdvel);
-      RobotNode_stage_poop.publish(RobotNode_cmdvel);
+      if (!pooping)
+      {
+        RobotNode_stage_poop.publish(RobotNode_cmdvel);
+      }else { RobotNode_stage_poop.publish(ill_cmdvel);}
       wellness = 1000;
     }else if(wellness < 0 && sheep_message.S_State == 0){
       RobotNode_stage_pub.publish(ill_cmdvel);
@@ -444,7 +459,10 @@ int main(int argc, char** argv){
       ill = true;      
     }else {
       RobotNode_stage_pub.publish(RobotNode_cmdvel);
-      RobotNode_stage_poop.publish(RobotNode_cmdvel);
+      if (!pooping)
+      {
+        RobotNode_stage_poop.publish(RobotNode_cmdvel);
+      }else { RobotNode_stage_poop.publish(ill_cmdvel);}
       wellness--;
     }
     SheepNode_state.publish(sheep_message);
@@ -452,6 +470,10 @@ int main(int argc, char** argv){
     grass_distance = 99999; //reset grass_distance for next tick
     r.sleep();
     ++count;
+    poopCount--;
+    if (poopCount == -1){
+      pooping = true;
+    }
   }
 }
 
