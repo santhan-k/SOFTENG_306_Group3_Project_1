@@ -22,7 +22,7 @@ double ptheta;
 double theta;
 
 int state;
-char herdingBarNumber;
+char herdingBarNumber; // herdingBarNumber refers to the robot number in the world file
 char currentField;
 char destinationField;
 
@@ -36,59 +36,31 @@ struct instruction_struct
 
 void StageOdom_callback(nav_msgs::Odometry msg)
 {
-    //This is the call back function to process odometry messages coming from Stage. 	
+    // This is the call back function to process odometry messages coming from Stage. 	
     px = 5 + msg.pose.pose.position.x;
     py =10 + msg.pose.pose.position.y;
 	
-    //condition for movement
-    if(herdingBarNumber == 18) { // 18 refers to robot_18 which is the vertical herdingBar 
-	    if(px > 26 && state == 0) {
-		    state = 1;
-	    } else if(px < 5 && state == 2) {
-		    state = 1;
-	    }
-    } else if(herdingBarNumber == 19) { // 19 refers to robot_18, horizontal herdingBar 
-	     if(px < -24 && state == 0) {
-		      state = 1;
-	     } else if(px > 5 && state == 2) {
-		      state = 1;
-	     }	
-    } else if(herdingBarNumber == 20) { // 19 refers to robot_18, horizontal herdingBar 
-	     if(px < -24 && state == 0) {
-		      state = 1;
-	     } else if(px > 5 && state == 2) {
-		      state = 1;
-	     }
-    }	else if(herdingBarNumber == 21) { // 19 refers to robot_18, horizontal herdingBar 
-	     if(px < -18 && state == 0) {
-		      state = 1;
-	     } else if(px > 5 && state == 2) {
-		      state = 1;
-	     }
-    }	else if(herdingBarNumber == 22) { // 19 refers to robot_18, horizontal herdingBar 
-	     if(px < -18 && state == 0) {
-		      state = 1;
-	     } else if(px > 5 && state == 2) {
-		      state = 1;
-	     }
-    }	else if(herdingBarNumber == 23) { // 19 refers to robot_18, horizontal herdingBar 
-	     if(px > 34 && state == 0) {
-		      state = 1;
-	     } else if(px < 5 && state == 2) {
-		      state = 1;
-	     }
-    }	else if(herdingBarNumber == 24) { // 19 refers to robot_18, horizontal herdingBar 
-	     if(px < -18 && state == 0) {
-		      state = 1;
-	     } else if(px > 5 && state == 2) {
-		      state = 1;
-	     }
-    }	else if(herdingBarNumber == 25) { // 19 refers to robot_18, horizontal herdingBar 
-	     if(px > 34 && state == 0) {
-		      state = 1;
-	     } else if(px < 5 && state == 2) {
-		      state = 1;
-	     }
+    // condition for movement
+    // Below code has the following format.
+    // herdingBarNumber refers to the robot number in the world file. I.e. first bar is robot_18.
+    // (px > XX && state == 0) Checks the upper bound of the herding bar during the herding of sheep.
+    // (px < 5 && state == 2) Checks the lower bound of the herding bar, to return it to it's original position.
+    if(herdingBarNumber == 18) {  
+	    if((px > 26 && state == 0) || (px < 5 && state == 2)) state = 1;
+    } else if(herdingBarNumber == 19) {
+	     if((px < -24 && state == 0) || (px > 5 && state == 2)) state = 1;
+    } else if(herdingBarNumber == 20) {
+	     if((px < -24 && state == 0) || (px > 5 && state == 2)) state = 1;
+    }	else if(herdingBarNumber == 21) {
+	     if((px < -18 && state == 0) || (px > 5 && state == 2)) state = 1;
+    }	else if(herdingBarNumber == 22) { 
+	     if((px < -18 && state == 0) || (px > 5 && state == 2)) state = 1;
+    }	else if(herdingBarNumber == 23) { 
+	     if((px > 34 && state == 0) || (px < 5 && state == 2)) state = 1;
+    }	else if(herdingBarNumber == 24) {
+	     if((px < -18 && state == 0) || (px > 5 && state == 2)) state = 1;
+    }	else if(herdingBarNumber == 25) { 
+	     if((px > 34 && state == 0) || (px < 5 && state == 2)) state = 1;
     }	
 
     //displayed on terminal
