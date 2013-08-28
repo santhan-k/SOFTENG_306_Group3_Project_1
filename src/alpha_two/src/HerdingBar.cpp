@@ -65,6 +65,30 @@ void StageOdom_callback(nav_msgs::Odometry msg)
 	     } else if(px > 5 && state == 2) {
 		      state = 1;
 	     }
+    }	else if(herdingBarNumber == 22) { // 19 refers to robot_18, horizontal herdingBar 
+	     if(px < -18 && state == 0) {
+		      state = 1;
+	     } else if(px > 5 && state == 2) {
+		      state = 1;
+	     }
+    }	else if(herdingBarNumber == 23) { // 19 refers to robot_18, horizontal herdingBar 
+	     if(px > 34 && state == 0) {
+		      state = 1;
+	     } else if(px < 5 && state == 2) {
+		      state = 1;
+	     }
+    }	else if(herdingBarNumber == 24) { // 19 refers to robot_18, horizontal herdingBar 
+	     if(px < -18 && state == 0) {
+		      state = 1;
+	     } else if(px > 5 && state == 2) {
+		      state = 1;
+	     }
+    }	else if(herdingBarNumber == 25) { // 19 refers to robot_18, horizontal herdingBar 
+	     if(px > 34 && state == 0) {
+		      state = 1;
+	     } else if(px < 5 && state == 2) {
+		      state = 1;
+	     }
     }	
 
     //displayed on terminal
@@ -175,7 +199,6 @@ int main(int argc, char **argv)
   	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
   	  addInstruction(instruction_vector, 75, -1, 0.0, 0); // Outward movement
     }
-
 
     //keep track of what step we are up to
     int current_step = 0;
