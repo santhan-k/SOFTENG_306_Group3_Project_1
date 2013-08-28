@@ -36,6 +36,18 @@ define myGrasslaser ranger
   size [ 0.05 0.05 0.1 ]
 )
 
+define herdingBarlaser ranger  
+(
+  sensor(
+  range [ 0.0 2 ] # range
+  fov 180       # field of vision
+  samples 10   # samples 
+  )
+  # generic model properties
+  color "black"
+  size [ 0.05 0.05 0.1 ]
+)
+
 define myRobot position
 (
   size [0.9 0.9 0.7]
@@ -132,6 +144,7 @@ define herdingBarVertical position
   size [1 30 2]
   color_rgba [0.20874 0.780392 0.149019 0.9]
   gui_boundary 0
+  herdingBarlaser(pose [ 0.050 0.000 -0.07 0.000 ])
   laser_return 1
   ranger_return 1
   obstacle_return 0	
@@ -143,6 +156,7 @@ define herdingBarHorizontal position
   size [30 1 2]
   color_rgba [0.20874 0.780392 0.149019 0.9]
   gui_boundary 0
+  herdingBarlaser(pose [ 0.050 0.000 -0.07 0.000 ])
   laser_return 1
   ranger_return 1
   obstacle_return 0	
