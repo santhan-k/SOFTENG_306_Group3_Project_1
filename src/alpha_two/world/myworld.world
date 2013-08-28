@@ -186,7 +186,7 @@ define rainMessage position (
   myGrasslaser(pose [ 0.050 0.000 -0.07 0.000 ])
   drive "omni"
   size [0.5 0.5 0.5]
-  say "Its Raining" 
+  say "It's Raining" 
   obstacle_return 0
 )
 
@@ -194,7 +194,7 @@ define SummerMessage position (
   myGrasslaser(pose [ 0.050 0.000 -0.07 0.000 ])
   drive "omni"
   size [0.5 0.5 0.5]
-  say "Its Summer"
+  say "It's Summer"
   obstacle_return 0 
 )
 
@@ -202,7 +202,7 @@ define WinterMessage position (
   myGrasslaser(pose [ 0.050 0.000 -0.07 0.000 ])
   drive "omni"
   size [0.5 0.5 0.5]
-  say "Its Winter" 
+  say "It's Winter" 
   obstacle_return 0
 )
 
@@ -210,7 +210,7 @@ define SpringMessage position (
   myGrasslaser(pose [ 0.050 0.000 -0.07 0.000 ])
   drive "omni"
   size [0.5 0.5 0.5]
-  say "Its Spring" 
+  say "It's Spring" 
   obstacle_return 0
 )
 
@@ -218,7 +218,7 @@ define AutumnMessage position (
   myGrasslaser(pose [ 0.050 0.000 -0.07 0.000 ])
   drive "omni"
   size [0.5 0.5 0.5]
-  say "Its Autumn" 
+  say "It's Autumn" 
   obstacle_return 0
 )
 
