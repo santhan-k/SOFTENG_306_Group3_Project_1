@@ -277,8 +277,8 @@ AutumnMessage( pose [-21 35 0 0] color "black")
 herdingBarVertical( pose [0 15 0 0] name "bar0") # Field1 - Robot_18
 herdingBarHorizontal( pose [15 30 0 90] name "bar1") # Field1 - Robot_19
 
-herdingBarVertical( pose [15 30 0 90] name "bar1") # Field2 - Robot_20
-herdingBarHorizontal( pose [15 30 0 90] name "bar1") # Field2 - Robot_21
+herdingBarVertical( pose [0 -15 0 0] name "bar1") # Field2 - Robot_20
+herdingBarHorizontal( pose [15 -30 0 90] name "bar1") # Field2 - Robot_21
 
 herdingBarVertical( pose [15 30 0 90] name "bar1") # Field3 - Robot_22
 herdingBarHorizontal( pose [15 30 0 90] name "bar1") # Field3 - Robot_23
