@@ -276,7 +276,7 @@ WinterMessage( pose [-21 35 0 0] color "black")
 SpringMessage( pose [-21 35 0 0] color "black")
 AutumnMessage( pose [-21 35 0 0] color "black")
 
-herdingBarVertical( pose [10 0 0 0] name "bar0")
+herdingBarVertical( pose [0 15 0 0] name "bar0")
 herdingBarHorizontal( pose [15 30 0 90] name "bar1")
 
 # robot_0 = farmer
