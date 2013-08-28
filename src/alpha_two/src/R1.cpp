@@ -15,6 +15,7 @@ using namespace std;
 ros::Publisher RobotNode_stage_pub;
 ros::Publisher SheepNode_state;
 geometry_msgs::Twist RobotNode_cmdvel;
+geometry_msgs::Twist ill_cmdvel;
 
 bool debug = false; //Show/hide ROS log messages
 #define SAMPLE_NUMBER 10 // represents number of samples in world file.
@@ -375,15 +376,40 @@ int main(int argc, char** argv){
   sheep_message.health = 100;
   sheep_message.grass_locked = 0;
 
+  ill_cmdvel.linear.x = 0;
+  ill_cmdvel.linear.y = 0;
+  ill_cmdvel.angular.z = 0.5;  
+  
+  bool ill = false;
+  int respawn = 0;
   int count = 0;
   ros::Rate r(10); // 10 cycles per second
-
+  int wellness = 1000;
   while(n.ok())
   {
     RobotNode_cmdvel.linear.x = linear_x;
     RobotNode_cmdvel.angular.z = angular_z;
     // Publish the messages
-    RobotNode_stage_pub.publish(RobotNode_cmdvel);
+
+
+    if (ill) {    
+      RobotNode_stage_pub.publish(ill_cmdvel);
+      respawn++;
+      if(respawn > 150){
+        respawn = 0;
+        ill = false;
+        wellness = 1000;
+      } 
+    }else if(wellness < 0 && sheep_message.S_State != 0){
+      RobotNode_stage_pub.publish(RobotNode_cmdvel);
+      wellness = 1000;
+    }else if(wellness < 0 && sheep_message.S_State == 0){
+      RobotNode_stage_pub.publish(ill_cmdvel);
+      ill = true;      
+    }else {
+      RobotNode_stage_pub.publish(RobotNode_cmdvel);
+      wellness--;
+    }
     SheepNode_state.publish(sheep_message);
     ros::spinOnce(); //Must Have this statement in the program
     grass_distance = 99999; //reset grass_distance for next tick
