@@ -41,33 +41,33 @@ void StageOdom_callback(nav_msgs::Odometry msg)
     //condition for movement
     if(gateNumber == 5) {
 	    if(px < -2 && state == 0) {
-		    state = 1;
+		    state = 1;    //stops gate once fully opened
 	    } else if(px > 4.7 && state == 2) {
-		    state = 1;
+		    state = 1;    //stops gate once fully close - in original position
 	    }
     } else if(gateNumber == 6) {
         if(px > 12 && state == 0) {
-          state = 1;
+          state = 1;  //stops gate once fully opened
       } else if(px < 5 && state == 2) {
-          state = 1;
+          state = 1;  //stops gate once fully close - in original position
       }	
     } else if(gateNumber == 7) {
 	     if(px < -2 && state == 0) {
-		      state = 1;
+		      state = 1;  //stops gate once fully opened
 	     } else if(px > 4.7 && state == 2) {
-		      state = 1;
+		      state = 1;  //stops gate once fully close - in original position
 	      }	
     } else if(gateNumber == 8) {
 	      if(px > 12 && state == 0) {
-		      state = 1;
+		      state = 1;  //stops gate once fully opened
 	    } else if(px < 4.7 && state == 2) {
-		      state = 1;
+		      state = 1;  //stops gate once fully close - in original position
 	    }
     } else if(gateNumber == 9) {
         if(px > 12 && state == 0) {
-           state = 1;
+           state = 1; //stops gate once fully opened
         } else if(px < 4.7 && state == 2) {
-           state = 1;
+           state = 1; //stops gate once fully close - in original position
         }	
     }
 
@@ -143,25 +143,25 @@ int main(int argc, char **argv)
 
     //Conditions to check gate to move, and call addInstruction
     if(gateNumber == 5) {
-      addInstruction(instruction_vector, 75, -1, 0.0, 1);
-  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
-  	  addInstruction(instruction_vector, 75, 1, 0.0, 0);
+      addInstruction(instruction_vector, 75, -1, 0.0, 1);    // Opening gate        
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);      // Stationary Gate
+  	  addInstruction(instruction_vector, 75, 1, 0.0, 0);     // Closing gate
     }else if(gateNumber == 6) {
-  	  addInstruction(instruction_vector, 75, 1, 0.0, 1);
-  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
- 	    addInstruction(instruction_vector, 75, -1, 0.0, 0);
+  	  addInstruction(instruction_vector, 75, 1, 0.0, 1);    // Opening gate
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);     // Stationary Gate
+ 	    addInstruction(instruction_vector, 75, -1, 0.0, 0);   // Closing gate
     }else if(gateNumber == 7) {
-      addInstruction(instruction_vector, 75, -1, 0.0, 1);
-  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
-  	  addInstruction(instruction_vector, 75, 1, 0.0, 0);
+      addInstruction(instruction_vector, 75, -1, 0.0, 1);   // Opening gate
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);     // Stationary Gate
+  	  addInstruction(instruction_vector, 75, 1, 0.0, 0);    // Closing gate
     }else if(gateNumber == 8) {
-      addInstruction(instruction_vector, 75, 1, 0.0, 1);
-  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
-  	  addInstruction(instruction_vector, 75, -1, 0.0, 0);
+      addInstruction(instruction_vector, 75, 1, 0.0, 1);    // Opening gate
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);     // Stationary Gate
+  	  addInstruction(instruction_vector, 75, -1, 0.0, 0);   // Closing gate
     }else if(gateNumber == 9){
-      addInstruction(instruction_vector, 75, 1, 0.0, 1);
-  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);
- 	    addInstruction(instruction_vector, 75, -1, 0.0, 0);
+      addInstruction(instruction_vector, 75, 1, 0.0, 1);    // Opening gate
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 2);     // Stationary Gate
+ 	    addInstruction(instruction_vector, 75, -1, 0.0, 0);   // Closing gate
     }
 
     //keep track of what step we are up to
@@ -175,14 +175,15 @@ int main(int argc, char **argv)
         angular_z = instruction_vector[current_step].angular_z;
         ++current_step_count;
 
+        //If gates are opening
         if(state == 0) {
             linear_x = instruction_vector[0].linear_x;
             angular_z = instruction_vector[0].angular_z;
-            } else if(state == 1){
-                break;
-            } else if(state == 2) {
-                linear_x = instruction_vector[2].linear_x;
-                angular_z = instruction_vector[2].angular_z;
+        } else if(state == 1){              //If the gates are set to stop
+            break;
+        } else if(state == 2) {             //If the gates are meant to close
+            linear_x = instruction_vector[2].linear_x;
+            angular_z = instruction_vector[2].angular_z;
         }
 
         RobotNode_cmdvel.linear.x = linear_x;
