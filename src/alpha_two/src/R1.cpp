@@ -57,6 +57,7 @@ sensor_msgs::LaserScan laserData_msg;
 
 void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int current_lowest_index);
 void initiateSheepHerding(nav_msgs::Odometry msg);
+void CalculateGrassDistance();
 float CalculateAngularVelocity();
 float CalculateLinearVelocity();
 
@@ -65,13 +66,14 @@ void StageOdom_callback(nav_msgs::Odometry msg)
 {
    ptheta = fmod((2*M_PI) + initial_theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2), 2*M_PI) * (180/M_PI);
 
-   //if(debug)
-     //ROS_INFO("PX: %f", msg.pose.pose.position.x);
+   if(debug)
+     ROS_INFO("Current theta: %f", ptheta);
 }
 
-// Gets current x and y position relative to the world
-// Sheep are limited to the boundaries set by the current
-// position of the sheep dog.
+/* Gets current x and y position relative to the world
+ * Sheep are limited to the boundaries set by the current
+ * position of the sheep dog.
+ */
 void initiateSheepHerding(nav_msgs::Odometry msg){
   // Check current position of the sheep and compare with
   // broadcasted x and y position of the sheep dog and farmer.
@@ -99,42 +101,14 @@ void initiateSheepHerding(nav_msgs::Odometry msg){
 
 void StageBasePose_callback(nav_msgs::Odometry msg)
 {
-  // Calculate which quadrant the sheep is in
-  if(msg.pose.pose.position.y < 0 && msg.pose.pose.position.x > 0) //quadrant 1
-  {
-    px = -msg.pose.pose.position.y;
-    py = msg.pose.pose.position.x;
-    ROS_INFO("1");
-  }
-  else if(msg.pose.pose.position.y < 0 && msg.pose.pose.position.x < 0) //quadrant 2
-  {
-    px = -msg.pose.pose.position.y;
-    py = msg.pose.pose.position.x;
-    ROS_INFO("2");
-  }
-  else if(msg.pose.pose.position.y > 0 && msg.pose.pose.position.x < 0) //quadrant 3
-  {
-    px = -msg.pose.pose.position.y;
-    py = msg.pose.pose.position.x;
-    ROS_INFO("3");
-  }
-  else if(msg.pose.pose.position.y > 0 && msg.pose.pose.position.x > 0) //quadrant 4
-  {
-    px = -msg.pose.pose.position.y;
-    py = msg.pose.pose.position.x;
-    ROS_INFO("4");
-  }
-  else
-  {
-    ROS_INFO("5");
-  }
-  
-  if (debug)
-  {
-    ROS_INFO("Current x position is: %f", px);
-    ROS_INFO("Current y position is: %f", py);
-  }
-  if (is_being_herded == true)
+  /*
+   * Stage base pose north is to the right. Transform it so upwards is north
+   */
+  px = -msg.pose.pose.position.y;
+  py = msg.pose.pose.position.x;
+  if(debug)
+    ROS_INFO("Current x position is: %f  current y position is: %f", px, py);
+  if(is_being_herded == true)
     initiateSheepHerding(msg);
 }
 
@@ -188,8 +162,8 @@ void StageGrass_callback(alpha_two::grassState msg)
       else //sheep was locked to the grass, but the grass was not locked to this sheep
       {
         //reset the sheep back to searching mode
-        sheep_message.S_State = 0;
-        sheep_message.grass_locked = 0;
+        //sheep_message.S_State = 0;
+        //sheep_message.grass_locked = 0;
         if(debug)
           ROS_INFO("Attempt to lock onto grass failed. Going back to searching");
         return;
@@ -204,27 +178,15 @@ void StageGrass_callback(alpha_two::grassState msg)
 
 void StageLaser_callback(sensor_msgs::LaserScan msg)
 {
-  //if(debug)
-    //ROS_INFO("------------------------ Intensity ----------------------------");
-
   for(unsigned int i = 0; i < msg.intensities.size(); ++i){
     // Either 1 or 0 is returned. 1 if an object is view 0 otherwise.
     double curRange = msg.intensities[i];
-    //if(debug)
-      //ROS_INFO("Current intensity is    : %f", curRange);
   }
-
-  //if(debug)
-    //ROS_INFO("-------------------------- Range -----------------------------");
-
   int current_lowest_index = 0;
   double smallest_range = msg.ranges[current_lowest_index];
   // Iterate through LaserScan messages and find the smallest range
   for(unsigned int i = 1; i < msg.ranges.size(); ++i)
   {
-    //if(debug)
-      //ROS_INFO("Current range is    : %f", msg.ranges[i]);
-
     if(msg.ranges[current_lowest_index] > msg.ranges[i])
     {
       current_lowest_index = i;
@@ -234,21 +196,23 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
 
   if(!is_being_herded)
   {
-    //go towards grass
-    angular_z = CalculateAngularVelocity();
-    //slow down if sheep gets close to the grass
-    linear_x = CalculateLinearVelocity();
-    // if theres a wall or sheep in the way, avoid it
+    if(sheep_message.S_State == 1) //if sheep is locked onto a grass
+    {
+      ROS_INFO("GOING TO GRASS");
+      linear_x = CalculateLinearVelocity(); //slow down if sheep gets close to the grass
+      angular_z = CalculateAngularVelocity(); //turn towards grass
+      ROS_INFO("linear velocity: %f   angular velocity: %f", linear_x, angular_z);
+    }
+
+    // if there is an obstacle such as wall or sheep in the way, avoid it
     collisionAvoidance(smallest_range, msg, current_lowest_index);
   }
-  else
+  else //is being herded
   {
     // Store laser data as global variable
     // This allows custom usage of the laser during herding mode.
     laserData_msg = msg;
   }
-  //if(debug)
-    //ROS_INFO("-------------------------- END -----------------------------");
 }
 
 void sheepDog1_callback(alpha_two::sheepDogState msg){
@@ -262,108 +226,103 @@ void sheepDog1_callback(alpha_two::sheepDogState msg){
 
 // This function prevents robot(sheep) from colliding with stage objects.
 void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int current_lowest_index) {
-  if(sheep_message.S_State!=1){
+  if(debug)
+    ROS_INFO("Lowest index: %d", current_lowest_index);
+
+  // If the lowest range is less than 1.5 in length, the robot will begin
+  // rotating to attempt to avoid the obstacle
+  if(smallest_range < 1.4) // We are getting close to an obstacle, start turning
+  {
     if(debug)
-      ROS_INFO("Lowest index: %d", current_lowest_index);
+      ROS_INFO("Collision at beam: %d | Range: %f", current_lowest_index, smallest_range);
 
-    // If the lowest range is less than 1.5 in length, the robot will begin
-    // rotating to attempt to avoid the obstacle
-    if(smallest_range < 1.4) //between 0.8 and 1.5 exclusive
-    {
-      // We are getting close to an obstacle, start turning
-      if(debug)
-        ROS_INFO("Collision at beam: %d | Range: %f", current_lowest_index, smallest_range);
-
-      // Slow the robot down to 0.1m/s
+    if(smallest_range <= 0.8) //we are really close to colliding, stop moving forward
+      linear_x = 0;
+    else // Getting close, but not quite near, go forward slowly
       linear_x = 0.5;
 
-      // Decide whether to turn anti-clockwise or clockwise depending on which
-      // side of the robot is closest to the object
-      if(current_lowest_index < SAMPLE_NUMBER/2) // sample_number is the number of beams
-        angular_z = (M_PI / 18) * 5; //anti-clockwise
-      else
-        angular_z = -(M_PI / 18) * 5; //clockwise
-
-      if(smallest_range <= 0.8) //we are really close to colliding, stop moving forward
-        linear_x = 0;
-    }
+    // Decide whether to turn anti-clockwise or clockwise depending on which
+    // side of the robot is closest to the object
+    if(current_lowest_index < SAMPLE_NUMBER/2) // sample_number is the number of beams
+      angular_z = (M_PI / 18) * 5; //anti-clockwise
     else
-    {
-        // If no potential collisions are detected, move forward normally
-        linear_x = 1;
-        angular_z = 0;
-    }
+      angular_z = -(M_PI / 18) * 5; //clockwise
   }
-  else if(sheep_message.S_State==1)
+  else // No potential collisions are detected, move forward normally
   {
-    ROS_INFO("GOING TO GRASS");
-    float delta = sqrt(pow(grass_x-px, 2.0) + pow(grass_y-py, 2.0));
-    linear_x = delta;
-    angular_z = CalculateAngularVelocity();
-    ROS_INFO("linear velocity: %f   angular velocity: %f", linear_x, angular_z);
+    if(sheep_message.S_State == 1) //if sheep is locked onto a grass
+    {
+      ROS_INFO("GOING TO GRASS");
+      linear_x = CalculateLinearVelocity(); //slow down if sheep gets close to the grass
+      angular_z = CalculateAngularVelocity(); //turn towards grass
+      ROS_INFO("linear velocity: %f   angular velocity: %f", linear_x, angular_z);
+    }
+    linear_x = 1;
+    angular_z = 0;
   }
 }
 
 float CalculateAngularVelocity() {
-
-        float deltaX = grass_x - px;
-        float deltaY = grass_y - py;
-
-        float changeInAngle;
-
-        //Angle from origin
-        float angle1 = atan(deltaY / deltaX);
-        float angle2 = 180 - angle1;
-        float angle3 = 90 - ptheta;
-        float finalAngle = angle3 + angle2;
-        //angle = 180 * angle / M_PI;
-        
-        ROS_INFO("Difference in angle: %f", finalAngle);
-        ROS_INFO("ptheta : %f", ptheta);
-        //Find the quadrant to work out difference
-        /*if (deltaX >= 0 && deltaY >= 0) { // right and up
-                changeInAngle = angle - ptheta;
-        } else if (deltaX >= 0 && deltaY <= 0) { // right and down
-                changeInAngle = angle - ptheta;
-        } else if (deltaX <= 0 && deltaY >= 0) { // left and up
-                changeInAngle = 180 - ptheta + angle;
-        } else if (deltaX <= 0 && deltaY <= 0) { // left and down
-                changeInAngle = angle - 180 - ptheta;
-        }*/
-
-        changeInAngle = finalAngle - ptheta;
-        //Make sure angle is between -360 and 360
-        changeInAngle = fmodf(changeInAngle, 360.0);
-
-        float angularZ=0;
-        if (changeInAngle <= 2 && changeInAngle > 359) {
-                angularZ = 0;
-        } else if (changeInAngle >= 2 && changeInAngle <= 180) {
-                angularZ = (M_PI / 18) * 5;
-        } else if (changeInAngle <= 359 && changeInAngle > 180) {
-                angularZ = -(M_PI / 18) * 5;
-        } else if (changeInAngle < 2 && changeInAngle >= -2) {
-                angularZ = 0;
-        } else if (changeInAngle <= -2 && changeInAngle >= -180) {
-                angularZ = -(M_PI / 18) * 5;
-        } else if (changeInAngle <= -180) {
-                angularZ = (M_PI / 18) * 5;
-        }
-        //ROS_INFO("grass_x: %f   grass_y: %f  px:%f   py:%f changeInAngle: %f",grass_x,grass_y, px, py, changeInAngle);
-        return angularZ;
-
+  float delta_x = grass_x - px;
+  float delta_y = grass_y - py;
+  float theta = atan(abs(delta_y) / abs(delta_x)) * (180 / M_PI); //calculate angle in degrees
+  if(delta_x > 0 && delta_y > 0) //top left
+  {
+    theta = 0 + theta;
+  }
+  else if(delta_x < 0 && delta_y > 0) //top right
+  {
+    theta = 180 - theta;
+  }
+  else if(delta_x < 0 && delta_y < 0) //bottom left
+  {
+    theta = 180 + theta;
+  }
+  else if(delta_x > 0 && delta_y < 0) //bottom right
+  {
+    theta = 360 - theta;
+  }
+  // calculate whether its better to turn clockwise or anti-clockwise
+  float difference = theta - ptheta;
+  difference = fmod(difference + 360.0, 360.0);
+  ROS_INFO("Calculated theta: %f difference: %f delta_x: %f delta_y: %f", theta, difference, delta_x, delta_y);
+  if(difference > 180)
+  {
+    return -difference / (180/M_PI);
+  }
+  else
+  {
+    return difference / (180/M_PI);
+  }
+//  float difference = ptheta - theta;
+//  if(difference > 0)
+//  {
+//    return difference / (180/M_PI);
+//  }
+//  else
+//  {
+//    return -difference / (180/M_PI);
+//  }
 }
 
 float CalculateLinearVelocity()
 {
-  linear_x = sqrt(grass_distance);
-  return linear_x;
+  CalculateGrassDistance(); //this updates grass_distance
+  return 0.1 * sqrt(grass_distance);
+}
+
+void CalculateGrassDistance()
+{
+  double distance_x = grass_x - px;
+  double distance_y = grass_y - py;
+  double distance = sqrt(pow(distance_x, 2.0) + pow(distance_y, 2.0));
+  grass_distance = distance;
 }
 
 int main(int argc, char** argv){
   px = initial_position_x = atoi(argv[2]);
   py = initial_position_y = atoi(argv[3]);
-  
+
   initial_theta = atoi(argv[4]) / (180/M_PI);
   std::stringstream rName;
   int poopNumber = atoi(argv[1]) + 1;
@@ -413,10 +372,10 @@ int main(int argc, char** argv){
 
   ill_cmdvel.linear.x = 0;
   ill_cmdvel.linear.y = 0;
-  ill_cmdvel.angular.z = 0.5;  
-  
+  ill_cmdvel.angular.z = 0.5;
+
   //Poop related variables
-  
+
   srand (time(NULL));
 
   int poopCount = 200 + rand()%300;
@@ -436,7 +395,7 @@ int main(int argc, char** argv){
     // Publish the messages
 
 
-    if (ill) {    
+    if (ill) {
       RobotNode_stage_pub.publish(ill_cmdvel);
       RobotNode_stage_poop.publish(ill_cmdvel);
       respawn++;
@@ -444,9 +403,9 @@ int main(int argc, char** argv){
         respawn = 0;
         ill = false;
         wellness = 1000;
-      } 
+      }
     }else if(wellness < 0 && sheep_message.S_State != 0){
-      
+
       RobotNode_stage_pub.publish(RobotNode_cmdvel);
       if (!pooping)
       {
@@ -456,7 +415,7 @@ int main(int argc, char** argv){
     }else if(wellness < 0 && sheep_message.S_State == 0){
       RobotNode_stage_pub.publish(ill_cmdvel);
       RobotNode_stage_poop.publish(ill_cmdvel);
-      ill = true;      
+      ill = true;
     }else {
       RobotNode_stage_pub.publish(RobotNode_cmdvel);
       if (!pooping)
@@ -465,6 +424,7 @@ int main(int argc, char** argv){
       }else { RobotNode_stage_poop.publish(ill_cmdvel);}
       wellness--;
     }
+    ROS_INFO("Movement x: %f   y: %f", RobotNode_cmdvel.linear.x, RobotNode_cmdvel.angular.z);
     SheepNode_state.publish(sheep_message);
     ros::spinOnce(); //Must Have this statement in the program
     grass_distance = 99999; //reset grass_distance for next tick
