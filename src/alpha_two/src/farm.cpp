@@ -90,7 +90,7 @@ void changeWeather(){
   new_farm_msg.f3_soil_condition = abs(fmod(new_farm_msg.f3_soil_condition + (new_farm_msg.rainfall + 5) + sunlight,100.0));
   new_farm_msg.f4_soil_condition = abs(fmod(new_farm_msg.f4_soil_condition + (new_farm_msg.rainfall + 2) + sunlight,100.0));
   
-  printf("f1 %d   f2 %d  f3 %d  f4 %d \n",new_farm_msg.f1_soil_condition,new_farm_msg.f2_soil_condition,new_farm_msg.f3_soil_condition,new_farm_msg.f4_soil_condition);
+  //printf("f1 %d   f2 %d  f3 %d  f4 %d \n",new_farm_msg.f1_soil_condition,new_farm_msg.f2_soil_condition,new_farm_msg.f3_soil_condition,new_farm_msg.f4_soil_condition);
   //new_farm_msg.f4_soil_condition += int(float(new_farm_msg.f4_soil_condition)*(float(new_farm_msg.rainfall)/100.0)) -5.0;
   
 }
