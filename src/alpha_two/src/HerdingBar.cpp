@@ -154,11 +154,11 @@ int main(int argc, char **argv)
         if(state == 0) {
             linear_x = instruction_vector[0].linear_x;
             angular_z = instruction_vector[0].angular_z;
-            } else if(state == 1){
-                break;
-            } else if(state == 2) {
-                linear_x = instruction_vector[2].linear_x;
-                angular_z = instruction_vector[2].angular_z;
+        }else if(state == 1){
+             break;
+        }else if(state == 2) {
+            linear_x = instruction_vector[2].linear_x;
+            angular_z = instruction_vector[2].angular_z;
             }
 
         RobotNode_cmdvel.linear.x = linear_x;
