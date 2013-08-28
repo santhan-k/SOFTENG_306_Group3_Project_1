@@ -1,5 +1,5 @@
-int64 S_State
+int32 S_State
 int32 S_ID
-int64 health
-int64 grass_locked
+int32 health
+int32 grass_locked
 
