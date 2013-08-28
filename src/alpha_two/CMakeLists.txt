@@ -165,3 +165,6 @@ target_link_libraries(cloud ${catkin_LIBRARIES})
 
 add_executable(SheepDog1 src/SheepDog1.cpp)
 target_link_libraries(SheepDog1 ${catkin_LIBRARIES})
+
+add_executable(HerdingBar src/HerdingBar.cpp)
+target_link_libraries(HerdingBar ${catkin_LIBRARIES})
