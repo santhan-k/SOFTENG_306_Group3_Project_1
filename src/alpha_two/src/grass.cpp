@@ -55,14 +55,26 @@ void StageOdom_callback(nav_msgs::Odometry msg)
 
 void StageSheep_callback(alpha_two::sheepState msg)
 {
-  
-  ROS_INFO("RECEIVED Sheep MESSAGE FROM: %d",msg.S_ID);
   ROS_INFO("Sheep message: %d, %d, %d, %d", msg.S_State, msg.S_ID, msg.health, msg.grass_locked);
-  if(msg.S_State==1 && msg.grass_locked==grass_state.G_ID && grass_state.G_State == 0){
-    grass_state.G_State=1;
-    grass_state.lockedBy = msg.S_ID;
-    ROS_INFO("LOCKED by SHEEP: %d",msg.S_ID);
+  if(grass_state.G_State == 0) //grass is not locked by a sheep
+  {
+    if(grass_state.G_ID == msg.grass_locked) //grass ID matches the grass ID sheep is locked to
+    {
+      grass_state.G_State = 1; //grass is now locked
+      grass_state.lockedBy = msg.S_ID; //locked to that sheep
+      ROS_INFO("Locked by sheep: %d", msg.S_ID);
+    }
+    else //grass ID does not match the ID sheep is locked to
+    {
+      return; //ignore the sheep msg
+    }
   }
+  else if(grass_state.G_State == 1) //grass is locked by a sheep
+  {
+    ROS_INFO("Still locked by sheep: %d", grass_state.lockedBy);
+    return; //don't need to do anything
+  }
+  
 }
 
 

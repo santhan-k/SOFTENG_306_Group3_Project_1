@@ -17,7 +17,7 @@ ros::Publisher SheepNode_state;
 geometry_msgs::Twist RobotNode_cmdvel;
 geometry_msgs::Twist ill_cmdvel;
 
-bool debug = false; //Show/hide ROS log messages
+bool debug = true; //Show/hide ROS log messages
 #define SAMPLE_NUMBER 10 // represents number of samples in world file.
 
 //velocity of the robot
@@ -62,8 +62,8 @@ void StageOdom_callback(nav_msgs::Odometry msg)
 {
    ptheta = fmod((2*M_PI) + initial_theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2), 2*M_PI) * (180/M_PI);
 
-   if(debug)
-     ROS_INFO("PX: %f", msg.pose.pose.position.x);
+   //if(debug)
+     //ROS_INFO("PX: %f", msg.pose.pose.position.x);
 }
 
 // Gets current x and y position relative to the world
@@ -113,95 +113,86 @@ void StageBasePose_callback(nav_msgs::Odometry msg)
  */
 void StageGrass_callback(alpha_two::grassState msg)
 {
-  ROS_INFO("RECEIVED GRASS MESSAGE FROM: %d",msg.G_ID);
-  /*
-   * Check if this piece of grass is currently locked by any
-   * other sheep. If grass is already locked, ignore this piece
-   * of grass because sheep don't share!
-   */
-  if(msg.lockedBy != sheep_message.S_ID && msg.lockedBy != 0)
+  if(debug)
+    ROS_INFO("Received grass message: %d, %d, %d, %d, %d", msg.G_State, msg.G_ID, msg.x, msg.y, msg.lockedBy);
+  if(sheep_message.S_State == 0) //sheep is looking for grass
   {
-    return;
-  }
-  
-  /*
-   * Check if sheep is currently locked onto a piece of grass, 
-   * if it is, ignore all other grass messages
-   */
-  if(sheep_message.S_State == 1)
-  {
-    return;
-  } 
-
-  /*
-   * Check if sheep is currently locked onto this piece of grass
-   * If it is, don't change anything, sheep will keep walking
-   * towards it
-   */
-  if(sheep_message.grass_locked == msg.G_ID)
-  {
-    if(debug)
-      ROS_INFO("Locked onto grass: %d", msg.G_ID);
-    //go towards grass
-    angular_z = CalculateAngularVelocity();
-    //slow down if sheep gets close to the grass
-    linear_x = CalculateLinearVelocity();
-    return;
-  }
-
-  /*
-   * If sheep is currently looking for a piece of grass, calculate
-   * the distance between itself and the grass. If it's closer
-   * to the piece of grass, save the grass coordinates
-   */
-  if(sheep_message.S_State == 0 && msg.G_State == 0)
-  {
-    double distance_x = px - msg.x;
-    double distance_y = py - msg.y;
-    double distance = sqrt(pow(distance_x, 2.0) + pow(distance_y, 2.0));
-    if(distance < grass_distance)
+    if(msg.G_State == 0) //grass is not currently locked by a sheep
     {
-      sheep_message.S_State = 1;
-      sheep_message.grass_locked = msg.G_ID;
-      ROS_INFO("Attempting to lock onto grass");
-      grass_distance = distance;
-      grass_x = msg.x;
-      grass_y = msg.y;
+      if(debug)
+        ROS_INFO("Calculating distance to grass: %d", msg.G_ID);
+      double distance_x = px - msg.x;
+      double distance_y = py - msg.y;
+      double distance = sqrt(pow(distance_x, 2.0) + pow(distance_y, 2.0));
+      if(distance < grass_distance)
+      {
+        sheep_message.S_State = 1;
+        sheep_message.grass_locked = msg.G_ID;
+        if(debug)
+          ROS_INFO("Attempting to lock onto grass: %d", msg.G_ID);
+        grass_distance = distance;
+        grass_x = msg.x;
+        grass_y = msg.y;
+      }
+      if(debug)
+        ROS_INFO("Distance to grass: %d is %f", msg.G_ID, grass_distance);
+      return;
+    }
+    else if(msg.G_State == 1) //grass is currently locked by a sheep
+    {
+      return; //grass is locked, and sheep is not locked to a grass, ignore the grass
     }
   }
-
-  // Not sure what the rest of this stuff does?
-  if(sheep_message.S_State == 1 && sheep_message.grass_locked==msg.G_ID && msg.lockedBy != sheep_message.S_ID)
+  else if(sheep_message.S_State == 1) //sheep is locked onto a grass
   {
-    sheep_message.S_State = 0;
-    if(debug)
-      ROS_INFO("CHANGED STATE BACK TO LOOKING FOR GRASS");
-
+    if(sheep_message.grass_locked == msg.G_ID) //sheep is locked to this grass
+    {
+      if(sheep_message.S_ID == msg.lockedBy) //sheep is locked by the grass
+      {
+        if(debug)
+          ROS_INFO("Moving towards grass: %d", msg.G_ID);
+        angular_z = CalculateAngularVelocity(); //go towards grass
+        linear_x = CalculateLinearVelocity(); //slow down if sheep gets close to the grass
+      }
+      else //sheep was locked to the grass, but the grass was not locked to this sheep
+      {
+        //reset the sheep back to searching mode
+        sheep_message.S_State = 0;
+        sheep_message.grass_locked = 0;
+        if(debug)
+          ROS_INFO("Attempt to lock onto grass failed. Going back to searching");
+        return;
+      }
+    }
+    else //sheep is not locked to this grass, ignore the grass
+    {
+      return;
+    }
   }
 }
 
 void StageLaser_callback(sensor_msgs::LaserScan msg)
 {
-  if(debug)
-    ROS_INFO("------------------------ Intensity ----------------------------");
+  //if(debug)
+    //ROS_INFO("------------------------ Intensity ----------------------------");
 
   for(unsigned int i = 0; i < msg.intensities.size(); ++i){
     // Either 1 or 0 is returned. 1 if an object is view 0 otherwise.
     double curRange = msg.intensities[i];
-    if(debug)
-      ROS_INFO("Current intensity is    : %f", curRange);
+    //if(debug)
+      //ROS_INFO("Current intensity is    : %f", curRange);
   }
 
-  if(debug)
-    ROS_INFO("-------------------------- Range -----------------------------");
+  //if(debug)
+    //ROS_INFO("-------------------------- Range -----------------------------");
 
   int current_lowest_index = 0;
   double smallest_range = msg.ranges[current_lowest_index];
   // Iterate through LaserScan messages and find the smallest range
   for(unsigned int i = 1; i < msg.ranges.size(); ++i)
   {
-    if(debug)
-      ROS_INFO("Current range is    : %f", msg.ranges[i]);
+    //if(debug)
+      //ROS_INFO("Current range is    : %f", msg.ranges[i]);
 
     if(msg.ranges[current_lowest_index] > msg.ranges[i])
     {
@@ -225,8 +216,8 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
     // This allows custom usage of the laser during herding mode.
     laserData_msg = msg;
   }
-  if(debug)
-    ROS_INFO("-------------------------- END -----------------------------");
+  //if(debug)
+    //ROS_INFO("-------------------------- END -----------------------------");
 }
 
 void sheepDog1_callback(alpha_two::sheepDogState msg){
@@ -284,13 +275,14 @@ void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int c
 float CalculateAngularVelocity() {
 
         float deltaX = grass_x - px;
-        float deltaY = grass_y-py;
+        float deltaY = grass_y - py;
 
         float changeInAngle;
 
         //Angle from origin
         float angle = atan(deltaY / deltaX);
         angle = 180 * angle / M_PI;
+        ROS_INFO("Difference in angle: %f", angle);
 
         //Find the quadrant to work out difference
         if (deltaX >= 0 && deltaY >= 0) { // right and up
