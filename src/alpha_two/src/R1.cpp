@@ -96,8 +96,36 @@ void initiateSheepHerding(nav_msgs::Odometry msg){
 
 void StageBasePose_callback(nav_msgs::Odometry msg)
 {
-  px = msg.pose.pose.position.y;
-  py = -msg.pose.pose.position.x;
+  // Calculate which quadrant the sheep is in
+  if(msg.pose.pose.position.y < 0 && msg.pose.pose.position.x > 0) //quadrant 1
+  {
+    px = -msg.pose.pose.position.y;
+    py = msg.pose.pose.position.x;
+    ROS_INFO("1");
+  }
+  else if(msg.pose.pose.position.y < 0 && msg.pose.pose.position.x < 0) //quadrant 2
+  {
+    px = -msg.pose.pose.position.y;
+    py = msg.pose.pose.position.x;
+    ROS_INFO("2");
+  }
+  else if(msg.pose.pose.position.y > 0 && msg.pose.pose.position.x < 0) //quadrant 3
+  {
+    px = -msg.pose.pose.position.y;
+    py = msg.pose.pose.position.x;
+    ROS_INFO("3");
+  }
+  else if(msg.pose.pose.position.y > 0 && msg.pose.pose.position.x > 0) //quadrant 4
+  {
+    px = -msg.pose.pose.position.y;
+    py = msg.pose.pose.position.x;
+    ROS_INFO("4");
+  }
+  else
+  {
+    ROS_INFO("5");
+  }
+  
   if (debug)
   {
     ROS_INFO("Current x position is: %f", px);
@@ -266,7 +294,8 @@ void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int c
   else if(sheep_message.S_State==1)
   {
     ROS_INFO("GOING TO GRASS");
-    linear_x = float(1) * atan2(grass_x-px,grass_y-py);
+    float delta = sqrt(pow(grass_x-px, 2.0) + pow(grass_y-py, 2.0));
+    linear_x = delta;
     angular_z = CalculateAngularVelocity();
     ROS_INFO("linear velocity: %f   angular velocity: %f", linear_x, angular_z);
   }
@@ -280,12 +309,16 @@ float CalculateAngularVelocity() {
         float changeInAngle;
 
         //Angle from origin
-        float angle = atan(deltaY / deltaX);
-        angle = 180 * angle / M_PI;
-        ROS_INFO("Difference in angle: %f", angle);
-
+        float angle1 = atan(deltaY / deltaX);
+        float angle2 = 180 - angle1;
+        float angle3 = 90 - ptheta;
+        float finalAngle = angle3 + angle2;
+        //angle = 180 * angle / M_PI;
+        
+        ROS_INFO("Difference in angle: %f", finalAngle);
+        ROS_INFO("ptheta : %f", ptheta);
         //Find the quadrant to work out difference
-        if (deltaX >= 0 && deltaY >= 0) { // right and up
+        /*if (deltaX >= 0 && deltaY >= 0) { // right and up
                 changeInAngle = angle - ptheta;
         } else if (deltaX >= 0 && deltaY <= 0) { // right and down
                 changeInAngle = angle - ptheta;
@@ -293,8 +326,9 @@ float CalculateAngularVelocity() {
                 changeInAngle = 180 - ptheta + angle;
         } else if (deltaX <= 0 && deltaY <= 0) { // left and down
                 changeInAngle = angle - 180 - ptheta;
-        }
+        }*/
 
+        changeInAngle = finalAngle - ptheta;
         //Make sure angle is between -360 and 360
         changeInAngle = fmodf(changeInAngle, 360.0);
 
@@ -302,15 +336,15 @@ float CalculateAngularVelocity() {
         if (changeInAngle <= 2 && changeInAngle > 359) {
                 angularZ = 0;
         } else if (changeInAngle >= 2 && changeInAngle <= 180) {
-                angularZ = 0.5;
+                angularZ = (M_PI / 18) * 5;
         } else if (changeInAngle <= 359 && changeInAngle > 180) {
-                angularZ = -0.5;
+                angularZ = -(M_PI / 18) * 5;
         } else if (changeInAngle < 2 && changeInAngle >= -2) {
                 angularZ = 0;
         } else if (changeInAngle <= -2 && changeInAngle >= -180) {
-                angularZ = -0.5;
+                angularZ = -(M_PI / 18) * 5;
         } else if (changeInAngle <= -180) {
-                angularZ = 0.5;
+                angularZ = (M_PI / 18) * 5;
         }
         //ROS_INFO("grass_x: %f   grass_y: %f  px:%f   py:%f changeInAngle: %f",grass_x,grass_y, px, py, changeInAngle);
         return angularZ;
@@ -324,8 +358,9 @@ float CalculateLinearVelocity()
 }
 
 int main(int argc, char** argv){
-  initial_position_x = atoi(argv[2]);
-  initial_position_y = atoi(argv[3]);
+  px = initial_position_x = atoi(argv[2]);
+  py = initial_position_y = atoi(argv[3]);
+  
   initial_theta = atoi(argv[4]) / (180/M_PI);
   std::stringstream rName;
   rName.str("");
