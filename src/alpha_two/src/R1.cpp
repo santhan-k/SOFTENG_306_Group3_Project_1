@@ -13,6 +13,7 @@
 using namespace std;
 // Global variables and objects
 ros::Publisher RobotNode_stage_pub;
+ros::Publisher RobotNode_stage_poop;
 ros::Publisher SheepNode_state;
 geometry_msgs::Twist RobotNode_cmdvel;
 geometry_msgs::Twist ill_cmdvel;
@@ -363,6 +364,7 @@ int main(int argc, char** argv){
   
   initial_theta = atoi(argv[4]) / (180/M_PI);
   std::stringstream rName;
+  int poopNumber = atoi(argv[1]) + 1;
   rName.str("");
   rName << "RobotNode" << argv[1];
   // You must call ros::init() first of all. ros::init() function needs to see argc and argv
@@ -398,6 +400,10 @@ int main(int argc, char** argv){
 
   ros::Publisher sheepNode_state = n.advertise<alpha_two::sheepState>("Sheep_msg",1000);
 
+  //Publisher for poop message
+  rName.str("");
+  rName << "robot_" << poopNumber <<"/cmd_vel";
+  RobotNode_stage_poop = n.advertise<geometry_msgs::Twist>(rName.str(),1000);
   sheep_message.S_State = 0;
   sheep_message.S_ID = atoi(argv[1]);
   sheep_message.health = 100;
@@ -421,6 +427,7 @@ int main(int argc, char** argv){
 
     if (ill) {    
       RobotNode_stage_pub.publish(ill_cmdvel);
+      RobotNode_stage_poop.publish(ill_cmdvel);
       respawn++;
       if(respawn > 150){
         respawn = 0;
@@ -429,12 +436,15 @@ int main(int argc, char** argv){
       } 
     }else if(wellness < 0 && sheep_message.S_State != 0){
       RobotNode_stage_pub.publish(RobotNode_cmdvel);
+      RobotNode_stage_poop.publish(RobotNode_cmdvel);
       wellness = 1000;
     }else if(wellness < 0 && sheep_message.S_State == 0){
       RobotNode_stage_pub.publish(ill_cmdvel);
+      RobotNode_stage_poop.publish(ill_cmdvel);
       ill = true;      
     }else {
       RobotNode_stage_pub.publish(RobotNode_cmdvel);
+      RobotNode_stage_poop.publish(RobotNode_cmdvel);
       wellness--;
     }
     SheepNode_state.publish(sheep_message);
