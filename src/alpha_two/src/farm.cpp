@@ -49,22 +49,22 @@ void changeWeather(){
   if(dayCounter < 183){
     new_farm_msg.rainfall = rand()%5;
     curSeason = 3;
-    sunlight = 80;
+    sunlight = 140;
   //Winter
   }else if (dayCounter < 366){
     new_farm_msg.rainfall = rand()%6;
     curSeason = 2;
-    sunlight = 40;
+    sunlight = 10;
   //Summer
   }else if (dayCounter < 549){        
     new_farm_msg.rainfall = rand(); 
     curSeason = 1;
-    sunlight = 100;
+    sunlight = 200;
   //Autumn
   }else if (dayCounter < 732){        
     new_farm_msg.rainfall = rand()%3;
     curSeason = 4;
-    sunlight = 60;
+    sunlight = 80;
   }else{
     dayCounter = 0;
   }
