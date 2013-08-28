@@ -75,12 +75,12 @@ void grass_update(double growth_rate)
       grass_age = 0;
     }
     // growing in good weather for grass HP
-    else if (growth_rate > 0.07  &&  grass_hp+growth_rate < 20) {
+    else if (growth_rate > 0.05  &&  grass_hp+growth_rate < 20) {
       grass_hp += growth_rate;
     }
 
     // growing in bad weather
-    else if  (growth_rate <= 0.07 && grass_hp-growth_rate >= 0) {
+    else if  (growth_rate <= 0.05 && grass_hp-growth_rate >= 0) {
       grass_hp -= growth_rate;
     }
 
@@ -151,7 +151,7 @@ void FarmNode_callback(alpha_two::farmState msg)
 
   if(initial_position_x>0 && initial_position_y>0) //Field 1
   {
-    growth_rate = (double(msg.f1_soil_condition)/1000); //0 ~ 0.1
+    growth_rate = (double(msg.f1_soil_condition)/10); //0 ~ 0.1
     
     grass_update(growth_rate);
 
@@ -159,21 +159,21 @@ void FarmNode_callback(alpha_two::farmState msg)
 
   else if(initial_position_x>0 && initial_position_y<0) //Field 2
   {
-    growth_rate = (double(msg.f2_soil_condition)/1000);
+    growth_rate = (double(msg.f2_soil_condition)/10);
 
     grass_update(growth_rate);
   }
 
   else if(initial_position_x<0 && initial_position_y<0) //Field 3
   {
-    growth_rate = (double(msg.f3_soil_condition)/1000);
+    growth_rate = (double(msg.f3_soil_condition)/10);
 
     grass_update(growth_rate);
   }
 
   else if(initial_position_x<0 && initial_position_y>0) //Field 4
   {
-    growth_rate = (double(msg.f4_soil_condition)/1000);
+    growth_rate = (double(msg.f4_soil_condition)/10);
 
     grass_update(growth_rate);
   }
@@ -280,9 +280,9 @@ int main(int argc, char **argv)
     RobotNode_stage_pub.publish(RobotNode_cmdvel);
     grassNode_pub.publish(grass_state);
     ros::spinOnce();
-    printf("Grass HP is: %f \n", grass_hp);
-    printf("GROWTH RATE: %f\n", growth_rate);
-    printf("Grass age is: %f \n", grass_age);
+  //  printf("Grass HP is: %f \n", grass_hp);
+   // printf("GROWTH RATE: %f\n", growth_rate);
+   // printf("Grass age is: %f \n", grass_age);
     loop_rate.sleep();
     ++count;
   }
