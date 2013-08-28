@@ -29,7 +29,8 @@ for i in range(0,numSheep):
         x = -(random.randint(2,28))
         y = random.randint(2,28)
     angle  = random.randint(1,359)
-    line = "myRobot( pose [" +str(x)+" "+str(y) + " 0 "+str(angle)+" ] name \"r"+str(i)+"\" color \"red\" )"
+    line = "myRobot( pose [" +str(x)+" "+str(y) + " 0 "+str(angle)+" ] name \"r"+str(i)+"\" color \"white\" )"
+
     array.append(line)
     line = "mySheepsPoop( pose [" +str(x)+" "+str(y) + " 0 "+str(angle)+" ] name \"poop"+str(i)+"\" color \"brown\" )"
     array.append(line)
