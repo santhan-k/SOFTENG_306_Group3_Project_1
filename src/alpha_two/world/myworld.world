@@ -153,7 +153,7 @@ define herdingBarVertical position
 
 define herdingBarHorizontal position
 (
-  size [30 1 2]
+  size [1 30 2]
   color_rgba [0.20874 0.780392 0.149019 0.9]
   gui_boundary 0
   herdingBarlaser(pose [ 0.050 0.000 -0.07 0.000 ])
@@ -277,7 +277,7 @@ SpringMessage( pose [-21 35 0 0] color "black")
 AutumnMessage( pose [-21 35 0 0] color "black")
 
 herdingBarVertical( pose [10 0 0 0] name "bar0")
-herdingBarHorizontal( pose [15 30 0 0] name "bar1")
+herdingBarHorizontal( pose [15 30 0 90] name "bar1")
 
 # robot_0 = farmer
 # robot_1-4 = Fields
