@@ -22,7 +22,9 @@ double ptheta;
 double theta;
 
 int state;
-char heardingBarNumber;
+char herdingBarNumber;
+char currentField;
+char destinationField;
 
 struct instruction_struct
 {
@@ -39,19 +41,31 @@ void StageOdom_callback(nav_msgs::Odometry msg)
     py =10 + msg.pose.pose.position.y;
 	
     //condition for movement
-    if(heardingBarNumber == 18) { // 18 refers to robot_18 which is the vertical herdingBar 
+    if(herdingBarNumber == 18) { // 18 refers to robot_18 which is the vertical herdingBar 
 	    if(px > 26 && state == 0) {
 		    state = 1;
 	    } else if(px < 5 && state == 2) {
 		    state = 1;
 	    }
-    } else if(heardingBarNumber == 19) { // 19 refers to robot_18, horizontal herdingBar 
-	     if(px < -18 && state == 0) {
+    } else if(herdingBarNumber == 19) { // 19 refers to robot_18, horizontal herdingBar 
+	     if(px < -24 && state == 0) {
 		      state = 1;
 	     } else if(px > 5 && state == 2) {
 		      state = 1;
 	     }	
-    }
+    } else if(herdingBarNumber == 20) { // 19 refers to robot_18, horizontal herdingBar 
+	     if(px < -24 && state == 0) {
+		      state = 1;
+	     } else if(px > 5 && state == 2) {
+		      state = 1;
+	     }
+    }	else if(herdingBarNumber == 21) { // 19 refers to robot_18, horizontal herdingBar 
+	     if(px < -18 && state == 0) {
+		      state = 1;
+	     } else if(px > 5 && state == 2) {
+		      state = 1;
+	     }
+    }	
 
     //displayed on terminal
     ROS_INFO("Current x position is: %f", px);
@@ -114,8 +128,12 @@ int main(int argc, char **argv)
 
     //Argument for opening or closing (second argument)
     state = atoi(argv[2]);
-    //Argument for gate number (first argument)
-    heardingBarNumber = atoi(argv[1]);
+    //Argument for herding bar number (first argument)
+    herdingBarNumber = atoi(argv[1]);
+  
+    //currentField = atoi(argv[3]);
+
+    //destinationField = atoi(argv[4]);
 
 	  //velocity of this RobotNode
    	geometry_msgs::Twist RobotNode_cmdvel;
@@ -124,14 +142,38 @@ int main(int argc, char **argv)
 
     // Conditions to check gate to move, and call addInstruction
     // Farm1: Vertical herding bar
-    if(heardingBarNumber == 18) {
+    if(herdingBarNumber == 18) {
       addInstruction(instruction_vector, 750, 0.10, 0.0, 1); // Inward movement
   	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
   	  addInstruction(instruction_vector, 75, -1, 0.0, 0); // Outward movement
-    }else if(heardingBarNumber == 19) { // Farm1: Horizontal bar
+    }else if(herdingBarNumber == 19) { // Farm1: Horizontal bar
       addInstruction(instruction_vector, 750, -0.10, 0.0, 1); // Inward movement
   	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
   	  addInstruction(instruction_vector, 75, 1, 0.0, 0); // Outward movement
+    }else if(herdingBarNumber == 20) { // Farm1: Horizontal bar
+      addInstruction(instruction_vector, 750, -0.10, 0.0, 1); // Inward movement
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
+  	  addInstruction(instruction_vector, 75, 1, 0.0, 0); // Outward movement
+    }else if(herdingBarNumber == 21) { // Farm1: Horizontal bar
+      addInstruction(instruction_vector, 750, -0.10, 0.0, 1); // Inward movement
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
+  	  addInstruction(instruction_vector, 75, 1, 0.0, 0); // Outward movement
+    }else if(herdingBarNumber == 22) { // Farm1: Horizontal bar
+      addInstruction(instruction_vector, 750, -0.10, 0.0, 1); // Inward movement
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
+  	  addInstruction(instruction_vector, 75, 1, 0.0, 0); // Outward movement
+    }else if(herdingBarNumber == 23) { // Farm1: Horizontal bar
+      addInstruction(instruction_vector, 750, 0.10, 0.0, 1); // Inward movement
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
+  	  addInstruction(instruction_vector, 75, -1, 0.0, 0); // Outward movement
+    }else if(herdingBarNumber == 24) { // Farm1: Horizontal bar
+      addInstruction(instruction_vector, 750, -0.10, 0.0, 1); // Inward movement
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
+  	  addInstruction(instruction_vector, 75, 1, 0.0, 0); // Outward movement
+    }else if(herdingBarNumber == 25) { // Farm1: Horizontal bar
+      addInstruction(instruction_vector, 750, 0.10, 0.0, 1); // Inward movement
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
+  	  addInstruction(instruction_vector, 75, -1, 0.0, 0); // Outward movement
     }
 
 
