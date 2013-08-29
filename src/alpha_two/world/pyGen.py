@@ -51,7 +51,7 @@ for i in range(0,numGrass):
     y = random.randint(1,29)
     line = "myGrass( pose [" +str(x)+" "+ str(y) + " 0 0 ] name \"g"+str(i)+"\" color \"green\" )"
     array.append(line)
-    subprocess.Popen("rosrun alpha_two grass "+str(grassNum)+"  "+str(x)+" "+str(y),shell=True,stdout = PIPE)
+    #subprocess.Popen("rosrun alpha_two grass "+str(grassNum)+"  "+str(x)+" "+str(y),shell=True,stdout = PIPE)
     grassNum = grassNum + 1
 
 for i in range(0,numGrass):
@@ -59,7 +59,7 @@ for i in range(0,numGrass):
     y = -(random.randint(1,29))
     line = "myGrass( pose [" +str(x)+" "+ str(y) + " 0 0 ] name \"g"+str(i+numGrass)+"\" color \"green\" )"
     array.append(line)
-    subprocess.Popen("rosrun alpha_two grass "+str(grassNum)+"  "+str(x)+" "+str(y),shell=True,stdout = PIPE)
+    #subprocess.Popen("rosrun alpha_two grass "+str(grassNum)+"  "+str(x)+" "+str(y),shell=True,stdout = PIPE)
     grassNum = grassNum + 1
 
 for i in range(0,numGrass):
@@ -67,7 +67,7 @@ for i in range(0,numGrass):
     y = -(random.randint(1,29))
     line = "myGrass( pose [" +str(x)+" "+ str(y) + " 0 0 ] name \"g"+str(i+numGrass*2)+"\" color \"green\" )"
     array.append(line)
-    subprocess.Popen("rosrun alpha_two grass "+str(grassNum)+"  "+str(x)+" "+str(y),shell=True,stdout = PIPE)
+    #subprocess.Popen("rosrun alpha_two grass "+str(grassNum)+"  "+str(x)+" "+str(y),shell=True,stdout = PIPE)
     grassNum = grassNum + 1
 
 for i in range(0,numGrass):
@@ -75,7 +75,7 @@ for i in range(0,numGrass):
     y = random.randint(1,29)
     line = "myGrass( pose [" +str(x)+" "+ str(y) + " 0 0 ] name \"g"+str(i+numGrass*3)+"\" color \"green\" )"
     array.append(line)
-    subprocess.Popen("rosrun alpha_two grass "+str(grassNum)+"  "+str(x)+" "+str(y),shell=True,stdout = PIPE)
+    #subprocess.Popen("rosrun alpha_two grass "+str(grassNum)+"  "+str(x)+" "+str(y),shell=True,stdout = PIPE)
     grassNum = grassNum + 1
 
 ins = open( "newmyworldpython.world", "w" )
