@@ -311,10 +311,10 @@ myGate( pose [ 0 25.91 0 90 ] name "g2" color "gray60")
 myGate( pose [ 0 -25.92 0 90 ] name "g3" color "gray60")
 myGate( pose [ -26 29.73 0 0 ] name "g4" color "gray60")
 
-myTruck( pose [ -29.5 34 5 0 ] name "t1" color "grey20")
+myTruck( pose [ -29.5 34 5 0 ] name "t1" color "black")
 endGate0( pose [ -26 50 0 0 ] name "eg0" color "white")
-endGate1( pose [ -26 60 1 0 ] name "eg1" color "brown")
-endGate2( pose [ -52 34 1.1 0 ] name "eg2" color "brown")
+endGate1( pose [ -26 60 1 0 ] name "eg1" color "grey90")
+endGate2( pose [ -52 34 1.1 0 ] name "eg2" color "grey90")
 #endMaze0( pose [ -41.85 35.04 0 0 ] name "eg1" color "white")
 #endMaze1( pose [ -41.85 35.04 1 0 ] name "eg1" color "brown")
 
