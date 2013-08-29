@@ -84,6 +84,8 @@ for line in array:
   ins.write("%s\n" % line)
 ins.close()
 p = Popen("rosrun alpha_two R0",shell=True,stdout=PIPE)
+p1 = Popen("rosrun alpha_two farm",shell=True,stdout=PIPE)
+p2 = Popen("rosrun alpha_two cloud",shell=True,stdout=PIPE)
 p=Popen("rosrun stage stageros newmyworldpython.world",shell=True,stdout=PIPE) 
 
 
