@@ -37,6 +37,9 @@ double grass_x;
 double grass_y;
 double grass_distance = 99999; //we need to init it for comparison purposes
 
+//quadrant sheep is currently in
+int quadrant;
+
 //initial position of robot
 double initial_position_x;
 double initial_position_y;
@@ -59,6 +62,7 @@ void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int c
 void initiateSheepHerding(nav_msgs::Odometry msg);
 void CalculateGrassDistance();
 void reset_sheep();
+void calculate_quadrant();
 float CalculateAngularVelocity();
 float CalculateLinearVelocity();
 
@@ -115,6 +119,12 @@ void StageBasePose_callback(nav_msgs::Odometry msg){
 void StageGrass_callback(alpha_two::grassState msg){
   //if(debug)
     //ROS_INFO("Received grass message: %d, %d, %d, %d, %d", msg.G_State, msg.G_ID, msg.x, msg.y, msg.lockedBy);
+  
+  // If grass is not in the same field, ignore it
+  if(quadrant != msg.quadrant)
+  {
+    return;
+  }
   
   /*
    * Continuously re-check which grass is closest
@@ -192,6 +202,26 @@ void reset_sheep()
   sheep_message.S_State = 0;
   sheep_message.grass_locked = 0;
   grass_distance = 99999;
+}
+
+void calculate_quadrant()
+{
+  if(px > 0 && py > 0) //quadrant 1
+  {
+    quadrant = 1;
+  }
+  else if(px > 0 && py < 0) //quadrant 2
+  {
+    quadrant = 2;
+  }
+  else if(px < 0 && py < 0) //quadrant 3
+  {
+    quadrant = 3;
+  }
+  else if(px < 0 && py > 0) //quadrant 4
+  {
+    quadrant = 4;
+  }
 }
 
 void StageLaser_callback(sensor_msgs::LaserScan msg){
@@ -450,6 +480,7 @@ int main(int argc, char** argv){
     //ROS_INFO("Movement x: %f   y: %f", RobotNode_cmdvel.linear.x, RobotNode_cmdvel.angular.z);
     SheepNode_state.publish(sheep_message);
     ros::spinOnce(); //Must Have this statement in the program
+    calculate_quadrant();
     //grass_distance = 99999; //reset grass_distance for next tick
     r.sleep();
     ++count;
