@@ -114,41 +114,51 @@ void StageBasePose_callback(nav_msgs::Odometry msg){
 void StageGrass_callback(alpha_two::grassState msg){
   //if(debug)
     //ROS_INFO("Received grass message: %d, %d, %d, %d, %d", msg.G_State, msg.G_ID, msg.x, msg.y, msg.lockedBy);
-  if(sheep_message.S_State == 0){ //sheep is looking for grass
-    if(msg.G_State == 0){ //grass is not currently locked by a sheep
+  
+  /*
+   * Continuously re-check which grass is closest
+   */
+  if(msg.G_State == 0) //grass is not currently locked by a sheep
+  {
+    if(debug)
+      ROS_INFO("Calculating distance to grass: %d", msg.G_ID);
+    double distance_x = px - msg.x;
+    double distance_y = py - msg.y;
+    double distance = sqrt(pow(distance_x, 2.0) + pow(distance_y, 2.0));
+    if(distance < grass_distance){
+      sheep_message.S_State = 1;
+      sheep_message.grass_locked = msg.G_ID;
       if(debug)
-        ROS_INFO("Calculating distance to grass: %d", msg.G_ID);
-      double distance_x = px - msg.x;
-      double distance_y = py - msg.y;
-      double distance = sqrt(pow(distance_x, 2.0) + pow(distance_y, 2.0));
-      if(distance < grass_distance){
-        sheep_message.S_State = 1;
-        sheep_message.grass_locked = msg.G_ID;
-        if(debug)
-          ROS_INFO("Attempting to lock onto grass: %d", msg.G_ID);
-        grass_distance = distance;
-        grass_x = msg.x;
-        grass_y = msg.y;
-      }
-      if(debug)
-        ROS_INFO("Distance to grass: %d is %f", msg.G_ID, grass_distance);
-      return;
+        ROS_INFO("Attempting to lock onto grass: %d", msg.G_ID);
+      grass_distance = distance;
+      grass_x = msg.x;
+      grass_y = msg.y;
     }
-    else if(msg.G_State == 1){//grass is currently locked by a sheep
-      return; //grass is locked, and sheep is not locked to a grass, ignore the grass
-    }
+    if(debug)
+      ROS_INFO("Distance to grass: %d is %f", msg.G_ID, grass_distance);
+    return;
   }
-  else if(sheep_message.S_State == 1){ //sheep is locked onto a grass
-    if(sheep_message.grass_locked == msg.G_ID){ //sheep is locked to this grass
-      if(sheep_message.S_ID == msg.lockedBy){ //sheep is locked by the grass
+  else if(msg.G_State == 1) //grass is currently locked by a sheep
+  {
+    return; //grass is locked, and sheep is not locked to a grass, ignore the grass
+  }
+  if(sheep_message.S_State == 1) //sheep is locked onto a grass
+  {
+    if(sheep_message.grass_locked == msg.G_ID) //sheep is locked to this grass
+    {
+      if(sheep_message.S_ID == msg.lockedBy) //sheep is locked by the grass
+      {
         angular_z = CalculateAngularVelocity(); //go towards grass
         linear_x = CalculateLinearVelocity(); //slow down if sheep gets close to the grass
       }
-      else{ //sheep was locked to the grass, but the grass was not locked to this sheep
-        if(msg.G_State == 0){//sheep locked to grass, grass has not yet updated
+      else //sheep was locked to the grass, but the grass was not locked to this sheep
+      {
+        if(msg.G_State == 0) //sheep locked to grass, grass has not yet updated
+        {
           return; //wait for next tick of grass to be updated
         }
-        else if(msg.G_State == 1){ //sheep locked to grass, grass not locked to this sheep and is locked by another sheep
+        else if(msg.G_State == 1) //sheep locked to grass, grass not locked to this sheep and is locked by another sheep
+        {
           //reset the sheep back to searching mode
           sheep_message.S_State = 0;
           sheep_message.grass_locked = 0;
@@ -158,11 +168,13 @@ void StageGrass_callback(alpha_two::grassState msg){
         }
       }
     }
-    else{ //sheep is not locked to this grass, ignore the grass
+    else //sheep is not locked to this grass, ignore the grass
+    {
       return;
     }
   }
-  else if(sheep_message.S_State == 2){ //sheep is eating grass
+  else if(sheep_message.S_State == 2) //sheep is eating grass
+  {
     ROS_INFO("Eating grass");
     angular_z = 0;
     linear_x = 0;

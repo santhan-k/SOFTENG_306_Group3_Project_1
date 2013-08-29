@@ -71,6 +71,15 @@ void StageSheep_callback(alpha_two::sheepState msg)
   }
   else if(grass_state.G_State == 1) //locked by a sheep
   {
+    if(grass_state.lockedBy == msg.S_State) //grass is locked to this sheep
+    {
+      if(msg.grass_locked != grass_state.G_ID) //sheep is not locked to this grass
+      {
+        //this may occur from rechecking which grass is closest
+        grass_state.G_State = 0;
+        grass_state.lockedBy = 0;
+      }
+    }
     if(msg.S_State == 2) //sheep is eating this grass
     {
       grass_hp -= 1; //grass is being eaten
