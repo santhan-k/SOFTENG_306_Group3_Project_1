@@ -287,7 +287,7 @@ herdingBarHorizontal( pose [15 30 0 90] name "barFarm1H") # Robot_19
 
 # Field2
 herdingBarVertical( pose [30 -15 0 0] name "barFarm2V")# Robot_20
-herdingBarHorizontal( pose [7.9 0 0 90] name "barFarm2H") # Robot_21
+herdingBarHorizontal( pose [7 0 0 90] name "barFarm2H") # Robot_21
 
 # Field3
 herdingBarVertical( pose [0 -7.9 0 0] name "barFarm3V") # Robot_22
@@ -295,7 +295,7 @@ herdingBarHorizontal( pose [-15 -30 0 90] name "barFarm3H") # Robot_23
 
 # Field4
 herdingBarVertical( pose [0 15 0 0] name "barFarm4V") # Robot_24
-herdingBarHorizontal( pose [7.9 0 0 90] name "barFarm4H") # Robot_25
+herdingBarHorizontal( pose [-7 0 0 90] name "barFarm4H") # Robot_25
 
 # robot_0 = farmer
 # robot_1-4 = Fields
