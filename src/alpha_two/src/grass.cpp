@@ -123,8 +123,6 @@ void StageLaser_callback(sensor_msgs::LaserScan msg){
 
 
 
-
-
 int main(int argc, char **argv){
   //   growth_rate = 1;
   //initialize robot parameters
