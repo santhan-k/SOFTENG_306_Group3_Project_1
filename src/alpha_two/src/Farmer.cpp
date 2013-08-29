@@ -64,9 +64,6 @@ int main(int argc, char **argv)
   //to stage
   ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_0/cmd_vel",1000);
 
-  // Subscribes to grass messages
-  ros::Subscriber grassNode_sub = n.subscribe<alpha_two::grassState>("Grass_msg", 1000, StageGrass_callback); 
-
   ros::Rate loop_rate(10);
 
   //a count of how many messages we have sent
