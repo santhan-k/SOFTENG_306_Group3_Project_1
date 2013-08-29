@@ -13,7 +13,6 @@
 
 using namespace std;
 
-// SVN testing
 
 alpha_two::farmState new_farm_msg;
 alpha_two::rainFall new_rain_msg;
@@ -49,28 +48,28 @@ void changeWeather(){
   //Rainfall is determined randomly according to the current season.
   //for demo purposes, values set are very dynamic. when set to realistic values
   //it's hard to see the difference visually
-  //Spring
+  //Summer
   if(dayCounter < 183){
     new_farm_msg.rainfall = rand()%50;
     curSeason = 3;
     sunlight = 90;
   }
   
-  //Summer
+  //Winter
   else if (dayCounter < 366){
     new_farm_msg.rainfall = rand()%10;
     curSeason = 2;
     sunlight = 70; 
   }
   
-  //Autumn
+  //Spring
   else if (dayCounter < 549){        
     new_farm_msg.rainfall = rand()%40; 
     curSeason = 1;
     sunlight = 50;
   }
   
-  //Winter
+  //Autumn
   else if (dayCounter < 732){        
     new_farm_msg.rainfall = rand()%20;
     curSeason = 4;
@@ -100,7 +99,7 @@ void changeWeather(){
     raining = true;
   }
 
-  
+ 
   //Weather changes applied to each field.  
   // sums up all the factors that affect the soil quality and scales it.
 
@@ -111,6 +110,7 @@ void changeWeather(){
   new_farm_msg.f3_soil_condition = 10 + abs(new_farm_msg.rainfall) + abs(sunlight);
   new_farm_msg.f4_soil_condition = 40 + abs(new_farm_msg.rainfall) + abs(sunlight);
 
+// old algorithm that was used to scale the soil values. No longer needed.
 /*
   int fieldArray[4] = {field1, field2, field3, field4};
   int max = fieldArray[0];
@@ -128,22 +128,6 @@ void changeWeather(){
   printf("soil2 is : %d \n", new_farm_msg.f2_soil_condition);
   printf("soil3 is : %d \n", new_farm_msg.f3_soil_condition);
   printf("soil4 is : %d \n", new_farm_msg.f4_soil_condition);
-/*
-  printf("field2 is %d \n", field2);
-  printf("field3 is %d \n", field3);
-  printf("F1 new_farm_msg.rainfall is: %d \n", new_farm_msg.rainfall);
-  printf("F1 sunlight is %f \n", sunlight);
-
-*/
-
-  // sends values between 0 and 1
-  //new_farm_msg.f1_soil_condition = field1/max;
-  //new_farm_msg.f2_soil_condition = field2/max;
-  //new_farm_msg.f3_soil_condition = field3/max;
-  //new_farm_msg.f4_soil_condition = field4/max;
-  
-  //      printf("f1 %d   f2 %d  f3 %d  f4 %d       \n",new_farm_msg.f1_soil_condition,new_farm_msg.f2_soil_condition,new_farm_msg.f3_soil_condition,new_farm_msg.f4_soil_condition);
-  //new_farm_msg.f4_soil_condition += int(float(new_farm_msg.f4_soil_condition)*(float(new_farm_msg.rainfall)/100.0)) -5.0;
   
 }
 
