@@ -159,7 +159,7 @@ define myGate position
   bitmap "gate.png"
   mylaser(pose [ 0.050 0.000 0 0.000 ])
   ranger_return 1
-  obstacle_return 1	
+  obstacle_return 0	
   
 )
 
