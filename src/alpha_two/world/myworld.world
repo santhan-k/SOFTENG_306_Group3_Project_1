@@ -20,8 +20,7 @@ define mylaser2 ranger
   )
   #generic model properties
   color "black"
-  size [ 0.05 0.05 0.1 ]
-  
+  size [ 0.05 0.05 0.1 ]  
 )
 
 define myGrasslaser ranger
@@ -111,6 +110,15 @@ define endGate1 model
   ranger_return 1
   bitmap "endGate1.png"
   obstacle_return 0	
+)
+
+define endGate2 model
+(
+  size [40 8 0.1]
+  boundary 0
+  ranger_return 1
+  bitmap "endGate1.png"
+  obstacle_return 0
 )
 
 define endMaze0 model
@@ -308,6 +316,7 @@ myGate( pose [ -26 29.73 0 0 ] name "g4" color "gray60")
 myTruck( pose [ -26 33 5 0 ] name "t1" color "black")
 endGate0( pose [ -26 50 0 0 ] name "eg0" color "white")
 endGate1( pose [ -26 50 1 0 ] name "eg1" color "brown")
+endGate2( pose [ -42 34 1 0 ] name "eg2" color "brown")
 #endMaze0( pose [ -41.85 35.04 0 0 ] name "eg1" color "white")
 #endMaze1( pose [ -41.85 35.04 1 0 ] name "eg1" color "brown")
 
