@@ -153,7 +153,7 @@ int main(int argc, char **argv){
   else if(gateNumber == 6){
   	addInstruction(instruction_vector, 75, 1, 0.0, 1);    // Opening gate
   	addInstruction(instruction_vector, 0, 0, 0.0, 2);     // Stationary Gate
- 	addInstruction(instruction_vector, 75, -1, 0.0, 0);   // Closing gate
+ 	  addInstruction(instruction_vector, 75, -1, 0.0, 0);   // Closing gate
   }
   else if(gateNumber == 7){
     addInstruction(instruction_vector, 75, -1, 0.0, 1);   // Opening gate
@@ -168,7 +168,7 @@ int main(int argc, char **argv){
   else if(gateNumber == 9){
     addInstruction(instruction_vector, 75, 1, 0.0, 1);    // Opening gate
   	addInstruction(instruction_vector, 0, 0, 0.0, 2);     // Stationary Gate
- 	addInstruction(instruction_vector, 75, -1, 0.0, 0);   // Closing gate
+ 	  addInstruction(instruction_vector, 75, -1, 0.0, 0);   // Closing gate
   }
 
   //keep track of what step we are up to
