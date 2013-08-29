@@ -48,33 +48,35 @@ void changeWeather(){
   //Rainfall is determined randomly according to the current season.
   //for demo purposes, values set are very dynamic. when set to realistic values
   //it's hard to see the difference visually
+ 
+
   //Summer
   if(dayCounter < 183){
-    new_farm_msg.rainfall = rand()%50;
+    new_farm_msg.rainfall = rand()%20;
     curSeason = 3;
-    sunlight = 90;
+    sunlight = -10;  // TOO MUCH SUNLINGHT NOW KILLS!!!
 
   }
   
   //Winter
   else if (dayCounter < 366){
-    new_farm_msg.rainfall = rand()%10;
+    new_farm_msg.rainfall = rand()%40;
     curSeason = 2;
-    sunlight = 70; 
+    sunlight = 0; 
   }
   
   //Spring
   else if (dayCounter < 549){        
-    new_farm_msg.rainfall = rand()%40; 
+    new_farm_msg.rainfall = rand()%20; 
     curSeason = 1;
-    sunlight = 50;
+    sunlight = 30;
   }
   
   //Autumn
   else if (dayCounter < 732){        
     new_farm_msg.rainfall = rand()%20;
     curSeason = 4;
-    sunlight = 5;
+    sunlight = 0;
   }
   else{
     dayCounter = 0;
@@ -108,10 +110,10 @@ void changeWeather(){
 // it used to be the above code
 
   // field 1 = green, 2 = brown, 3 = yellow, 4 = light green
-  new_farm_msg.f1_soil_condition = 50 + abs(new_farm_msg.rainfall) + abs(sunlight); // average of 50, 25, 90 =
-  new_farm_msg.f2_soil_condition = 5 + abs(new_farm_msg.rainfall) + abs(sunlight); // average of 5, 5, 70
-  new_farm_msg.f3_soil_condition = 10 + abs(new_farm_msg.rainfall) + abs(sunlight); // average of 10, 20, 50
-  new_farm_msg.f4_soil_condition = 40 + abs(new_farm_msg.rainfall) + abs(sunlight); // average of 40, 10, 5
+  new_farm_msg.f1_soil_condition = 50 + abs(new_farm_msg.rainfall) + abs(sunlight); // Always alive, maybe in Summer
+  new_farm_msg.f2_soil_condition = 10 + abs(new_farm_msg.rainfall) + abs(sunlight); // Always dead, maybe in Spring
+  new_farm_msg.f3_soil_condition = 20 + abs(new_farm_msg.rainfall) + abs(sunlight); // Maybe in Winter, Alive in Spring, Dead otherwise
+  new_farm_msg.f4_soil_condition = 40 + abs(new_farm_msg.rainfall) + abs(sunlight); // Dead in Summer, Maybe in Autumn, Alive otherwise
 
 // old algorithm that was used to scale the soil values. No longer needed.
 /*
