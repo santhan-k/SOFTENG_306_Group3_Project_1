@@ -13,6 +13,7 @@ using namespace std;
 
 //velocity of the robot
 double linear_x;
+double linear_y;
 double angular_z;
 
 //pose of the robot
@@ -26,11 +27,13 @@ char herdingBarNumber; // herdingBarNumber refers to the robot number in the wor
 char currentField;
 char destinationField;
 
+bool isHorizontal = false;
+
 struct instruction_struct
 {
     int step_count; //how many times do we execute this step before we move to the next step
     double linear_x; //linear velocity in m/s
-    double angular_z; //angular velocity
+    double linear_y; //angular velocity
     int next_step; //which step do we move to when we finish this current step
 };
 
@@ -75,12 +78,12 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
 }
 
 
-void addInstruction(vector<instruction_struct>& instruction_vector, int step_count, double linear_x, double angular_z, int next_step)
+void addInstruction(vector<instruction_struct>& instruction_vector, int step_count, double linear_x, double linear_y, int next_step)
 {
   instruction_struct *Instruction = new instruction_struct; //create a new instruction_struct
   Instruction->step_count = step_count;
   Instruction->linear_x = linear_x;
-  Instruction->angular_z = angular_z;
+  Instruction->linear_y = linear_y;
   Instruction->next_step = next_step;
   instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
 }
@@ -96,7 +99,7 @@ int main(int argc, char **argv)
 	
     //Initial velocity
     linear_x = 0;
-    angular_z = 0;
+    linear_y = 0;
 
     std::stringstream rName;
     rName.str("");
@@ -139,8 +142,8 @@ int main(int argc, char **argv)
     // Conditions to check gate to move, and call addInstruction
     // Farm1: Vertical herding bar
     if(herdingBarNumber == 18) {
-      addInstruction(instruction_vector, 750, 0.10, 0.0, 1); // Inward movement
-  	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
+      addInstruction(instruction_vector, 7, 0.10, 0.0, 2); // Inward movement
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 3); // Stop movement
   	  addInstruction(instruction_vector, 75, -1, 0.0, 0); // Outward movement
     }else if(herdingBarNumber == 19) { // Farm1: Horizontal bar
       addInstruction(instruction_vector, 750, -0.10, 0.0, 1); // Inward movement
@@ -151,12 +154,16 @@ int main(int argc, char **argv)
   	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
   	  addInstruction(instruction_vector, 75, 1, 0.0, 0); // Outward movement
     }else if(herdingBarNumber == 21) { // Farm1: Horizontal bar
+      isHorizontal = true;                       // Check if it needs to be moved across
       addInstruction(instruction_vector, 750, -0.10, 0.0, 1); // Inward movement
-  	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
+      addInstruction(instruction_vector, 75, 0, -0.5, 2);     // Move across
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 3); // Stop movement
   	  addInstruction(instruction_vector, 75, 1, 0.0, 0); // Outward movement
     }else if(herdingBarNumber == 22) { // Farm1: Horizontal bar
+      isHorizontal = true;                        // Check if it needs to be moved across
       addInstruction(instruction_vector, 750, -0.10, 0.0, 1); // Inward movement
-  	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
+      addInstruction(instruction_vector, 75, 0, -0.5, 2);     // Move across
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 3); // Stop movement
   	  addInstruction(instruction_vector, 75, 1, 0.0, 0); // Outward movement
     }else if(herdingBarNumber == 23) { // Farm1: Horizontal bar
       addInstruction(instruction_vector, 750, 0.10, 0.0, 1); // Inward movement
@@ -167,8 +174,10 @@ int main(int argc, char **argv)
   	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
   	  addInstruction(instruction_vector, 75, 1, 0.0, 0); // Outward movement
     }else if(herdingBarNumber == 25) { // Farm1: Horizontal bar
+      isHorizontal = true;                        // Check if it needs to be moved across
       addInstruction(instruction_vector, 750, 0.10, 0.0, 1); // Inward movement
-  	  addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
+      addInstruction(instruction_vector, 75, 0, 0.5, 2);     // Move across
+  	  addInstruction(instruction_vector, 0, 0, 0.0, 3); // Stop movement
   	  addInstruction(instruction_vector, 75, -1, 0.0, 0); // Outward movement
     }
 
@@ -179,27 +188,34 @@ int main(int argc, char **argv)
     while (ros::ok())
     {
         //messages to stage
-        linear_x = instruction_vector[current_step].linear_x;
-        angular_z = instruction_vector[current_step].angular_z;
+        //linear_x = instruction_vector[current_step].linear_x;
+        //linear_y = instruction_vector[current_step].linear_y;
         ++current_step_count;
         
         // State 0 stops bar movement
         // State 1 brings bars inward during herding mode.
         // State 2 moves bar in the backward direction.
-        if(state == 0) {
+        
+        // Check if bar needs to be moved across
+        if(state == 0 && isHorizontal) {
+            linear_x = instruction_vector[1].linear_x;
+            linear_y = instruction_vector[1].linear_y; 
+            current_step++;           
+        } else if(state == 0) {
             linear_x = instruction_vector[0].linear_x;
-            angular_z = instruction_vector[0].angular_z;
+            linear_y = instruction_vector[0].linear_y;
+
         }else if(state == 1){
              break;
         }else if(state == 2) {
             linear_x = instruction_vector[2].linear_x;
-            angular_z = instruction_vector[2].angular_z;
+            linear_y = instruction_vector[2].linear_y;
             }
 
         RobotNode_cmdvel.linear.x = linear_x;
-        RobotNode_cmdvel.angular.z = angular_z;
+        RobotNode_cmdvel.linear.y = linear_y;
         
-        cout << "Current step: " << current_step << "\n";
+        cout << "Current step: " << current_step_count << "\n";
 
         //publish the message
         RobotNode_stage_pub.publish(RobotNode_cmdvel);
@@ -208,10 +224,15 @@ int main(int argc, char **argv)
 
         loop_rate.sleep();
         ++count;
+
+        // Check the number of steps moved
+        if(current_step > 150) {
+          isHorizontal = false;     // No longer needs to be moved across
+        }          
     } //ends while()
 	
     RobotNode_cmdvel.linear.x = 0;
-    RobotNode_cmdvel.angular.z =0;
+    RobotNode_cmdvel.linear.y =0;
         
     cout << "Current step: " << current_step << "\n";
 
