@@ -32,7 +32,7 @@ double grass_hp; //variable for determining when the grass dies
 // grass age is not redundant (since we want to just use the sheep's grass eating speed of 1 per tick, and using the grass_hp's reaction to that sounds good).
 // double grass_age; //growth status. ranges from 0-3. also used for rotation speed.
 
-//for HP recovery : if soil condtion is above 30. 
+//for HP recovery : if soil condtion is above 30.
 //HP will decrease if soil condition is below 30.
 
 
@@ -76,8 +76,8 @@ void StageSheep_callback(alpha_two::sheepState msg)
     {
 
       // grass eating speed has been changed (from 1). The grass still dies, but it will still spin slowly.
-      grass_hp -= 0.5; //grass is being eaten
-      if(grass_hp <= 0.5) // Check if grass is eaten
+      grass_hp -= 3.5; //grass is being eaten
+      if(grass_hp <= 3.5) // Check if grass is eaten
       {
         grass_state.G_State = 2; //grass is now eaten
         grass_state.lockedBy = 0; //grass is no longer locked to a sheep
@@ -90,15 +90,15 @@ void StageSheep_callback(alpha_two::sheepState msg)
         grass_state.G_State = 0; //grass is available to be eaten
         grass_state.lockedBy = 0; //grass is no longer locked to a sheep
       }
-    } 
+    }
   }
 }
 
 void grass_update(double growth_rate){
- 
+
   if(grass_hp <= 0.5) // if the hp is lower than 1 (by being eaten or by weather) then it dies (G_State = 2)
   {
-    grass_state.G_State = 2;  // grass is dead. 
+    grass_state.G_State = 2;  // grass is dead.
   }
   // growing in good weather for grass HP
   // the ranges for growth_rate need to be adjusted when the soil values from farm.cpp change.
@@ -123,9 +123,9 @@ void grass_update(double growth_rate){
   if (growth_rate > 0.06  &&  grass_age+growth_rate < 3)
   {
     grass_age += growth_rate;
-  } 
+  }
   else if (growth_rate <= 0.06 && grass_age - growth_rate >= 0)
-  {  
+  {
   }
 */
 
@@ -228,13 +228,13 @@ int main(int argc, char **argv){
   ///messages
   //velocity of this RobotNode
   geometry_msgs::Twist RobotNode_cmdvel;
-  
-  
+
+
   grass_state.G_State = 0;
   grass_state.G_ID = atoi(argv[1]);
   initial_position_x = atoi(argv[2]);
   initial_position_y = atoi(argv[3]);
-  
+
   // Work out what quadrant this grass is in
   if(initial_position_x > 0 && initial_position_y > 0) //quadrant 1
   {
@@ -251,24 +251,24 @@ int main(int argc, char **argv){
   else if(initial_position_x < 0 && initial_position_y > 0) //quadrant 4
   {
     grass_state.quadrant = 4;
-  } 
-  
+  }
+
   while (ros::ok()){
     grass_state.x = initial_position_x;
     grass_state.y = initial_position_y;
-    
+
     RobotNode_cmdvel.angular.z = grass_hp; // this dynamically updates the age of our grass; spinning it faster the older it is.
 
     //publish the message
     RobotNode_stage_pub.publish(RobotNode_cmdvel);
     grassNode_pub.publish(grass_state);
     ros::spinOnce();
-    
+
     //prints for debugging
     printf("Grass HP is: %f \n", grass_hp);
     printf("GROWTH RATE: %f \n", growth_rate);
 
-    
+
     loop_rate.sleep();
     ++count;
   }
