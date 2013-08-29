@@ -101,6 +101,9 @@ void addInstruction(vector<instruction_struct>& instruction_vector, int step_cou
 
 int main(int argc, char **argv){
 
+  // HerdingBar message struct
+  alpha_two::herdingBar herdingBar_msg;
+
   //initialize robot parameters
   //Initial pose. This is same as the pose that you used in the world file to set	the robot pose.
   theta = M_PI/2.0;
@@ -146,7 +149,7 @@ int main(int argc, char **argv){
   //destinationField = atoi(argv[4]);
 
   //velocity of this RobotNode
-  geometry_msgs::Twist RobotNode_cmdvel;
+  geometry_msgs::Twist RobotNode_cmdvel;  
 
   vector <instruction_struct> instruction_vector;
 
@@ -203,17 +206,13 @@ int main(int argc, char **argv){
   int current_step = 0;
   int current_step_count = 0;
   
-  // HerdingBar message struct
-  alpha_two::herdingBar herdingBar_msg;
+  herdingBar_msg.herdingMode = state;
+  HerdingBar_pub.publish(herdingBar_msg);  
+
+  bool messageSent = false;
   while (ros::ok()){
-    //messages to stage
-    //linear_x = instruction_vector[current_step].linear_x;
-    //linear_y = instruction_vector[current_step].linear_y;
+    // Send message once to sheep that herding has begun. 
     ++current_step_count;     
-        
-    // State 0 stops bar movement
-    // State 1 brings bars inward during herding mode.
-    // State 2 moves bar in the backward direction.
         
     // Check if bar needs to be moved across
     if(state == 0 && isHorizontal) {
@@ -251,10 +250,8 @@ int main(int argc, char **argv){
     if(current_step > 150) {
       isHorizontal = false;     // No longer needs to be moved across
     }  
+    
 
-    herdingBar_msg.herdingMode = state;
-    HerdingBar_pub.publish(herdingBar_msg);
- 
         
   }//ends while()
 	
