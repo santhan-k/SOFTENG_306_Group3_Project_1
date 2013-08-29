@@ -69,26 +69,19 @@ int main(int argc, char **argv)
   bool reachedLimit = false;
   while (ros::ok())
   {
- 
-
-    if((px < -35 && py < -35) && !reachedLimit)
+    if((px < -35 && py < -35) && !reachedLimit) //check the cloud Reached the lower limit
     {
       reachedLimit = true;
       velX = 1;
       velY = 1;
-
     }
     
-    
-    
-    
-    else if (!reachedLimit)
+    else if (!reachedLimit) //
     {
       velX = -1;
       velY = -1;
-
     }
-    else if (px>35 && py>35)
+    else if (px>35 && py>35) //check the cloud Reached the upper limit
     {
       reachedLimit = false;
     }
