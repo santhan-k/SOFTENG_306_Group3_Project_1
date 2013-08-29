@@ -24,13 +24,15 @@ int velY = 0;
 bool raining;
 
 
-void StageOdom_cloudcallback(nav_msgs::Odometry msg){
+void StageOdom_cloudcallback(nav_msgs::Odometry msg)
+{
   px = msg.pose.pose.position.x;
   py = msg.pose.pose.position.y;
   //printf("HELLO\n");
 }
 
-int main(int argc, char **argv){
+int main(int argc, char **argv)
+{
 
   dayCounter = 0;
   //You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument   is the name of the node
@@ -48,18 +50,20 @@ int main(int argc, char **argv){
   //velocity of this RobotNode
   geometry_msgs::Twist RobotNode_cmdvel;
   bool reachedLimit = false;
-  while (ros::ok()){
- 
-  //publish the message
-    if(px<40){
+  while (ros::ok())
+  {
+    if(px<40)
+    {
       RobotNode_cmdvel.linear.x = -1;
       RobotNode_cmdvel.linear.y = 0;
     }
-    else{
+    else
+    {
       RobotNode_cmdvel.linear.x = 0;
       RobotNode_cmdvel.linear.y = 0;
     }
 
+    //publish the message
     RobotNode_stage_pub.publish(RobotNode_cmdvel);
      
     ros::spinOnce();
