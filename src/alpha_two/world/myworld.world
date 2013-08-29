@@ -153,6 +153,7 @@ define herdingBarVertical position
 (
   size [0.1 30 2]
   color_rgba [0.20874 0.780392 0.149019 1]
+  drive "omni"
   gui_boundary 0
   herdingBarlaser(pose [ 0.050 0.000 -0.07 0.000 ])
   laser_return 1
@@ -166,6 +167,7 @@ define herdingBarHorizontal position
 (
   size [0.1 30 2]
   color_rgba [0.20874 0.780392 0.149019 1]
+  drive "omni"
   gui_boundary 0
   herdingBarlaser(pose [ 0.050 0.000 -0.07 0.000 ])
   laser_return 1
@@ -291,7 +293,7 @@ herdingBarVertical( pose [30 -15 0 0] name "barFarm2V")# Robot_20
 herdingBarHorizontal( pose [7 0 0 90] name "barFarm2H") # Robot_21
 
 # Field3
-herdingBarVertical( pose [0 -7.9 0 0] name "barFarm3V") # Robot_22
+herdingBarVertical( pose [0 -7 0 0] name "barFarm3V") # Robot_22
 herdingBarHorizontal( pose [-15 -30 0 90] name "barFarm3H") # Robot_23
 
 # Field4
