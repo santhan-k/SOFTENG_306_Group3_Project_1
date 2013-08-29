@@ -24,24 +24,29 @@ int velY = 0; //Initialise velocity x direction
 bool raining;
 
 
-void StageOdom_cloudcallback(nav_msgs::Odometry msg){
+void StageOdom_cloudcallback(nav_msgs::Odometry msg)
+{
   px = 30 + msg.pose.pose.position.x;
   py = 36 + msg.pose.pose.position.y;
   //printf("HELLO\n");
 }
 
-void StageRain_callback(alpha_two::rainFall msg){
+void StageRain_callback(alpha_two::rainFall msg)
+{
   printf("RAINFALL = %d \n", msg.rain);
-  if(msg.rain == 1){
+  if(msg.rain == 1)
+  {
     raining = true;
   }
-  else{
+  else
+  {
     raining = false;
   }
 }
 
 
-int main(int argc, char **argv){
+int main(int argc, char **argv)
+{
 
   dayCounter = 0;
   //You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument   is the name of the node
@@ -62,10 +67,12 @@ int main(int argc, char **argv){
   //velocity of this RobotNode
   geometry_msgs::Twist RobotNode_cmdvel;
   bool reachedLimit = false;
-  while (ros::ok()){
+  while (ros::ok())
+  {
  
 
-    if((px < -35 && py < -35) && !reachedLimit){
+    if((px < -35 && py < -35) && !reachedLimit)
+    {
       reachedLimit = true;
       velX = 1;
       velY = 1;
@@ -73,19 +80,25 @@ int main(int argc, char **argv){
     }
     
     
-    else if (!reachedLimit) {
+    
+    
+    else if (!reachedLimit)
+    {
       velX = -1;
       velY = -1;
 
     }
-    else if (px>35 && py>35){
+    else if (px>35 && py>35)
+    {
       reachedLimit = false;
     }
-    if(raining){
+    if(raining)
+    {
       RobotNode_cmdvel.linear.x = velX;
       RobotNode_cmdvel.linear.y = velY;
     }
-    else{
+    else
+    {
       RobotNode_cmdvel.linear.x = 0;
       RobotNode_cmdvel.linear.y = 0;
     }
