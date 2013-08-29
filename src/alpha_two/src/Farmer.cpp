@@ -13,6 +13,7 @@ using namespace std;
 
 //velocity of the robot
 double linear_x;
+double linear_y;
 double angular_z;
 
 //pose of the robot
@@ -21,10 +22,12 @@ double py;
 double ptheta;
 double theta;
 
+int fieldNumber;
+
 struct instruction_struct{
   int step_count; //how many times do we execute this step before we move to the next step
   double linear_x; //linear velocity in m/s
-  double angular_z; //angular velocity
+  double linear_y; //angular velocity
   int next_step; //which step do we move to when we finish this current step
 };
 
@@ -32,7 +35,7 @@ void StageOdom_callback(nav_msgs::Odometry msg){
   //This is the call back function to process odometry messages coming from Stage.
   px = 5 + msg.pose.pose.position.x;
   py =10 + msg.pose.pose.position.y;
-  ptheta = fmod((2*M_PI) + theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2), 2*M_PI) * (180/M_PI);
+  //ptheta = fmod((2*M_PI) + theta + angles::normalize_angle_positive(asin(msg.pose.pose.orientation.z) * 2), 2*M_PI) * (180/M_PI);
   ROS_INFO("Current x position is: %f", px);
   ROS_INFO("Current y position is: %f", py);
   ROS_INFO("Current theta is: %f", ptheta);
@@ -50,11 +53,11 @@ void StageGrass_callback(alpha_two::grassState msg){
 //
 //}
 
-void addInstruction(vector<instruction_struct>& instruction_vector, int step_count, double linear_x, double angular_z, int next_step){
+void addInstruction(vector<instruction_struct>& instruction_vector, int step_count, double linear_x, double linear_y, int next_step){
   instruction_struct *Instruction = new instruction_struct; //create a new instruction_struct
   Instruction->step_count = step_count;
   Instruction->linear_x = linear_x;
-  Instruction->angular_z = angular_z;
+  Instruction->linear_y = linear_y;
   Instruction->next_step = next_step;
   instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
 }
@@ -68,7 +71,7 @@ int main(int argc, char **argv){
 
   //Initial velocity
   linear_x = 0;
-  angular_z = 0;
+  linear_y = 0;
 
   //You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument is the name of the node
   ros::init(argc, argv, "RobotNode0");
@@ -91,20 +94,32 @@ int main(int argc, char **argv){
   //a count of howmany messages we have sent
   int count = 0;
 
+  fieldNumber = atoi(argv[1]);
+
   ////messages
   //velocity of this RobotNode
   geometry_msgs::Twist RobotNode_cmdvel;
 
   // Sample instructions
   vector <instruction_struct> instruction_vector; //create new vector of type instruction_struct
-  addInstruction(instruction_vector, 250, 4.0, 0.0, 1);
-  addInstruction(instruction_vector, 18, 0.0, -(M_PI / 18) * 5, 2);
-  addInstruction(instruction_vector, 50, 4.0, 0.0, 3);
-  addInstruction(instruction_vector, 18, 0.0, -(M_PI / 18) * 5, 4);
-  addInstruction(instruction_vector, 250, 4.0, 0.0, 5);
-  addInstruction(instruction_vector, 18, 0.0, (M_PI / 18) * 5, 6);
-  addInstruction(instruction_vector, 50, 4.0, 0.0, 7);
-  addInstruction(instruction_vector, 18, 0.0, (M_PI / 18) * 5, 0);
+
+  if(fieldNumber == 1) {
+      addInstruction(instruction_vector, 2600, 0.10, -0.10, 1); // Diagonal movement
+      addInstruction(instruction_vector, 78, 0, -0.5, 0);     // Move down
+  } else if(fieldNumber == 2) {
+      addInstruction(instruction_vector, 2600, -0.10, -0.10, 1); // Diagonal movement
+      addInstruction(instruction_vector, 75, -0.5, 0, 0);     // Move down
+  } else if(fieldNumber == 3) {
+      addInstruction(instruction_vector, 2600, -0.10, 0.10, 1); // Diagonal movement
+      addInstruction(instruction_vector, 75, 0, 0.5, 0);     // Move down
+  } else if(fieldNumber == 4) {
+      addInstruction(instruction_vector, 2600, 0, 0.10, 1); // Diagonal movement
+      addInstruction(instruction_vector, 75, 0, 0, 0);     // Move down
+  } 
+      
+  //addInstruction(instruction_vector, 75, 0, 0, 0);
+//  addInstruction(instruction_vector, 0, 0, 0.0, 3); // Stop movement
+//  addInstruction(instruction_vector, 75, 1, 0.0, 0); // Outward movement
 
   //keep track of what step we are up to
   int current_step = 0;
@@ -113,15 +128,22 @@ int main(int argc, char **argv){
   while (ros::ok()){
     //messages to stage
     linear_x = instruction_vector[current_step].linear_x;
-    angular_z = instruction_vector[current_step].angular_z;
+    linear_y = instruction_vector[current_step].linear_y;
     ++current_step_count;
+
+
+    if(instruction_vector[current_step].next_step == 0 && current_step_count == instruction_vector[current_step].step_count) {
+       break;
+    }
+
     if(current_step_count == instruction_vector[current_step].step_count){
       current_step = instruction_vector[current_step].next_step;
       current_step_count = 0;
     }
 
+
     RobotNode_cmdvel.linear.x = linear_x;
-    RobotNode_cmdvel.angular.z = angular_z;
+    RobotNode_cmdvel.linear.y = linear_y;
 
     cout << "Current step: " << current_step << "\n";
 
@@ -133,6 +155,12 @@ int main(int argc, char **argv){
     loop_rate.sleep();
     ++count;
   }
+
+  RobotNode_cmdvel.linear.x = 0;
+  RobotNode_cmdvel.linear.y =0;
+
+  RobotNode_stage_pub.publish(RobotNode_cmdvel);
+
   return 0;
 }
 
