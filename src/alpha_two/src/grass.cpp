@@ -177,7 +177,7 @@ int main(int argc, char **argv){
   //Initial pose. This is same as the pose that you used in the world file to set the robot pose.
   //initial_theta = M_PI/2.0;
 
-  grass_hp = 10.0; //intial value for grass's hit point
+  grass_hp = 2.0; //intial value for grass's hit point
 
   //Initial velocity
   linear_x = 0;
