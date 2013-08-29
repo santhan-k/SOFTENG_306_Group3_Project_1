@@ -134,8 +134,8 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(R0 src/R0.cpp)
-target_link_libraries(R0 ${catkin_LIBRARIES})
+add_executable(Farmer src/Farmer.cpp)
+target_link_libraries(Farmer ${catkin_LIBRARIES})
 add_executable(R1 src/R1.cpp)
 target_link_libraries(R1 ${catkin_LIBRARIES})
 add_executable(R2 src/R2.cpp)
@@ -163,8 +163,8 @@ target_link_libraries(farm ${catkin_LIBRARIES})
 add_executable(cloud src/cloud.cpp)
 target_link_libraries(cloud ${catkin_LIBRARIES})
 
-add_executable(SheepDog1 src/SheepDog1.cpp)
-target_link_libraries(SheepDog1 ${catkin_LIBRARIES})
+add_executable(SheepDog src/SheepDog.cpp)
+target_link_libraries(SheepDog ${catkin_LIBRARIES})
 
 add_executable(HerdingBar src/HerdingBar.cpp)
 target_link_libraries(HerdingBar ${catkin_LIBRARIES})
