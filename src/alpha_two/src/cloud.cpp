@@ -34,15 +34,16 @@ void StageRain_callback(alpha_two::rainFall msg){
   printf("RAINFALL = %d \n", msg.rain);
   if(msg.rain == 1){
     raining = true;
-  }else{
+  }
+  else{
     raining = false;
   }
 }
 
 
-int main(int argc, char **argv)
-{
-	dayCounter = 0;
+int main(int argc, char **argv){
+
+  dayCounter = 0;
   //You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument   is the name of the node
   ros::init(argc, argv, "Cloud");
 
@@ -60,35 +61,36 @@ int main(int argc, char **argv)
   //velocity of this RobotNode
   geometry_msgs::Twist RobotNode_cmdvel;
   bool reachedLimit = false;
-  while (ros::ok())
-  {
+  while (ros::ok()){
  
-    //publish the message
+  //publish the message
     if((px < -40 && py < -40) && !reachedLimit){
       reachedLimit = true;
       velX = 1;
       velY = 1;
-    }else if (!reachedLimit) {
+    }
+    else if (!reachedLimit) {
       velX = -1;
       velY = -1;
-    }else if (px>40 && py>40){
+    }
+    else if (px>40 && py>40){
       reachedLimit = false;
     }
     if(raining){
       RobotNode_cmdvel.linear.x = velX;
-      RobotNode_cmdvel.linear.y = velY;}
+      RobotNode_cmdvel.linear.y = velY;
+    }
     else{
       RobotNode_cmdvel.linear.x = 0;
       RobotNode_cmdvel.linear.y = 0;
     }
 
-      RobotNode_stage_pub.publish(RobotNode_cmdvel);
+    RobotNode_stage_pub.publish(RobotNode_cmdvel);
      
-	  ros::spinOnce();
-
-	  loop_rate.sleep();
+    ros::spinOnce();
+    loop_rate.sleep();
   }
 
-return 0;
+  return 0;
 
 }
