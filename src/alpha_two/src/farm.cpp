@@ -13,7 +13,6 @@
 
 using namespace std;
 
-
 alpha_two::farmState new_farm_msg;
 alpha_two::rainFall new_rain_msg;
 
@@ -73,7 +72,7 @@ void changeWeather(){
 
   //Winter
   else if (dayCounter < 732){
-    new_farm_msg.rainfall = rand()%40;
+    new_farm_msg.rainfall = rand()%50;
     curSeason = 4;
     sunlight = 10; 
   }
@@ -129,10 +128,10 @@ void changeWeather(){
 */
 
   //printf("soil1 is %d \n", abs(new_farm_msg.f1_soil_condition));
-  printf("soil1 is : %d \n", new_farm_msg.f1_soil_condition);
-  printf("soil2 is : %d \n", new_farm_msg.f2_soil_condition);
-  printf("soil3 is : %d \n", new_farm_msg.f3_soil_condition);
-  printf("soil4 is : %d \n", new_farm_msg.f4_soil_condition);
+//  printf("soil1 is : %d \n", new_farm_msg.f1_soil_condition);
+//  printf("soil2 is : %d \n", new_farm_msg.f2_soil_condition);
+//  printf("soil3 is : %d \n", new_farm_msg.f3_soil_condition);
+//  printf("soil4 is : %d \n", new_farm_msg.f4_soil_condition);
   
 }
 
@@ -147,7 +146,7 @@ void changeWeather(){
 void changeWeatherMessage(){
   //printf("current season: %d \n",curSeason);
   //Summer
-  if(curSeason==1){
+  if(curSeason==2){
     if(smy > -0.1 && smy > -0.1){
       summer_cmdvel.linear.y = -0.9;
     }
@@ -177,7 +176,7 @@ void changeWeatherMessage(){
     } 
   }
   //Winter
-  else if(curSeason == 2){
+  else if(curSeason == 4){
     if(smy > -0.1 && smy > -0.1){
       summer_cmdvel.linear.y = 0;
     }
@@ -207,7 +206,7 @@ void changeWeatherMessage(){
     }
   }
   //Spring
-  else if(curSeason == 3){
+  else if(curSeason == 1){
     if(smy > -0.1 && smy > -0.1){
       summer_cmdvel.linear.y = 0;
     }
@@ -237,7 +236,7 @@ void changeWeatherMessage(){
     }
   }
   //Autumn
-  else if(curSeason == 4){
+  else if(curSeason == 3){
     if(smy > -0.1 && smy > -0.1){
       summer_cmdvel.linear.y = 0;
     }
