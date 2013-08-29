@@ -23,7 +23,7 @@ int velX = 0; //Initialise velocity x direction
 int velY = 0; //Initialise velocity x direction
 bool raining;
 
-
+//Callback for Odom messages being recieved from stageros
 void StageOdom_cloudcallback(nav_msgs::Odometry msg)
 {
   px = 30 + msg.pose.pose.position.x;
@@ -31,9 +31,12 @@ void StageOdom_cloudcallback(nav_msgs::Odometry msg)
   //printf("HELLO\n");
 }
 
+//Callback for rainFall messages being received from farm.cpp
 void StageRain_callback(alpha_two::rainFall msg)
 {
   printf("RAINFALL = %d \n", msg.rain);
+  
+  //If rain==1, it means its raining.
   if(msg.rain == 1)
   {
     raining = true;
@@ -55,12 +58,14 @@ int main(int argc, char **argv)
   //NodeHandle is the main access point to communicate with ros.
   ros::NodeHandle n;
   
-  
+  //Published for command velocity messages
   ros::Publisher RobotNode_stage_pub = n.advertise<geometry_msgs::Twist>("robot_11/cmd_vel",1000);
+
+  //Subscriber for odom messagges
   ros::Subscriber StageOdo_sub = n.subscribe<nav_msgs::Odometry>("robot_11/odom",1000, StageOdom_cloudcallback); 
   ros::Rate loop_rate(10);
   
-
+  //Subscriber for rain_msg   
   ros::Subscriber rainFall_sub = n.subscribe<alpha_two::rainFall>("rain_msg", 1000, StageRain_callback); 
 
   //messages
@@ -69,7 +74,7 @@ int main(int argc, char **argv)
   bool reachedLimit = false;
   while (ros::ok())
   {
-    if((px < -35 && py < -35) && !reachedLimit) //check the cloud Reached the lower limit
+    if((px < -35 && py < -35) && !reachedLimit) //Check if cloud has reached its lower limit
     {
       reachedLimit = true;
       velX = 1;
@@ -81,10 +86,13 @@ int main(int argc, char **argv)
       velX = -1;
       velY = -1;
     }
-    else if (px>35 && py>35) //check the cloud Reached the upper limit
+    else if (px>35 && py>35) //Check if cloud has reached its upper limit
     {
       reachedLimit = false;
     }
+  
+    //Check if its raining or not
+    //Clouds move if its raining, and stay stationary if it isnt
     if(raining)
     {
       RobotNode_cmdvel.linear.x = velX;
