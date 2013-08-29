@@ -78,10 +78,9 @@ define myFarmer position
 
 define mySheepDog position
 (
-  size [2 3 0.7]
+  size [0.001 0.002 0.01]
   drive "diff"
   mylaser2(pose [ 0.050 0.000 0 0.000 ])
-  #bitmap "farmer.png"
   obstacle_return 0	
 )
 
