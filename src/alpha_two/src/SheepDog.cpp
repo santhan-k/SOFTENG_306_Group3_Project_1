@@ -32,27 +32,25 @@ double initialPosy;
 double initialTheta;
 alpha_two::sheepDogState sheepDog_msg;
 
-void SheepDogPosition_callback(nav_msgs::Odometry msg)
-{
-	  px = -msg.pose.pose.position.y;
-  	py = msg.pose.pose.position.x;
-	theta = msg.pose.pose.orientation.z;
-	theta = floorf(theta * 1000) / 1000;  //Rounding to 3dp
-	//ROS_INFO("INITIAL THETA = %f",initialTheta);
-	//ROS_INFO("px: %f	py: %f		theta: %f", px, py, theta);
+void SheepDogPosition_callback(nav_msgs::Odometry msg){
+  px = -msg.pose.pose.position.y;
+  py = msg.pose.pose.position.x;
+  theta = msg.pose.pose.orientation.z;
+  theta = floorf(theta * 1000) / 1000;  //Rounding to 3dp
+  //ROS_INFO("INITIAL THETA = %f",initialTheta);
+  //ROS_INFO("px: %f	py: %f		theta: %f", px, py, theta);
         
-        sheepDog_msg.x = px;
-        sheepDog_msg.y = py;
-        sheepDog_Pub.publish(sheepDog_msg);
-        
-        if (showDebug){
-            ROS_INFO("X = %f",px);
-            ROS_INFO("Y = %f",py);
-        }        
+  sheepDog_msg.x = px;
+  sheepDog_msg.y = py;
+  sheepDog_Pub.publish(sheepDog_msg);
+       
+  if (showDebug){
+    ROS_INFO("X = %f",px);
+    ROS_INFO("Y = %f",py);
+  }        
 }
 
-void StageLaser_callback(sensor_msgs::LaserScan msg)
-{
+void StageLaser_callback(sensor_msgs::LaserScan msg){
    // Nothing to do here
 }
 
