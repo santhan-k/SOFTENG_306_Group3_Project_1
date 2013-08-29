@@ -204,7 +204,7 @@ int main(int argc, char **argv){
   int current_step_count = 0;
   
   // HerdingBar message struct
-  alpha_two::herdingBar = herdingBar_msg;
+  alpha_two::herdingBar herdingBar_msg;
   while (ros::ok()){
     //messages to stage
     //linear_x = instruction_vector[current_step].linear_x;
