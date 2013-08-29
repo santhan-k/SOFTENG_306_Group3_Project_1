@@ -40,7 +40,8 @@ bool raining = false;
   author: Oriental Turtles
   
 */
-void changeWeather(){
+void changeWeather()
+{
   
   dayCounter = dayCounter%732;
   dayCounter++;
@@ -50,54 +51,65 @@ void changeWeather(){
 
 
   //Spring
-  if (dayCounter < 183){        
+  if (dayCounter < 183)
+  {        
     new_farm_msg.rainfall = rand()%20; 
     curSeason = 1;
     sunlight = 40;
   }
 
   //Summer
-  else if(dayCounter < 366){
+  else if(dayCounter < 366)
+  {
     new_farm_msg.rainfall = rand()%20;
     curSeason = 2;
     sunlight = 0;  
   }
     
   //Autumn
-  else if (dayCounter < 549){        
+  else if (dayCounter < 549)
+  {        
     new_farm_msg.rainfall = rand()%20;
     curSeason = 3;
     sunlight = 10;
   }
 
   //Winter
-  else if (dayCounter < 732){
+  else if (dayCounter < 732)
+  {
     new_farm_msg.rainfall = rand()%50;
     curSeason = 4;
     sunlight = 10; 
   }
 
-  else{
+  else
+  {
     dayCounter = 0;
   }
   
   //printf("day counter: %d\n",dayCounter);
-  if(dayCounter>0 && dayCounter<100){
+  if(dayCounter>0 && dayCounter<100)
+  {
     raining = false;
   }
-  else if (dayCounter >= 100 && dayCounter < 250){
+  else if (dayCounter >= 100 && dayCounter < 250)
+  {
     raining = true;
   }
-  else if (dayCounter >= 250 && dayCounter < 380){
+  else if (dayCounter >= 250 && dayCounter < 380)
+  {
     raining = false;
   }
-  else if (dayCounter >= 380 && dayCounter < 520){
+  else if (dayCounter >= 380 && dayCounter < 520)
+  {
     raining = true;
   }
-  else if (dayCounter >= 520 && dayCounter < 650){
+  else if (dayCounter >= 520 && dayCounter < 650)
+  {
     raining = false;
   }
-  else{
+  else
+  {
     raining = true;
   }
 
@@ -143,125 +155,162 @@ void changeWeather(){
   Author: Oriental Turtles
 
 */
-void changeWeatherMessage(){
+void changeWeatherMessage()
+{
   //printf("current season: %d \n",curSeason);
   //Summer
-  if(curSeason==2){
-    if(smy > -0.1 && smy > -0.1){
+  if(curSeason==2)
+  {
+    if(smy > -0.1 && smy > -0.1)
+    {
       summer_cmdvel.linear.y = -0.9;
     }
-    else if(smy <= -3 && smy <= -3){
+    else if(smy <= -3 && smy <= -3)
+    {
       summer_cmdvel.linear.y = 0;
     }
     
-    if(spy > -0.1 && spy > -0.1){
+    if(spy > -0.1 && spy > -0.1)
+    {
       spring_cmdvel.linear.y = 0;
     }
-    else if(spy <= -3 && spy <= -3){
+    else if(spy <= -3 && spy <= -3)
+    {
       spring_cmdvel.linear.y = 0.9;
     }
    
-    if(wy > -0.1 && wy > -0.1){
+    if(wy > -0.1 && wy > -0.1)
+    {
       winter_cmdvel.linear.y = 0;
     }
-    else if(wy <= -3 && wy <= -3){
+    else if(wy <= -3 && wy <= -3)
+    {
       winter_cmdvel.linear.y = 0.9;
     }
 
-    if(ay > -0.1 && ay > -0.1){
+    if(ay > -0.1 && ay > -0.1)
+    {
       autumn_cmdvel.linear.y = 0;
     }
-    else if(ay <= -3 && ay <= -3){
+    else if(ay <= -3 && ay <= -3)
+    {
       autumn_cmdvel.linear.y = 0.9;
     } 
   }
   //Winter
-  else if(curSeason == 4){
-    if(smy > -0.1 && smy > -0.1){
+  else if(curSeason == 4)
+  {
+    if(smy > -0.1 && smy > -0.1)
+    {
       summer_cmdvel.linear.y = 0;
     }
-    else if(smy <= -3 && smy <= -3){
+    else if(smy <= -3 && smy <= -3)
+    {
       summer_cmdvel.linear.y = 0.9;
     }
  
-    if(spy > -0.1 && spy > -0.1){
+    if(spy > -0.1 && spy > -0.1)
+    {
       spring_cmdvel.linear.y = 0;
     }
-    else if(spy <= -3 && spy <= -3){
+    else if(spy <= -3 && spy <= -3)
+    {
       spring_cmdvel.linear.y = 0.9;
     }
    
-    if(wy > -0.1 && wy > -0.1){
+    if(wy > -0.1 && wy > -0.1)
+    {
       winter_cmdvel.linear.y = -0.9;
     }
-    else if(wy <= -3 && wy <= -3){
+    else if(wy <= -3 && wy <= -3)
+    {
       winter_cmdvel.linear.y = 0;
     }
 
-    if(ay > -0.1 && ay > -0.1){
+    if(ay > -0.1 && ay > -0.1)
+    {
       autumn_cmdvel.linear.y = 0;
     }
-    else if(ay <= -3 && ay <= -3){
+    else if(ay <= -3 && ay <= -3)
+    {
       autumn_cmdvel.linear.y = 0.9;
     }
   }
   //Spring
-  else if(curSeason == 1){
-    if(smy > -0.1 && smy > -0.1){
+  else if(curSeason == 1)
+  {
+    if(smy > -0.1 && smy > -0.1)
+    {
       summer_cmdvel.linear.y = 0;
     }
-    else if(smy <= -3 && smy <= -3){
+    else if(smy <= -3 && smy <= -3)
+    {
       summer_cmdvel.linear.y = 0.9;
     }
     
-    if(spy > -0.1 && spy > -0.1){
+    if(spy > -0.1 && spy > -0.1)
+    {
       spring_cmdvel.linear.y = -0.9;
     }
-    else if(spy <= -3 && spy <= -3){
+    else if(spy <= -3 && spy <= -3)
+    {
       spring_cmdvel.linear.y = 0;
     }
    
-    if(wy > -0.1 && wy > -0.1){
+    if(wy > -0.1 && wy > -0.1)
+    {
       winter_cmdvel.linear.y = 0;
     }
-    else if(wy <= -3 && wy <= -3){
+    else if(wy <= -3 && wy <= -3)
+    {
       winter_cmdvel.linear.y = 0.9;
     }
 
-    if(ay > -0.1 && ay > -0.1){
+    if(ay > -0.1 && ay > -0.1)
+    {
       autumn_cmdvel.linear.y = 0;
     }
-    else if(ay <= -3 && ay <= -3){
+    else if(ay <= -3 && ay <= -3)
+    {
       autumn_cmdvel.linear.y = 0.9;
     }
   }
   //Autumn
-  else if(curSeason == 3){
-    if(smy > -0.1 && smy > -0.1){
+  else if(curSeason == 3)
+  {
+    if(smy > -0.1 && smy > -0.1)
+    {
       summer_cmdvel.linear.y = 0;
     }
-    else if(smy <= -3 && smy <= -3){
+    else if(smy <= -3 && smy <= -3)
+    {
       summer_cmdvel.linear.y = 0.9;
     }
     
-    if(spy > -0.1 && spy > -0.1){
+    if(spy > -0.1 && spy > -0.1)
+    {
       spring_cmdvel.linear.y = 0;
     }
-    else if(spy <= -3 && spy <= -3){
+    else if(spy <= -3 && spy <= -3)
+    {
       spring_cmdvel.linear.y = 0.9;
     }
    
-    if(wy > -0.1 && wy > -0.1){
+    if(wy > -0.1 && wy > -0.1)
+    {
       winter_cmdvel.linear.y = 0;
     }
-    else if(wy <= -3 && wy <= -3){
+    else if(wy <= -3 && wy <= -3)
+    {
       winter_cmdvel.linear.y = 0.9;
     }
 
-    if(ay > -0.1 && ay > -0.1){
+    if(ay > -0.1 && ay > -0.1)
+    {
       autumn_cmdvel.linear.y = -0.9;
     }
-    else if(ay <= -3 && ay <= -3){
+    else if(ay <= -3 && ay <= -3)
+    {
       autumn_cmdvel.linear.y = 0;
     }
   }
@@ -272,50 +321,60 @@ void changeWeatherMessage(){
   messageHouse according to the raining boolean set by the changeWeather function.
   author: Oriental Turtles
 */
-void rainStatus(){
-  if(raining && (ry > -0.1 && ry > -0.1)){
+void rainStatus()
+{
+  if(raining && (ry > -0.1 && ry > -0.1))
+  {
     rain_cmdvel.linear.y = -0.9;
   }
-  else if(raining && (ry <= -3 && ry <= -3)){
+  else if(raining && (ry <= -3 && ry <= -3))
+  {
     rain_cmdvel.linear.y = 0;
   }
-  else if(!raining && (ry <= -3 && ry <= -3)){
+  else if(!raining && (ry <= -3 && ry <= -3))
+  {
     rain_cmdvel.linear.y = 0.9;
   }
-  else if(!raining && (ry > -0.1 && ry > -0.1)){
+  else if(!raining && (ry > -0.1 && ry > -0.1))
+  {
     rain_cmdvel.linear.y = 0;
   }
 }
 
 //Call back to listen to odom messages form rain message
-void rain_callback(nav_msgs::Odometry msg){
+void rain_callback(nav_msgs::Odometry msg)
+{
   rx = msg.pose.pose.position.x;
   ry = msg.pose.pose.position.y;
 }
 
 //Call back to listen to odom messages form summer message
-void summer_callback(nav_msgs::Odometry msg){
+void summer_callback(nav_msgs::Odometry msg)
+{
   smx = msg.pose.pose.position.x;
   smy = msg.pose.pose.position.y;
 
 }
 
 //Call back to listen to odom messages form winter message
-void winter_callback(nav_msgs::Odometry msg){
+void winter_callback(nav_msgs::Odometry msg)
+{
   wx = msg.pose.pose.position.x;
   wy = msg.pose.pose.position.y;
 
 }
 
 //Call back to listen to odom messages form spring message
-void spring_callback(nav_msgs::Odometry msg){
+void spring_callback(nav_msgs::Odometry msg)
+{
   spx = msg.pose.pose.position.x;
   spy = msg.pose.pose.position.y;
 
 }
 
 //Call back to listen to odom messages form autumn message
-void autumn_callback(nav_msgs::Odometry msg){
+void autumn_callback(nav_msgs::Odometry msg)
+{
   ax = msg.pose.pose.position.x;
   ay = msg.pose.pose.position.y;
 
@@ -323,7 +382,8 @@ void autumn_callback(nav_msgs::Odometry msg){
 
 
 
-int main(int argc, char **argv){
+int main(int argc, char **argv)
+{
   dayCounter = 0;
   //You must call ros::init() first of all. ros::init() function needs to see argc and argv. The third argument   is the name of the node
   ros::init(argc, argv, "Farm_Control");
@@ -368,16 +428,19 @@ int main(int argc, char **argv){
   ////messages
   //velocity of this RobotNode
   geometry_msgs::Twist RobotNode_cmdvel;
-  while (ros::ok()){
+  while (ros::ok())
+  {
 
     changeWeather();
     changeWeatherMessage();
     rainStatus();
-    if (raining){
+    if (raining)
+    {
       new_rain_msg.rain = 1;
       farmNoderain_pub.publish(new_rain_msg);
     }
-    else{
+    else
+    {
       new_rain_msg.rain = 0;
       farmNoderain_pub.publish(new_rain_msg);
     }
