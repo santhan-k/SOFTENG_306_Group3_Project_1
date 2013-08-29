@@ -27,42 +27,28 @@ double initial_position_x;
 double initial_position_y;
 double initial_theta;
 double growth_rate;
-//bool isGrassLiving;
 double grass_hp; //variable for determining when the grass dies
 // grass age is not redundant (since we want to just use the sheep's grass eating speed of 1 per tick, and using the grass_hp's reaction to that sounds good).
 // double grass_age; //growth status. ranges from 0-3. also used for rotation speed.
 
-//for HP recovery : if soil condtion is above 30.
-//HP will decrease if soil condition is below 30.
 
-
-struct instruction_struct
-{
+struct instruction_struct{
   int step_count; //how many times do we execute this step before we move to the next step
   double linear_x; //linear velocity in m/s
   double angular_z; //angular velocity
   int next_step; //which step do we move to when we finish this current step
 };
 
-void StageOdom_callback(nav_msgs::Odometry msg)
-{
+void StageOdom_callback(nav_msgs::Odometry msg){
   //This is the call back function to process odometry messages coming from Stage.
   px = 5 + msg.pose.pose.position.x;
   py =10 + msg.pose.pose.position.y;
-  //float onex = msg.pose.pose.orientation.x;
-  //float oney = msg.pose.pose.orientation.y;
-  //printf("px = %f   py = %f x = %f  y = %f",px, py, onex, oney);
+
 }
 
 void StageSheep_callback(alpha_two::sheepState msg)
 {
-  //ROS_INFO("RECEIVED Sheep MESSAGE FROM: %d",msg.S_ID);
-  //ROS_INFO("Sheep message: %d, %d, %d, %d", msg.S_State, msg.S_ID, msg.health, msg.grass_locked);
-  //if(msg.S_State==1 && msg.grass_locked==grass_state.G_ID && grass_state.G_State == 0){
-  //  grass_state.G_State=1;
-  //  grass_state.lockedBy = msg.S_ID;
-  //  ROS_INFO("LOCKED by SHEEP: %d",msg.S_ID);
-  //}
+
   if(grass_state.G_State == 0) //free to be locked by a sheep
   {
     if(msg.S_State == 1 && msg.grass_locked == grass_state.G_ID) //sheep is locked to this grass
@@ -96,8 +82,7 @@ void StageSheep_callback(alpha_two::sheepState msg)
   }
 }
 
-void grass_update(double growth_rate)
-{
+void grass_update(double growth_rate){
 
   if(grass_hp <= 0.5) // if the hp is lower than 1 (by being eaten or by weather) then it dies (G_State = 2)
   {
@@ -106,88 +91,66 @@ void grass_update(double growth_rate)
   // growing in good weather for grass HP
   // the ranges for growth_rate need to be adjusted when the soil values from farm.cpp change.
   // as of 28 Aug 5:30 pm, it receives Soil value 0~100, and it's divided by 1000 (adjusting for Stage tick speed), so 0.000 ~ 0.100
-  if(growth_rate > 0.05 && grass_hp + growth_rate < 4)
+  if(growth_rate > 0.05 && grass_hp + growth_rate < 4)  // the second condition ensures that the HP never goes up too high to not show a quick response..
   {
     grass_hp += growth_rate;
 
     if (grass_hp > 1) // if the grass regains enough HP to start spinning and be eaten again
     {
-      grass_state.G_State = 0;
+      grass_state.G_State = 0; // the grass can be eaten by sheeps again.
     }
   }
-  // growing in bad weather
-  else if(growth_rate <= 0.05 && grass_hp - growth_rate >= 0)
+  // dying in bad weather
+  else if(growth_rate <= 0.05 && grass_hp - growth_rate >= 0) // the second condition ensures that the HP never goes negative.
   {
     grass_hp -= growth_rate;
   }
-
-
-/*
-  if (growth_rate > 0.06  &&  grass_age+growth_rate < 3)
-  {
-    grass_age += growth_rate;
-  }
-  else if (growth_rate <= 0.06 && grass_age - growth_rate >= 0)
-  {
-  }
-*/
 
 }
 
 
 void FarmNode_callback(alpha_two::farmState msg){
-  //ROS_INFO("Farm 1: %d",msg.f1_soil_condition);
-  //ROS_INFO("Farm 2: %d",msg.f2_soil_condition);
-  //ROS_INFO("Farm 3: %d",msg.f3_soil_condition);
-  //ROS_INFO("Farm 4: %d",msg.f4_soil_condition);
 
+  // Each grass receives the soil value coresponding to its position on the farm.
+  // always consider the values coming in from farm.cpp.
+  // as of 29 Aug, 5:30pm, it sends soil values from 0 to 100.
 
-
-  if(initial_position_x>0 && initial_position_y>0)
-  { //Field 1
-                                                        // always consider the values coming in from farm.cpp.
-                                                        // as of 29 Aug, 5:30pm, it sends soil values from 0 to 100.
+  if(initial_position_x>0 && initial_position_y>0){ //Field 1
     growth_rate = (double(msg.f1_soil_condition)/1000); // setting it to divide by 1000 gives us 0 ~ 0.1
     grass_update(growth_rate);
   }
 
-  else if(initial_position_x>0 && initial_position_y<0)
-  { //Field 2
+  else if(initial_position_x>0 && initial_position_y<0){ //Field 2
     growth_rate = (double(msg.f2_soil_condition)/1000);
     grass_update(growth_rate);
   }
 
-  else if(initial_position_x<0 && initial_position_y<0)
-  { //Field 3
+  else if(initial_position_x<0 && initial_position_y<0){ //Field 3
     growth_rate = (double(msg.f3_soil_condition)/1000);
     grass_update(growth_rate);
   }
 
-  else if(initial_position_x<0 && initial_position_y>0)
-  { //Field 4
+  else if(initial_position_x<0 && initial_position_y>0){ //Field 4
     growth_rate = (double(msg.f4_soil_condition)/1000);
     grass_update(growth_rate);
   }
 
-  //soil_condition ranges from 0~100
 }
 
-void StageLaser_callback(sensor_msgs::LaserScan msg)
-{
+void StageLaser_callback(sensor_msgs::LaserScan msg){
   //This is the callback function to process laser scan messages
   //you can access the range data from msg.ranges[i]. i = sample number
 }
 
 
 
-int main(int argc, char **argv)
-{
-  //   growth_rate = 1;
+int main(int argc, char **argv){
+
   //initialize robot parameters
   //Initial pose. This is same as the pose that you used in the world file to set the robot pose.
   //initial_theta = M_PI/2.0;
 
-  grass_hp = 2.0; //intial value for grass's hit point
+  grass_hp = 2.0; //intial value for grass's hit point. A good value that isn't too high not to be immediately affected by the climate.
 
   //Initial velocity
   linear_x = 0;
@@ -234,7 +197,7 @@ int main(int argc, char **argv)
 
   state = atoi(argv[1]);
 
-  ///messages
+  //messages
   //velocity of this RobotNode
   geometry_msgs::Twist RobotNode_cmdvel;
 
@@ -262,11 +225,11 @@ int main(int argc, char **argv)
     grass_state.quadrant = 4;
   }
 
-  while (ros::ok())
-  {
+  while (ros::ok()){
     grass_state.x = initial_position_x;
     grass_state.y = initial_position_y;
 
+    // This line of code belongs here in the continuously running while loop, not outside of it.
     RobotNode_cmdvel.angular.z = grass_hp; // this dynamically updates the age of our grass; spinning it faster the older it is.
 
     //publish the message
@@ -275,8 +238,8 @@ int main(int argc, char **argv)
     ros::spinOnce();
 
     //prints for debugging
-    printf("Grass HP is: %f \n", grass_hp);
-    printf("GROWTH RATE: %f \n", growth_rate);
+    //printf("Grass HP is: %f \n", grass_hp);
+    //printf("GROWTH RATE: %f \n", growth_rate);
 
 
     loop_rate.sleep();
