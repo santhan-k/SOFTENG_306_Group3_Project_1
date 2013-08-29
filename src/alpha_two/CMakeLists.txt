@@ -27,7 +27,6 @@ add_message_files(
   farmState.msg
   rainFall.msg
   sheepDogState.msg
-  herdingBar.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -163,6 +162,8 @@ add_executable(farm src/farm.cpp)
 target_link_libraries(farm ${catkin_LIBRARIES})
 add_executable(cloud src/cloud.cpp)
 target_link_libraries(cloud ${catkin_LIBRARIES})
+add_executable(truck src/truck.cpp)
+target_link_libraries(truck ${catkin_LIBRARIES})
 
 add_executable(SheepDog src/SheepDog.cpp)
 target_link_libraries(SheepDog ${catkin_LIBRARIES})
