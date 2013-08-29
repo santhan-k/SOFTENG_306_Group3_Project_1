@@ -58,7 +58,8 @@ void StageOdom_callback(nav_msgs::Odometry msg)
 	if((px < -24 && state == 0) || (px > 5 && state == 2)) 
 	  state = 1;
   }
-  else if(herdingBarNumber == 20){
+  else if(herdingBarNumber == 20)
+  {
 	if((px < -24 && state == 0) || (px > 5 && state == 2)) 
 	  state = 1;
   }
@@ -67,7 +68,8 @@ void StageOdom_callback(nav_msgs::Odometry msg)
 	if((px < -18 && state == 0) || (px > 5 && state == 2))
 	  state = 1;
   }
-  else if(herdingBarNumber == 22){ 
+  else if(herdingBarNumber == 22)
+  { 
 	if((px < -18 && state == 0) || (px > 5 && state == 2)) 
 	  state = 1;
   }
@@ -76,7 +78,8 @@ void StageOdom_callback(nav_msgs::Odometry msg)
 	if((px > 34 && state == 0) || (px < 5 && state == 2)) 
 	  state = 1;
   }
-  else if(herdingBarNumber == 24){
+  else if(herdingBarNumber == 24)
+  {
 	if((px < -18 && state == 0) || (px > 5 && state == 2)) 
 	  state = 1;
   }
