@@ -139,23 +139,9 @@ add_executable(Farmer src/Farmer.cpp)
 target_link_libraries(Farmer ${catkin_LIBRARIES})
 add_executable(R1 src/R1.cpp)
 target_link_libraries(R1 ${catkin_LIBRARIES})
-add_executable(R2 src/R2.cpp)
-target_link_libraries(R2 ${catkin_LIBRARIES})
-add_executable(R3 src/R3.cpp)
-target_link_libraries(R3 ${catkin_LIBRARIES})
-add_executable(R4 src/R4.cpp)
-target_link_libraries(R4 ${catkin_LIBRARIES})
-add_executable(R5 src/R5.cpp)
-target_link_libraries(R5 ${catkin_LIBRARIES})
-#truck gate fix
-add_executable(R6 src/R6.cpp)
-target_link_libraries(R6 ${catkin_LIBRARIES})
 
 add_executable(Gates src/Gates.cpp)
 target_link_libraries(Gates ${catkin_LIBRARIES})
-# -----------------
-#add_executable(ExitGateNode src/Gate9.cpp)
-#target_link_libraries(ExitGateNode ${catkin_LIBRARIES})
 
 add_executable(grass src/grass.cpp)
 target_link_libraries(grass ${catkin_LIBRARIES})
@@ -165,9 +151,6 @@ add_executable(cloud src/cloud.cpp)
 target_link_libraries(cloud ${catkin_LIBRARIES})
 add_executable(truck src/truck.cpp)
 target_link_libraries(truck ${catkin_LIBRARIES})
-
-add_executable(SheepDog src/SheepDog.cpp)
-target_link_libraries(SheepDog ${catkin_LIBRARIES})
 
 add_executable(HerdingBar src/HerdingBar.cpp)
 target_link_libraries(HerdingBar ${catkin_LIBRARIES})
