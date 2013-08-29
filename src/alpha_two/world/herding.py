@@ -4,6 +4,11 @@ import subprocess
 import sys
 import random
 
+
+if (len(sys.argv)!=3):
+    print ("Usage:  python herding.py <Field Number>  <0 - Open gate/inititate herding, 2 - Close gate/reset herding>")
+    sys.exit()
+
 fieldNumber = int(sys.argv[1])
 openclose = int(sys.argv[2])
 
