@@ -78,7 +78,7 @@ void StageSheep_callback(alpha_two::sheepState msg)
       if(grass_hp <= 1) // Check if grass is eaten
       {
         grass_state.G_State = 2; //grass is now eaten
-        grass_state.lockedby = 0; //grass is no longer locked to a sheep
+        grass_state.lockedBy = 0; //grass is no longer locked to a sheep
       }
     }
   }
