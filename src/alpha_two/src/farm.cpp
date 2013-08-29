@@ -13,6 +13,8 @@
 
 using namespace std;
 
+// SVN testing
+
 alpha_two::farmState new_farm_msg;
 alpha_two::rainFall new_rain_msg;
 
