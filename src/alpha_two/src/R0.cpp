@@ -21,16 +21,14 @@ double py;
 double ptheta;
 double theta;
 
-struct instruction_struct
-{
+struct instruction_struct{
   int step_count; //how many times do we execute this step before we move to the next step
   double linear_x; //linear velocity in m/s
   double angular_z; //angular velocity
   int next_step; //which step do we move to when we finish this current step
 };
 
-void StageOdom_callback(nav_msgs::Odometry msg)
-{
+void StageOdom_callback(nav_msgs::Odometry msg){
   //This is the call back function to process odometry messages coming from Stage.
   px = 5 + msg.pose.pose.position.x;
   py =10 + msg.pose.pose.position.y;
@@ -40,11 +38,11 @@ void StageOdom_callback(nav_msgs::Odometry msg)
   ROS_INFO("Current theta is: %f", ptheta);
 }
 
-void StageGrass_callback(alpha_two::grassState msg)
-{
+void StageGrass_callback(alpha_two::grassState msg){
  //ROS_INFO("RECEIVED GRASS MESSAGE FROM: %d",msg.G_ID);
 	
 }
+
 //void StageLaser_callback(sensor_msgs::LaserScan msg)
 //{
 //  //This is the callback function to process laser scan messages
@@ -52,8 +50,7 @@ void StageGrass_callback(alpha_two::grassState msg)
 //
 //}
 
-void addInstruction(vector<instruction_struct>& instruction_vector, int step_count, double linear_x, double angular_z, int next_step)
-{
+void addInstruction(vector<instruction_struct>& instruction_vector, int step_count, double linear_x, double angular_z, int next_step){
   instruction_struct *Instruction = new instruction_struct; //create a new instruction_struct
   Instruction->step_count = step_count;
   Instruction->linear_x = linear_x;
@@ -62,8 +59,7 @@ void addInstruction(vector<instruction_struct>& instruction_vector, int step_cou
   instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv){
   //initialize robot parameters
   //Initial pose. This is same as the pose that you used in the world file to set the robot pose.
   theta = M_PI/2.0;
@@ -114,14 +110,12 @@ int main(int argc, char **argv)
   int current_step = 0;
   int current_step_count = 0;
 
-  while (ros::ok())
-  {
+  while (ros::ok()){
     //messages to stage
     linear_x = instruction_vector[current_step].linear_x;
     angular_z = instruction_vector[current_step].angular_z;
     ++current_step_count;
-    if(current_step_count == instruction_vector[current_step].step_count)
-    {
+    if(current_step_count == instruction_vector[current_step].step_count){
       current_step = instruction_vector[current_step].next_step;
       current_step_count = 0;
     }
