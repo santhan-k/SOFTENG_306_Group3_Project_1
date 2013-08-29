@@ -206,14 +206,13 @@ int main(int argc, char **argv){
   int current_step = 0;
   int current_step_count = 0;
   
-  herdingBar_msg.herdingMode = state;
-  HerdingBar_pub.publish(herdingBar_msg);  
-
-  bool messageSent = false;
   while (ros::ok()){
     // Send message once to sheep that herding has begun. 
     ++current_step_count;     
-        
+     
+    herdingBar_msg.herdingMode = state;
+    HerdingBar_pub.publish(herdingBar_msg); 
+    
     // Check if bar needs to be moved across
     if(state == 0 && isHorizontal) {
       linear_x = instruction_vector[1].linear_x;
