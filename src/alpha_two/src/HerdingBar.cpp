@@ -4,6 +4,7 @@
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/LaserScan.h>
 #include "angles/angles.h"
+#include "alpha_two/herdingBar.h"
 #include <sstream>
 #include "math.h"
 
@@ -128,6 +129,7 @@ int main(int argc, char **argv){
   rName.str("");
   rName << "robot_" << argv[1]<<"/base_scan";
   ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>(rName.str(),1000,StageLaser_callback);
+  ros::Publisher HerdingBar_pub = n.advertise<alpha_two::herdingBar>("/herdingBar",1000);
 
   ros::Rate loop_rate(10);
 
@@ -200,7 +202,9 @@ int main(int argc, char **argv){
   //keep track of what step we are up to
   int current_step = 0;
   int current_step_count = 0;
-
+  
+  // HerdingBar message struct
+  alpha_two::herdingBar = herdingBar_msg;
   while (ros::ok()){
     //messages to stage
     //linear_x = instruction_vector[current_step].linear_x;
@@ -246,16 +250,22 @@ int main(int argc, char **argv){
     // Check the number of steps moved
     if(current_step > 150) {
       isHorizontal = false;     // No longer needs to be moved across
-    }          
+    }  
+
+    herdingBar_msg.herdingMode = state;
+    HerdingBar_pub.publish(herdingBar_msg);
+ 
+        
   }//ends while()
 	
   RobotNode_cmdvel.linear.x = 0;
   RobotNode_cmdvel.linear.y =0;
         
   cout << "Current step: " << current_step << "\n";
-
+  
   //publish the message
   RobotNode_stage_pub.publish(RobotNode_cmdvel);
+  
   return 0;
 
 }//ends main()
