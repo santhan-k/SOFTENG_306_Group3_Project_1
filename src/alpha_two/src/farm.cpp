@@ -48,36 +48,36 @@ void changeWeather(){
   //Rainfall is determined randomly according to the current season.
   //for demo purposes, values set are very dynamic. when set to realistic values
   //it's hard to see the difference visually
- 
 
-  //Summer
-  if(dayCounter < 183){
-    new_farm_msg.rainfall = rand()%20;
-    curSeason = 3;
-    sunlight = 0;  
 
-  }
-  
-  //Winter
-  else if (dayCounter < 366){
-    new_farm_msg.rainfall = rand()%40;
-    curSeason = 2;
-    sunlight = 10; 
-  }
-  
   //Spring
-  else if (dayCounter < 549){        
+  else if (dayCounter < 183){        
     new_farm_msg.rainfall = rand()%20; 
     curSeason = 1;
     sunlight = 40;
   }
-  
-  //Autumn
-  else if (dayCounter < 732){        
+
+  //Summer
+  if(dayCounter < 366){
     new_farm_msg.rainfall = rand()%20;
-    curSeason = 4;
+    curSeason = 2;
+    sunlight = 0;  
+  }
+    
+  //Autumn
+  else if (dayCounter < 549){        
+    new_farm_msg.rainfall = rand()%20;
+    curSeason = 3;
     sunlight = 10;
   }
+
+  //Winter
+  else if (dayCounter < 732){
+    new_farm_msg.rainfall = rand()%40;
+    curSeason = 4;
+    sunlight = 10; 
+  }
+
   else{
     dayCounter = 0;
   }
