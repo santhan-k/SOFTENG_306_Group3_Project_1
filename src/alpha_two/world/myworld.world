@@ -101,25 +101,28 @@ define endGate0 model
   boundary 0
   ranger_return 1
   bitmap "endGate0.png"
-  obstacle_return 1	
+  obstacle_return 1
+  gui_move 0	
 )
 
 define endGate1 model
 (
-  size [8.1 40 0.1]
-  boundary 0
-  ranger_return 1
-  bitmap "endGate1.png"
-  obstacle_return 0	
-)
-
-define endGate2 model
-(
-  size [40 8 0.1]
+  size [8.1 60 0.1]
   boundary 0
   ranger_return 1
   bitmap "endGate1.png"
   obstacle_return 0
+  gui_move 0
+)
+
+define endGate2 model
+(
+  size [60 8 0.1]
+  boundary 0
+  ranger_return 1
+  bitmap "endGate1.png"
+  obstacle_return 0
+  gui_move 0
 )
 
 define endMaze0 model
@@ -140,7 +143,6 @@ define endMaze1 model
   obstacle_return 0
 )
 
-
 define floorplan model
 (
   # sombre, sensible, artistic
@@ -160,8 +162,7 @@ define myGate position
   bitmap "gate.png"
   mylaser(pose [ 0.050 0.000 0 0.000 ])
   ranger_return 1
-  obstacle_return 0	
-  
+  obstacle_return 0  
 )
 
 define myGrass position
@@ -269,8 +270,7 @@ define AutumnMessage position (
 )
 
 define myMessageHouse model (
-  size [4 20 0.5] 
-
+  size [4 20 0.5]
 )
 
 
@@ -284,8 +284,7 @@ interval_sim 100  # simulation timestep in milliseconds. length of each simulati
 window
 ( 
   size [ 745.000 745.000 ] #size of the window in pixels
-  scale 16
-  
+  scale 16  
 )
 
 # load an environment bitmap
@@ -296,8 +295,7 @@ floorplan
   bitmap "newFarm.png"
   size [60 60 2]
   pose [ 0 0 0 0 ]
-  gui_move 0
-  
+  gui_move 0  
 )
 
 #myMaze( pose [-65 0 0 0] name "maze0" color "black")
@@ -314,10 +312,10 @@ myGate( pose [ 0 25.91 0 90 ] name "g2" color "gray60")
 myGate( pose [ 0 -25.92 0 90 ] name "g3" color "gray60")
 myGate( pose [ -26 29.73 0 0 ] name "g4" color "gray60")
 
-myTruck( pose [ -29.5 33 5 0 ] name "t1" color "grey20")
+myTruck( pose [ -29.5 34 5 0 ] name "t1" color "grey20")
 endGate0( pose [ -26 50 0 0 ] name "eg0" color "white")
-endGate1( pose [ -26 50 1 0 ] name "eg1" color "brown")
-endGate2( pose [ -42 34 1 0 ] name "eg2" color "brown")
+endGate1( pose [ -26 60 1 0 ] name "eg1" color "brown")
+endGate2( pose [ -52 34 1.1 0 ] name "eg2" color "brown")
 #endMaze0( pose [ -41.85 35.04 0 0 ] name "eg1" color "white")
 #endMaze1( pose [ -41.85 35.04 1 0 ] name "eg1" color "brown")
 
