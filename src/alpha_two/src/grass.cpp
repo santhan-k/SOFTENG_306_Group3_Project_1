@@ -36,14 +36,16 @@ double grass_hp; //variable for determining when the grass dies
 //HP will decrease if soil condition is below 30.
 
 
-struct instruction_struct{
+struct instruction_struct
+{
   int step_count; //how many times do we execute this step before we move to the next step
   double linear_x; //linear velocity in m/s
   double angular_z; //angular velocity
   int next_step; //which step do we move to when we finish this current step
 };
 
-void StageOdom_callback(nav_msgs::Odometry msg){
+void StageOdom_callback(nav_msgs::Odometry msg)
+{
   //This is the call back function to process odometry messages coming from Stage.
   px = 5 + msg.pose.pose.position.x;
   py =10 + msg.pose.pose.position.y;
@@ -94,7 +96,8 @@ void StageSheep_callback(alpha_two::sheepState msg)
   }
 }
 
-void grass_update(double growth_rate){
+void grass_update(double growth_rate)
+{
 
   if(grass_hp <= 0.5) // if the hp is lower than 1 (by being eaten or by weather) then it dies (G_State = 2)
   {
@@ -140,24 +143,28 @@ void FarmNode_callback(alpha_two::farmState msg){
 
 
 
-  if(initial_position_x>0 && initial_position_y>0){ //Field 1
+  if(initial_position_x>0 && initial_position_y>0)
+  { //Field 1
                                                         // always consider the values coming in from farm.cpp.
                                                         // as of 29 Aug, 5:30pm, it sends soil values from 0 to 100.
     growth_rate = (double(msg.f1_soil_condition)/1000); // setting it to divide by 1000 gives us 0 ~ 0.1
     grass_update(growth_rate);
   }
 
-  else if(initial_position_x>0 && initial_position_y<0){ //Field 2
+  else if(initial_position_x>0 && initial_position_y<0)
+  { //Field 2
     growth_rate = (double(msg.f2_soil_condition)/1000);
     grass_update(growth_rate);
   }
 
-  else if(initial_position_x<0 && initial_position_y<0){ //Field 3
+  else if(initial_position_x<0 && initial_position_y<0)
+  { //Field 3
     growth_rate = (double(msg.f3_soil_condition)/1000);
     grass_update(growth_rate);
   }
 
-  else if(initial_position_x<0 && initial_position_y>0){ //Field 4
+  else if(initial_position_x<0 && initial_position_y>0)
+  { //Field 4
     growth_rate = (double(msg.f4_soil_condition)/1000);
     grass_update(growth_rate);
   }
@@ -165,14 +172,16 @@ void FarmNode_callback(alpha_two::farmState msg){
   //soil_condition ranges from 0~100
 }
 
-void StageLaser_callback(sensor_msgs::LaserScan msg){
+void StageLaser_callback(sensor_msgs::LaserScan msg)
+{
   //This is the callback function to process laser scan messages
   //you can access the range data from msg.ranges[i]. i = sample number
 }
 
 
 
-int main(int argc, char **argv){
+int main(int argc, char **argv)
+{
   //   growth_rate = 1;
   //initialize robot parameters
   //Initial pose. This is same as the pose that you used in the world file to set the robot pose.
@@ -253,7 +262,8 @@ int main(int argc, char **argv){
     grass_state.quadrant = 4;
   }
 
-  while (ros::ok()){
+  while (ros::ok())
+  {
     grass_state.x = initial_position_x;
     grass_state.y = initial_position_y;
 
