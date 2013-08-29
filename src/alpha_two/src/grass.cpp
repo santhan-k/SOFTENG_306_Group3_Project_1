@@ -102,7 +102,7 @@ void grass_update(double growth_rate){
   // growing in good weather for grass HP
   // the ranges for growth_rate need to be adjusted when the soil values from farm.cpp change.
   // as of 28 Aug 5:30 pm, it receives Soil value 0~100, and it's divided by 1000 (adjusting for Stage tick speed), so 0.000 ~ 0.100
-  else if(growth_rate > 0.05 && grass_hp + growth_rate < 20)
+  else if(growth_rate > 0.05 && grass_hp + growth_rate < 5)
   {
     grass_hp += growth_rate;
 
@@ -227,7 +227,7 @@ int main(int argc, char **argv){
   ///messages
   //velocity of this RobotNode
   geometry_msgs::Twist RobotNode_cmdvel;
-  RobotNode_cmdvel.angular.z = grass_hp; // this dynamically updates the age of our grass; spinning it faster the older it is.
+  
   
   grass_state.G_State = 0;
   grass_state.G_ID = atoi(argv[1]);
@@ -255,6 +255,8 @@ int main(int argc, char **argv){
   while (ros::ok()){
     grass_state.x = initial_position_x;
     grass_state.y = initial_position_y;
+    
+    RobotNode_cmdvel.angular.z = grass_hp; // this dynamically updates the age of our grass; spinning it faster the older it is.
 
     //publish the message
     RobotNode_stage_pub.publish(RobotNode_cmdvel);
@@ -262,8 +264,8 @@ int main(int argc, char **argv){
     ros::spinOnce();
     
     //prints for debugging
-    printf("Grass HP is: %f \n", grass_hp);
-    printf("GROWTH RATE: %f \n", growth_rate);
+    //printf("Grass HP is: %f \n", grass_hp);
+    //printf("GROWTH RATE: %f \n", growth_rate);
 
     
     loop_rate.sleep();
