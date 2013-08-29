@@ -166,7 +166,7 @@ void StageGrass_callback(alpha_two::grassState msg){
     ROS_INFO("Eating grass");
     angular_z = 0;
     linear_x = 0;
-    if(msg.S_State == 2) //grass has been eaten
+    if(msg.G_State == 2) //grass has been eaten
     {
       sheep_message.S_State = 0;
       sheep_message.grass_locked = 0;
