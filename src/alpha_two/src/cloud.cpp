@@ -65,16 +65,20 @@ int main(int argc, char **argv){
   while (ros::ok()){
  
 
-    if((px < -40 && py < -40) && !reachedLimit){
+    if((px < -35 && py < -35) && !reachedLimit){
       reachedLimit = true;
       velX = 1;
       velY = 1;
+
     }
+    
+    
     else if (!reachedLimit) {
       velX = -1;
       velY = -1;
+
     }
-    else if (px>40 && py>40){
+    else if (px>35 && py>35){
       reachedLimit = false;
     }
     if(raining){
