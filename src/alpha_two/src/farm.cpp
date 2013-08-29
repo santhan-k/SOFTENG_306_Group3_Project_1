@@ -49,28 +49,28 @@ void changeWeather(){
   if(dayCounter < 183){
     new_farm_msg.rainfall = rand()%50;
     curSeason = 3;
-    sunlight = 50;
+    sunlight = 90;
   }
   
   //Summer
   else if (dayCounter < 366){
     new_farm_msg.rainfall = rand()%10;
     curSeason = 2;
-    sunlight = 10; 
+    sunlight = 70; 
   }
   
   //Autumn
   else if (dayCounter < 549){        
     new_farm_msg.rainfall = rand()%40; 
     curSeason = 1;
-    sunlight = 40;
+    sunlight = 50;
   }
   
   //Winter
   else if (dayCounter < 732){        
     new_farm_msg.rainfall = rand()%20;
     curSeason = 4;
-    sunlight = 20;
+    sunlight = 5;
   }
   else{
     dayCounter = 0;
@@ -100,11 +100,14 @@ void changeWeather(){
   //Weather changes applied to each field.  
   // sums up all the factors that affect the soil quality and scales it.
 
-  int field1 = abs(new_farm_msg.f1_soil_condition) + abs(new_farm_msg.rainfall) + abs(sunlight);
-  int field2 = abs(new_farm_msg.f2_soil_condition) + abs(new_farm_msg.rainfall) + abs(sunlight);
-  int field3 = abs(new_farm_msg.f3_soil_condition) + abs(new_farm_msg.rainfall) + abs(sunlight);
-  int field4 = abs(new_farm_msg.f4_soil_condition) + abs(new_farm_msg.rainfall) + abs(sunlight);
+// new_farm_msg.f1_soil_condition = abs(new_farm_msg.f1_soil_condition) + abs(new_farm_msg.rainfall) + abs(sunlight);
+// it used to be the above code
+  new_farm_msg.f1_soil_condition = 100 + abs(new_farm_msg.rainfall) + abs(sunlight);
+  new_farm_msg.f2_soil_condition = 30 + abs(new_farm_msg.rainfall) + abs(sunlight);
+  new_farm_msg.f3_soil_condition = 10 + abs(new_farm_msg.rainfall) + abs(sunlight);
+  new_farm_msg.f4_soil_condition = 60 + abs(new_farm_msg.rainfall) + abs(sunlight);
 
+/*
   int fieldArray[4] = {field1, field2, field3, field4};
   int max = fieldArray[0];
   for (int i=1; i < 4; i++){
@@ -114,9 +117,13 @@ void changeWeather(){
     }
     
   }
+*/
 
-
-  printf("soil1 is %d \n", abs(new_farm_msg.f1_soil_condition));
+  //printf("soil1 is %d \n", abs(new_farm_msg.f1_soil_condition));
+  printf("soil1 is : %d \n", new_farm_msg.f1_soil_condition);
+  printf("soil2 is : %d \n", new_farm_msg.f2_soil_condition);
+  printf("soil3 is : %d \n", new_farm_msg.f3_soil_condition);
+  printf("soil4 is : %d \n", new_farm_msg.f4_soil_condition);
 /*
   printf("field2 is %d \n", field2);
   printf("field3 is %d \n", field3);
@@ -126,10 +133,10 @@ void changeWeather(){
 */
 
   // sends values between 0 and 1
-  new_farm_msg.f1_soil_condition = field1/max;
-  new_farm_msg.f2_soil_condition = field2/max;
-  new_farm_msg.f3_soil_condition = field3/max;
-  new_farm_msg.f4_soil_condition = field4/max;
+  //new_farm_msg.f1_soil_condition = field1/max;
+  //new_farm_msg.f2_soil_condition = field2/max;
+  //new_farm_msg.f3_soil_condition = field3/max;
+  //new_farm_msg.f4_soil_condition = field4/max;
   
   //      printf("f1 %d   f2 %d  f3 %d  f4 %d       \n",new_farm_msg.f1_soil_condition,new_farm_msg.f2_soil_condition,new_farm_msg.f3_soil_condition,new_farm_msg.f4_soil_condition);
   //new_farm_msg.f4_soil_condition += int(float(new_farm_msg.f4_soil_condition)*(float(new_farm_msg.rainfall)/100.0)) -5.0;
@@ -356,10 +363,12 @@ int main(int argc, char **argv){
   
   //Initialising soil and weather conditions
   new_farm_msg.rainfall = 0;
-  new_farm_msg.f1_soil_condition = 95;   
-  new_farm_msg.f2_soil_condition = 30;  
-  new_farm_msg.f3_soil_condition = 60;   
-  new_farm_msg.f4_soil_condition = 80;
+
+  //is there any significance in these initial values??*************************************
+  new_farm_msg.f1_soil_condition = 50;   
+  new_farm_msg.f2_soil_condition = 50;  
+  new_farm_msg.f3_soil_condition = 50;   
+  new_farm_msg.f4_soil_condition = 50;
   sunlight = 80;
 
   ////messages
