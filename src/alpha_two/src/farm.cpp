@@ -45,6 +45,8 @@ void changeWeather(){
   dayCounter = dayCounter%732;
   dayCounter++;
   //Rainfall is determined randomly according to the current season.
+  //for demo purposes, values set are very dynamic. when set to realistic values
+  //it's hard to see the difference visually
   //Spring
   if(dayCounter < 183){
     new_farm_msg.rainfall = rand()%50;
@@ -102,10 +104,10 @@ void changeWeather(){
 
 // new_farm_msg.f1_soil_condition = abs(new_farm_msg.f1_soil_condition) + abs(new_farm_msg.rainfall) + abs(sunlight);
 // it used to be the above code
-  new_farm_msg.f1_soil_condition = 100 + abs(new_farm_msg.rainfall) + abs(sunlight);
-  new_farm_msg.f2_soil_condition = 30 + abs(new_farm_msg.rainfall) + abs(sunlight);
+  new_farm_msg.f1_soil_condition = 50 + abs(new_farm_msg.rainfall) + abs(sunlight);
+  new_farm_msg.f2_soil_condition = 5 + abs(new_farm_msg.rainfall) + abs(sunlight);
   new_farm_msg.f3_soil_condition = 10 + abs(new_farm_msg.rainfall) + abs(sunlight);
-  new_farm_msg.f4_soil_condition = 60 + abs(new_farm_msg.rainfall) + abs(sunlight);
+  new_farm_msg.f4_soil_condition = 40 + abs(new_farm_msg.rainfall) + abs(sunlight);
 
 /*
   int fieldArray[4] = {field1, field2, field3, field4};
