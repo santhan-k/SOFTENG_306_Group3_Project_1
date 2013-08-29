@@ -70,7 +70,7 @@ define mySheepsPoop position
 define myFarmer position
 (
   size [2 3 0.7]
-  drive "diff"
+  drive "omni"
   mylaser2(pose [ 0.050 0.000 0 0.000 ])
   bitmap "farmer_alt.png"
   obstacle_return 0	
