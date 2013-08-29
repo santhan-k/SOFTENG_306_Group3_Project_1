@@ -24,14 +24,16 @@ double theta;
 
 int fieldNumber;
 
-struct instruction_struct{
+struct instruction_struct
+{
   int step_count; //how many times do we execute this step before we move to the next step
   double linear_x; //linear velocity in m/s
   double linear_y; //angular velocity
   int next_step; //which step do we move to when we finish this current step
 };
 
-void addInstruction(vector<instruction_struct>& instruction_vector, int step_count, double linear_x, double linear_y, int next_step){
+void addInstruction(vector<instruction_struct>& instruction_vector, int step_count, double linear_x, double linear_y, int next_step)
+{
   instruction_struct *Instruction = new instruction_struct; //create a new instruction_struct
   Instruction->step_count = step_count;
   Instruction->linear_x = linear_x;
@@ -40,7 +42,8 @@ void addInstruction(vector<instruction_struct>& instruction_vector, int step_cou
   instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
 }
 
-int main(int argc, char **argv){
+int main(int argc, char **argv)
+{
   //initialize robot parameters
   //Initial pose. This is same as the pose that you used in the world file to set the robot pose.
   theta = M_PI/2.0;
@@ -78,19 +81,23 @@ int main(int argc, char **argv){
   // Sample instructions
   vector <instruction_struct> instruction_vector; //create new vector of type instruction_struct
 
-  if(fieldNumber == 1) {
+  if(fieldNumber == 1) 
+  {
       addInstruction(instruction_vector, 2600, 0.10, -0.10, 1); // Diagonal movement
       addInstruction(instruction_vector, 78, 0, -0.5, 0);       // Move down
   } 
-  else if(fieldNumber == 2) {
+  else if(fieldNumber == 2) 
+  {
       addInstruction(instruction_vector, 2600, -0.10, -0.10, 1); // Diagonal movement
       addInstruction(instruction_vector, 75, -0.5, 0, 0);        // Move to the left
   }
-  else if(fieldNumber == 3) {
+  else if(fieldNumber == 3) 
+  {
       addInstruction(instruction_vector, 2600, -0.10, 0.10, 1); // Diagonal movement
       addInstruction(instruction_vector, 75, 0, 0.5, 0);        // Move up
   }
-  else if(fieldNumber == 4) {
+  else if(fieldNumber == 4) 
+  {
       addInstruction(instruction_vector, 2600, 0, 0.10, 1);     // Move up
       addInstruction(instruction_vector, 75, 0, 0, 0);          // Stops
   } 
@@ -99,19 +106,22 @@ int main(int argc, char **argv){
   int current_step = 0;
   int current_step_count = 0;
 
-  while (ros::ok()){
+  while (ros::ok())
+  {
     //messages to stage
     linear_x = instruction_vector[current_step].linear_x;
     linear_y = instruction_vector[current_step].linear_y;
     ++current_step_count;
 
     // Checks to see if the last instruction in the instruction vector has been executed.
-    if(instruction_vector[current_step].next_step == 0 && current_step_count == instruction_vector[current_step].step_count) {
+    if(instruction_vector[current_step].next_step == 0 && current_step_count == instruction_vector[current_step].step_count) 
+    {
        break;   // Stop farmer
     }
 
     // Goes into next step when the current step finishes.
-    if(current_step_count == instruction_vector[current_step].step_count){
+    if(current_step_count == instruction_vector[current_step].step_count)
+    {
       current_step = instruction_vector[current_step].next_step;
       current_step_count = 0;
     }
