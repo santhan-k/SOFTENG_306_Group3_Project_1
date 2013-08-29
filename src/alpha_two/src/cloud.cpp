@@ -58,12 +58,13 @@ int main(int argc, char **argv){
 
   ros::Subscriber rainFall_sub = n.subscribe<alpha_two::rainFall>("rain_msg", 1000, StageRain_callback); 
 
+  //messages
   //velocity of this RobotNode
   geometry_msgs::Twist RobotNode_cmdvel;
   bool reachedLimit = false;
   while (ros::ok()){
  
-  //publish the message
+
     if((px < -40 && py < -40) && !reachedLimit){
       reachedLimit = true;
       velX = 1;
@@ -84,7 +85,7 @@ int main(int argc, char **argv){
       RobotNode_cmdvel.linear.x = 0;
       RobotNode_cmdvel.linear.y = 0;
     }
-
+    //publish the message
     RobotNode_stage_pub.publish(RobotNode_cmdvel);
      
     ros::spinOnce();
