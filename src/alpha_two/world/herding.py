@@ -34,3 +34,6 @@ subprocess.Popen("rosrun alpha_two HerdingBar "+str(bar1)+"  "+str(sys.argv[2]),
 subprocess.Popen("rosrun alpha_two HerdingBar "+str(bar2)+"  "+str(sys.argv[2]),shell=True,stdout = PIPE)
 
 subprocess.Popen("rosrun alpha_two Gates "+str(gate)+"  "+str(sys.argv[2]),shell=True,stdout = PIPE)
+
+if (fieldNumber==4 and int(sys.argv[2])==2):
+  subprocess.Popen("rosrun alpha_two truck ",shell=True,stdout = PIPE)
