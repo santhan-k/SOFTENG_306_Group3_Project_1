@@ -29,14 +29,16 @@ char destinationField;
 
 bool isHorizontal = false;
 
-struct instruction_struct{
+struct instruction_struct
+{
   int step_count; //how many times do we execute this step before we move to the next step
   double linear_x; //linear velocity in m/s
   double linear_y; //angular velocity
   int next_step; //which step do we move to when we finish this current step
 };
 
-void StageOdom_callback(nav_msgs::Odometry msg){
+void StageOdom_callback(nav_msgs::Odometry msg)
+{
   // This is the call back function to process odometry messages coming from Stage. 	
   px = 5 + msg.pose.pose.position.x;
   py =10 + msg.pose.pose.position.y;
@@ -46,11 +48,13 @@ void StageOdom_callback(nav_msgs::Odometry msg){
   // herdingBarNumber refers to the robot number in the world file. I.e. first bar is robot_18.
   // (px > XX && state == 0) Checks the upper bound of the herding bar during the herding of sheep.
   // (px < 5 && state == 2) Checks the lower bound of the herding bar, to return it to it's original position.
-  if(herdingBarNumber == 18){  
+  if(herdingBarNumber == 18)
+  {  
     if((px > 26 && state == 0) || (px < 5 && state == 2)) 
         state = 1;
   }
-  else if(herdingBarNumber == 19){
+  else if(herdingBarNumber == 19)
+  {
 	if((px < -24 && state == 0) || (px > 5 && state == 2)) 
 	  state = 1;
   }
@@ -58,7 +62,8 @@ void StageOdom_callback(nav_msgs::Odometry msg){
 	if((px < -24 && state == 0) || (px > 5 && state == 2)) 
 	  state = 1;
   }
-  else if(herdingBarNumber == 21){
+  else if(herdingBarNumber == 21)
+  {
 	if((px < -18 && state == 0) || (px > 5 && state == 2))
 	  state = 1;
   }
@@ -66,7 +71,8 @@ void StageOdom_callback(nav_msgs::Odometry msg){
 	if((px < -18 && state == 0) || (px > 5 && state == 2)) 
 	  state = 1;
   }
-  else if(herdingBarNumber == 23){ 
+  else if(herdingBarNumber == 23)
+  { 
 	if((px > 34 && state == 0) || (px < 5 && state == 2)) 
 	  state = 1;
   }
@@ -74,7 +80,8 @@ void StageOdom_callback(nav_msgs::Odometry msg){
 	if((px < -18 && state == 0) || (px > 5 && state == 2)) 
 	  state = 1;
   }
-  else if(herdingBarNumber == 25){ 
+  else if(herdingBarNumber == 25)
+  { 
 	if((px > 34 && state == 0) || (px < 5 && state == 2)) 
 	  state = 1;
   }	
@@ -84,13 +91,15 @@ void StageOdom_callback(nav_msgs::Odometry msg){
   ROS_INFO("Current y position is: %f", py);
 }
 
-void StageLaser_callback(sensor_msgs::LaserScan msg){
+void StageLaser_callback(sensor_msgs::LaserScan msg)
+{
   //This is the callback function to process laser scan messages
   //you can access the range data from msg.ranges[i]. i = sample number	
 }
 
 
-void addInstruction(vector<instruction_struct>& instruction_vector, int step_count, double linear_x, double linear_y, int next_step){
+void addInstruction(vector<instruction_struct>& instruction_vector, int step_count, double linear_x, double linear_y, int next_step)
+{
   instruction_struct *Instruction = new instruction_struct; //create a new instruction_struct
   Instruction->step_count = step_count;
   Instruction->linear_x = linear_x;
@@ -99,7 +108,8 @@ void addInstruction(vector<instruction_struct>& instruction_vector, int step_cou
   instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
 }
 
-int main(int argc, char **argv){
+int main(int argc, char **argv)
+{
 
   // HerdingBar message struct
   alpha_two::herdingBar herdingBar_msg;
@@ -155,46 +165,54 @@ int main(int argc, char **argv){
 
   // Conditions to check gate to move, and call addInstruction
   // Farm1: Vertical herding bar
-  if(herdingBarNumber == 18){
+  if(herdingBarNumber == 18)
+  {
     addInstruction(instruction_vector, 7, 0.10, 0.0, 2); // Inward movement
   	addInstruction(instruction_vector, 0, 0, 0.0, 3); // Stop movement
   	addInstruction(instruction_vector, 75, -1, 0.0, 0); // Outward movement
   }
-  else if(herdingBarNumber == 19){ // Farm1: Horizontal bar
+  else if(herdingBarNumber == 19)
+  { // Farm1: Horizontal bar
     addInstruction(instruction_vector, 750, -0.10, 0.0, 1); // Inward movement
   	addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
   	addInstruction(instruction_vector, 75, 1, 0.0, 0); // Outward movement
   }
-  else if(herdingBarNumber == 20){ // Farm1: Horizontal bar
+  else if(herdingBarNumber == 20)
+  { // Farm1: Horizontal bar
     addInstruction(instruction_vector, 750, -0.10, 0.0, 1); // Inward movement
   	addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
   	addInstruction(instruction_vector, 75, 1, 0.0, 0); // Outward movement
   }
-  else if(herdingBarNumber == 21){ // Farm1: Horizontal bar
+  else if(herdingBarNumber == 21)
+  { // Farm1: Horizontal bar
     isHorizontal = true; // Check if it needs to be moved across
     addInstruction(instruction_vector, 750, -0.10, 0.0, 1); // Inward movement
     addInstruction(instruction_vector, 75, 0, -0.5, 2);     // Move across
   	addInstruction(instruction_vector, 0, 0, 0.0, 3); // Stop movement
   	addInstruction(instruction_vector, 75, 1, 0.0, 0); // Outward movement
   }
-  else if(herdingBarNumber == 22){ // Farm1: Horizontal bar
+  else if(herdingBarNumber == 22)
+  { // Farm1: Horizontal bar
     isHorizontal = true;                        // Check if it needs to be moved across
     addInstruction(instruction_vector, 750, -0.10, 0.0, 1); // Inward movement
     addInstruction(instruction_vector, 75, 0, -0.5, 2);     // Move across
   	addInstruction(instruction_vector, 0, 0, 0.0, 3); // Stop movement
   	addInstruction(instruction_vector, 75, 1, 0.0, 0); // Outward movement
   }
-  else if(herdingBarNumber == 23){ // Farm1: Horizontal bar
+  else if(herdingBarNumber == 23)
+  { // Farm1: Horizontal bar
     addInstruction(instruction_vector, 750, 0.10, 0.0, 1); // Inward movement
   	addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
   	addInstruction(instruction_vector, 75, -1, 0.0, 0); // Outward movement
   }
-  else if(herdingBarNumber == 24){ // Farm1: Horizontal bar
+  else if(herdingBarNumber == 24)
+  { // Farm1: Horizontal bar
     addInstruction(instruction_vector, 750, -0.10, 0.0, 1); // Inward movement
   	addInstruction(instruction_vector, 0, 0, 0.0, 2); // Stop movement
   	addInstruction(instruction_vector, 75, 1, 0.0, 0); // Outward movement
   }
-  else if(herdingBarNumber == 25){ // Farm1: Horizontal bar
+  else if(herdingBarNumber == 25)
+  { // Farm1: Horizontal bar
     isHorizontal = true;                        // Check if it needs to be moved across
     addInstruction(instruction_vector, 750, 0.10, 0.0, 1); // Inward movement
     addInstruction(instruction_vector, 75, 0, 0.5, 2);     // Move across
@@ -206,7 +224,8 @@ int main(int argc, char **argv){
   int current_step = 0;
   int current_step_count = 0;
   
-  while (ros::ok()){
+  while (ros::ok())
+  {
     // Send message once to sheep that herding has begun. 
     ++current_step_count;     
      
@@ -214,20 +233,24 @@ int main(int argc, char **argv){
     HerdingBar_pub.publish(herdingBar_msg); 
     
     // Check if bar needs to be moved across
-    if(state == 0 && isHorizontal) {
+    if(state == 0 && isHorizontal) 
+    {
       linear_x = instruction_vector[1].linear_x;
       linear_y = instruction_vector[1].linear_y; 
       current_step++;           
     }
-    else if(state == 0){
+    else if(state == 0)
+    {
       linear_x = instruction_vector[0].linear_x;
       linear_y = instruction_vector[0].linear_y;
 
     }
-    else if(state == 1){
+    else if(state == 1)
+    {
       break;
     }
-    else if(state == 2){
+    else if(state == 2)
+    {
       linear_x = instruction_vector[2].linear_x;
       linear_y = instruction_vector[2].linear_y;
     }
@@ -246,11 +269,10 @@ int main(int argc, char **argv){
     ++count;
 
     // Check the number of steps moved
-    if(current_step > 150) {
+    if(current_step > 150) 
+    {
       isHorizontal = false;     // No longer needs to be moved across
-    }  
-    
-
+    }      
         
   }//ends while()
 	
