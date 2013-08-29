@@ -288,29 +288,34 @@ void rainStatus(){
   }
 }
 
+//Call back to listen to odom messages form rain message
 void rain_callback(nav_msgs::Odometry msg){
   rx = msg.pose.pose.position.x;
   ry = msg.pose.pose.position.y;
 }
 
+//Call back to listen to odom messages form summer message
 void summer_callback(nav_msgs::Odometry msg){
   smx = msg.pose.pose.position.x;
   smy = msg.pose.pose.position.y;
 
 }
 
+//Call back to listen to odom messages form winter message
 void winter_callback(nav_msgs::Odometry msg){
   wx = msg.pose.pose.position.x;
   wy = msg.pose.pose.position.y;
 
 }
 
+//Call back to listen to odom messages form spring message
 void spring_callback(nav_msgs::Odometry msg){
   spx = msg.pose.pose.position.x;
   spy = msg.pose.pose.position.y;
 
 }
 
+//Call back to listen to odom messages form autumn message
 void autumn_callback(nav_msgs::Odometry msg){
   ax = msg.pose.pose.position.x;
   ay = msg.pose.pose.position.y;
@@ -330,6 +335,8 @@ int main(int argc, char **argv){
   //advertise() function will tell ROS that you want to publish on a given topic_ to stage
   ros::Publisher farmNode_pub = n.advertise<alpha_two::farmState>("farm_msg", 1000);
 
+
+  //Creating a publisher that publishes rain messages
   ros::Publisher farmNoderain_pub = n.advertise<alpha_two::rainFall>("rain_msg", 1000);
 
   //robot_13 - Rain
@@ -356,15 +363,6 @@ int main(int argc, char **argv){
   
   //Initialising soil and weather conditions
   new_farm_msg.rainfall = 0;
-
-  //is there any significance in these initial values??*************************************
-  // nope, they are now manually inserted.
-/*
-  new_farm_msg.f1_soil_condition = 95;   
-  new_farm_msg.f2_soil_condition = 30;  
-  new_farm_msg.f3_soil_condition = 60;   
-  new_farm_msg.f4_soil_condition = 80;
-*/  
 
   sunlight = 80;
 
