@@ -80,43 +80,6 @@ void grass_update(double growth_rate){
     grass_age += growth_rate;
   }
 
-/*
-
-    if(!(grass_hp==0) && grass_age+growth_rate <= 3)
-    {
-      grass_age = grass_age + growth_rate;
-    
-    }
-    else if (!grass_hp == 0 && growth_rate <= 0.3/20)
-    {
-      grass_age = growth_rate; // hack; ensures that the age is 
-    }
-    else if (grass_hp == 0)
-    {
-      grass_age = 0;
-    }
-    else 
-    {
-      grass_age = grass_age;
-    }
-
-
-
-    if (growth_rate <= 0.3/20 && (grass_hp + (-0.31/20 + growth_rate)) >= 0) //hp does not go below 0
-    {
-      grass_hp = grass_hp + (-0.31/20 + growth_rate); //hp decrease rate
-    }
-    
-    else if (growth_rate > 0.3/20 && grass_hp >= 0)
-    {
-      grass_hp = grass_hp + (-0.29/20 + growth_rate); //hp increase rate
-    } 
-
-    else 
-    {
-      grass_hp = 0;
-    }
-*/
 
 }
 
@@ -127,9 +90,6 @@ void FarmNode_callback(alpha_two::farmState msg){
   //ROS_INFO("Farm 3: %d",msg.f3_soil_condition);
   //ROS_INFO("Farm 4: %d",msg.f4_soil_condition);
 
-
-
-  //yay grass growth rate
 
 
   if(initial_position_x>0 && initial_position_y>0){ //Field 1
@@ -162,21 +122,6 @@ void StageLaser_callback(sensor_msgs::LaserScan msg){
 }
 
 
-/*
-void change_spinning_speed_according_to_growth_rate(int growth_rate)
-{
-  if (growth_rate == 0)
-  {
-    grass_rotation_speed = 0;
-  }
-  else if (growth_rate > 0 && growth_rate < 0.25)
-  {
-    grass_rotation_speed = 2;
-  }
-  else if (growth_rate > 0.25 && growth_rate
-
-}
-*/
 
 
 
@@ -251,6 +196,7 @@ int main(int argc, char **argv){
     grassNode_pub.publish(grass_state);
     ros::spinOnce();
     
+    //prints for debugging
     //printf("Grass HP is: %f \n", grass_hp);
     //printf("GROWTH RATE: %f\n", growth_rate);
     //printf("Grass age is: %f \n", grass_age);
