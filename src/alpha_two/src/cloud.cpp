@@ -19,8 +19,8 @@ int dayCounter;
 double px,py;
 
 
-int velX = 0;
-int velY = 0;
+int velX = 0; //Initialise velocity x direction
+int velY = 0; //Initialise velocity x direction
 bool raining;
 
 
