@@ -81,6 +81,14 @@ void StageSheep_callback(alpha_two::sheepState msg)
         grass_state.lockedBy = 0; //grass is no longer locked to a sheep
       }
     }
+    if(grass_state.lockedBy == msg.S_ID) //sheep is no longer locked to this grass
+    {
+      if(msg.grass_locked != grass_state.G_ID)
+      {
+        grass_state.G_State = 0; //grass is available to be eaten
+        grass_state.lockedBy = 0; //grass is no longer locked to a sheep
+      }
+    }
   }
 }
 
