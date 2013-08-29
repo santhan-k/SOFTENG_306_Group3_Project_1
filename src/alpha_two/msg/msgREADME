@@ -10,6 +10,7 @@ int64 x - x co0rdinate
 int64 y - y coordinate
 int64 lockedBy - ID (robot_x) of sheep that is locked on to a grassNode
 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 sheepState
 
@@ -25,3 +26,29 @@ int64 health - health level of sheep (0-100, 0 being dead and 100 being healthy)
 int64 grass_locked - ID (robot_x) of grassNode locked by the sender of this message
 
 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+farmState
+
+rainfall - rainfall percentage
+f1_soil_condition - Field 1 soil condition (0-100)
+f2_soil_condition - Field 2 soil condition (0-100)
+f3_soil_condition - Field 3 soil condition (0-100)
+f4_soil_condition - Field 3 soil condition (0-100)
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+rainFall
+
+rain - 
+  0 - Not raining
+  1 - raining
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+herdingBar
+
+herdingMode - 
+  0 - Not herding
+  1 - Herding
