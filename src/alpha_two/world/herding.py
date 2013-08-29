@@ -4,7 +4,7 @@ import subprocess
 import sys
 import random
 
-
+#Usage Instructions
 if (len(sys.argv)!=3):
     print ("Usage:  python herding.py <Field Number>  <0 - Open gate/inititate herding, 2 - Close gate/reset herding>")
     sys.exit()
@@ -12,6 +12,7 @@ if (len(sys.argv)!=3):
 fieldNumber = int(sys.argv[1])
 openclose = int(sys.argv[2])
 
+#Select correct gates and herdingBar
 if (fieldNumber == 1):
   bar1 = 18
   bar2 = 19
@@ -29,13 +30,17 @@ elif (fieldNumber == 4):
   bar2 = 25
   gate = 9
 
+#Run gate script
+subprocess.Popen("rosrun alpha_two Gates "+str(gate)+"  "+str(sys.argv[2]),shell=True,stdout = PIPE)
+
+#Run  HerdingBar scripts
 subprocess.Popen("rosrun alpha_two HerdingBar "+str(bar1)+"  "+str(sys.argv[2]),shell=True,stdout = PIPE)
 
 subprocess.Popen("rosrun alpha_two HerdingBar "+str(bar2)+"  "+str(sys.argv[2]),shell=True,stdout = PIPE)
 
-subprocess.Popen("rosrun alpha_two Gates "+str(gate)+"  "+str(sys.argv[2]),shell=True,stdout = PIPE)
-
+#Run farmer script
 subprocess.Popen("rosrun alpha_two Farmer "+str(fieldNumber),shell=True,stdout = PIPE)
 
+#Run the truck if herding sheep out of field 4
 if (fieldNumber==4 and int(sys.argv[2])==2):
   subprocess.Popen("rosrun alpha_two truck ",shell=True,stdout = PIPE)
