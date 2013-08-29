@@ -264,8 +264,8 @@ int main(int argc, char **argv){
     ros::spinOnce();
     
     //prints for debugging
-    //printf("Grass HP is: %f \n", grass_hp);
-    //printf("GROWTH RATE: %f \n", growth_rate);
+    printf("Grass HP is: %f \n", grass_hp);
+    printf("GROWTH RATE: %f \n", growth_rate);
 
     
     loop_rate.sleep();
