@@ -161,12 +161,19 @@ void StageGrass_callback(alpha_two::grassState msg)
       }
       else //sheep was locked to the grass, but the grass was not locked to this sheep
       {
-        //reset the sheep back to searching mode
-        //sheep_message.S_State = 0;
-        //sheep_message.grass_locked = 0;
-        if(debug)
-          ROS_INFO("Attempt to lock onto grass failed. Going back to searching");
-        return;
+        if(msg.G_State == 0) //sheep locked to grass, grass has not yet updated
+        {
+          return; //wait for next tick of grass to be updated
+        }
+        else if(msg.G_State == 1) //sheep locked to grass, grass not locked to this sheep and is locked by another sheep
+        {
+          //reset the sheep back to searching mode
+          sheep_message.S_State = 0;
+          sheep_message.grass_locked = 0;
+          if(debug)
+            ROS_INFO("Attempt to lock onto grass failed. Going back to searching");
+          return;
+        }
       }
     }
     else //sheep is not locked to this grass, ignore the grass
