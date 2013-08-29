@@ -98,7 +98,11 @@ ins.close()
 
 #Running farm controller script
 p1 = Popen("rosrun alpha_two farm",shell=True,stdout=PIPE)
+
+#Running cloud controller
 p2 = Popen("rosrun alpha_two cloud",shell=True,stdout=PIPE)
+
+#Running stageros to start simulation
 p=Popen("rosrun stage stageros newmyworldpython.world",shell=True,stdout=PIPE) 
 
 
