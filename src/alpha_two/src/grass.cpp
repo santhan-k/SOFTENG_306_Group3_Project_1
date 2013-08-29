@@ -81,14 +81,6 @@ void StageSheep_callback(alpha_two::sheepState msg)
         grass_state.lockedBy = 0; //grass is no longer locked to a sheep
       }
     }
-    if(grass_state.lockedBy == msg.S_ID) //sheep is no longer locked to this grass
-    {
-      if(msg.grass_locked != grass_state.G_ID)
-      {
-        grass_state.G_State = 0; //grass is available to be eaten
-        grass_state.lockedBy = 0; //grass is no longer locked to a sheep
-      }
-    }
   }
 }
 
@@ -101,7 +93,8 @@ void grass_update(double growth_rate){
   }
   // growing in good weather for grass HP
   // the ranges for growth_rate need to be adjusted when the soil values from farm.cpp change.
-  else if(growth_rate > 0.06 && grass_hp + growth_rate < 20)
+  // as of 28 Aug 5:30 pm, it receives Soil value 0~100, and it's divided by 1000 (adjusting for Stage tick speed), so 0.000 ~ 0.100
+  else if(growth_rate > 0.05 && grass_hp + growth_rate < 20)
   {
     grass_hp += growth_rate;
 
@@ -111,7 +104,7 @@ void grass_update(double growth_rate){
     }
   }
   // growing in bad weather
-  else if(growth_rate <= 0.06 && grass_hp - growth_rate >= 0)
+  else if(growth_rate <= 0.05 && grass_hp - growth_rate >= 0)
   {
     grass_hp -= growth_rate;
   }
@@ -140,7 +133,8 @@ void FarmNode_callback(alpha_two::farmState msg){
 
   if(initial_position_x>0 && initial_position_y>0){ //Field 1
                                                         // always consider the values coming in from farm.cpp.
-    growth_rate = (double(msg.f1_soil_condition)/1000); // setting it to divide by 1000 gives us 0 ~ 0.2
+                                                        // as of 29 Aug, 5:30pm, it sends soil values from 0 to 100.
+    growth_rate = (double(msg.f1_soil_condition)/1000); // setting it to divide by 1000 gives us 0 ~ 0.1
     grass_update(growth_rate);
   }
 
@@ -159,7 +153,6 @@ void FarmNode_callback(alpha_two::farmState msg){
     grass_update(growth_rate);
   }
 
-  //growth rate will be between 0~1
   //soil_condition ranges from 0~100
 }
 
@@ -232,25 +225,6 @@ int main(int argc, char **argv){
   grass_state.G_ID = atoi(argv[1]);
   initial_position_x = atoi(argv[2]);
   initial_position_y = atoi(argv[3]);
-  
-  // Work out what quadrant this grass is in
-  if(initial_position_x > 0 && initial_position_y > 0) //quadrant 1
-  {
-    grass_state.quadrant = 1;
-  }
-  else if(initial_position_x > 0 && initial_position_y < 0) //quadrant 2
-  {
-    grass_state.quadrant = 2;
-  }
-  else if(initial_position_x < 0 && initial_position_y < 0) //quadrant 3
-  {
-    grass_state.quadrant = 3;
-  }
-  else if(initial_position_x < 0 && initial_position_y > 0) //quadrant 4
-  {
-    grass_state.quadrant = 4;
-  }
-  
   while (ros::ok()){
     grass_state.x = initial_position_x;
     grass_state.y = initial_position_y;
@@ -261,9 +235,9 @@ int main(int argc, char **argv){
     ros::spinOnce();
     
     //prints for debugging
-    //printf("Grass HP is: %f \n", grass_hp);
-    //printf("GROWTH RATE: %f\n", growth_rate);
-    //printf("Grass age is: %f \n", grass_age);
+    printf("Grass HP is: %f \n", grass_hp);
+    printf("GROWTH RATE: %f \n", growth_rate);
+
     
     loop_rate.sleep();
     ++count;
