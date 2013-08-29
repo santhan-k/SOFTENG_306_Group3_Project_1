@@ -24,56 +24,73 @@ double theta;
 int state;
 char gateNumber;
 
-struct instruction_struct{
+struct instruction_struct
+{
   int step_count; //how many times do we execute this step before we move to the next step
   double linear_x; //linear velocity in m/s
   double angular_z; //angular velocity
   int next_step; //which step do we move to when we finish this current step
 };
 
-void StageOdom_callback(nav_msgs::Odometry msg){
+void StageOdom_callback(nav_msgs::Odometry msg)
+{
   //This is the call back function to process odometry messages coming from Stage. 	
   px = 5 + msg.pose.pose.position.x;
   py =10 + msg.pose.pose.position.y;
 	
   //condition for movement
-  if(gateNumber == 5) {
-    if(px < -2 && state == 0){
+  if(gateNumber == 5) 
+  {
+    if(px < -2 && state == 0)
+    {
 	  state = 1;    //stops gate once fully opened
 	}
-	else if(px > 4.7 && state == 2){
+	else if(px > 4.7 && state == 2)
+	{
       state = 1;    //stops gate once fully close - in original position
 	}
   }
-  else if(gateNumber == 6){
-    if(px > 12 && state == 0){
+  else if(gateNumber == 6)
+  {
+    if(px > 12 && state == 0)
+    {
       state = 1;  //stops gate once fully opened
     }
-    else if(px < 5 && state == 2){
+    else if(px < 5 && state == 2)
+    {
       state = 1;  //stops gate once fully close - in original position
     }	
   }
-  else if(gateNumber == 7) {
-	if(px < -2 && state == 0) {
+  else if(gateNumber == 7) 
+  {
+	if(px < -2 && state == 0) 
+	{
 	  state = 1;  //stops gate once fully opened
 	}
-	else if(px > 4.7 && state == 2){
+	else if(px > 4.7 && state == 2)
+	{
 	  state = 1;  //stops gate once fully close - in original position
 	}	
   }
-  else if(gateNumber == 8){
-    if(px > 12 && state == 0){
+  else if(gateNumber == 8)
+  {
+    if(px > 12 && state == 0)
+    {
       state = 1;  //stops gate once fully opened
 	}
-	else if(px < 4.7 && state == 2){
+	else if(px < 4.7 && state == 2)
+	{
 	  state = 1;  //stops gate once fully close - in original position
 	}
   }
-  else if(gateNumber == 9) {
-    if(px > 12 && state == 0){
+  else if(gateNumber == 9) 
+  {
+    if(px > 12 && state == 0)
+    {
       state = 1; //stops gate once fully opened
     }
-    else if(px < 4.7 && state == 2){
+    else if(px < 4.7 && state == 2)
+    {
       state = 1; //stops gate once fully close - in original position
     }	
   }
@@ -83,13 +100,15 @@ void StageOdom_callback(nav_msgs::Odometry msg){
   ROS_INFO("Current y position is: %f", py);
 }
 
-void StageLaser_callback(sensor_msgs::LaserScan msg){
+void StageLaser_callback(sensor_msgs::LaserScan msg)
+{
   //This is the callback function to process laser scan messages
   //you can access the range data from msg.ranges[i]. i = sample number	
 }
 
 
-void addInstruction(vector<instruction_struct>& instruction_vector, int step_count, double linear_x, double angular_z, int next_step){
+void addInstruction(vector<instruction_struct>& instruction_vector, int step_count, double linear_x, double angular_z, int next_step)
+{
   instruction_struct *Instruction = new instruction_struct; //create a new instruction_struct
   Instruction->step_count = step_count;
   Instruction->linear_x = linear_x;
@@ -98,7 +117,8 @@ void addInstruction(vector<instruction_struct>& instruction_vector, int step_cou
   instruction_vector.push_back(*Instruction); //add instruction_struct to back of vector
 }
 
-int main(int argc, char **argv){
+int main(int argc, char **argv)
+{
 
   //initialize robot parameters
   //Initial pose. This is same as the pose that you used in the world file to set	the robot pose.
@@ -145,27 +165,32 @@ int main(int argc, char **argv){
   vector <instruction_struct> instruction_vector;
 
   //Conditions to check gate to move, and call addInstruction
-  if(gateNumber == 5){
+  if(gateNumber == 5)
+  {
     addInstruction(instruction_vector, 75, -1, 0.0, 1);    // Opening gate        
   	addInstruction(instruction_vector, 0, 0, 0.0, 2);      // Stationary Gate
   	addInstruction(instruction_vector, 75, 1, 0.0, 0);     // Closing gate
   }
-  else if(gateNumber == 6){
+  else if(gateNumber == 6)
+  {
   	addInstruction(instruction_vector, 75, 1, 0.0, 1);    // Opening gate
   	addInstruction(instruction_vector, 0, 0, 0.0, 2);     // Stationary Gate
  	  addInstruction(instruction_vector, 75, -1, 0.0, 0);   // Closing gate
   }
-  else if(gateNumber == 7){
+  else if(gateNumber == 7)
+  {
     addInstruction(instruction_vector, 75, -1, 0.0, 1);   // Opening gate
   	addInstruction(instruction_vector, 0, 0, 0.0, 2);     // Stationary Gate
   	addInstruction(instruction_vector, 75, 1, 0.0, 0);    // Closing gate
   }
-  else if(gateNumber == 8){
+  else if(gateNumber == 8)
+  {
     addInstruction(instruction_vector, 75, 1, 0.0, 1);    // Opening gate
   	addInstruction(instruction_vector, 0, 0, 0.0, 2);     // Stationary Gate
   	addInstruction(instruction_vector, 75, -1, 0.0, 0);   // Closing gate
   }
-  else if(gateNumber == 9){
+  else if(gateNumber == 9)
+  {
     addInstruction(instruction_vector, 75, 1, 0.0, 1);    // Opening gate
   	addInstruction(instruction_vector, 0, 0, 0.0, 2);     // Stationary Gate
  	  addInstruction(instruction_vector, 75, -1, 0.0, 0);   // Closing gate
@@ -175,21 +200,25 @@ int main(int argc, char **argv){
   int current_step = 0;
   int current_step_count = 0;
 
-  while (ros::ok()){
+  while (ros::ok())
+  {
     //messages to stage
     linear_x = instruction_vector[current_step].linear_x;
     angular_z = instruction_vector[current_step].angular_z;
     ++current_step_count;
 
     //If gates are opening
-    if(state == 0) {
+    if(state == 0) 
+    {
       linear_x = instruction_vector[0].linear_x;
       angular_z = instruction_vector[0].angular_z;
     }
-    else if(state == 1){              //If the gates are set to stop
+    else if(state == 1)
+    {              //If the gates are set to stop
       break;
     }
-    else if(state == 2){             //If the gates are meant to close
+    else if(state == 2)
+    {             //If the gates are meant to close
       linear_x = instruction_vector[2].linear_x;
       angular_z = instruction_vector[2].angular_z;
     }
