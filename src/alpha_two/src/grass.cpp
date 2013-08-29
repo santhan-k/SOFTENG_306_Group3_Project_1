@@ -68,15 +68,16 @@ void grass_update(double growth_rate){
     grass_age = 0;
   }
   // growing in good weather for grass HP
-  else if (growth_rate > 0.05  &&  grass_hp+growth_rate < 20) {
+  // the ranges for growth_rate need to be adjusted when the soil values from farm.cpp change.
+  else if (growth_rate > 0.07  &&  grass_hp+growth_rate < 20) {
     grass_hp += growth_rate;
   }
   // growing in bad weather
-  else if  (growth_rate <= 0.05 && grass_hp-growth_rate >= 0) {
+  else if  (growth_rate <= 0.07 && grass_hp-growth_rate >= 0) {
     grass_hp -= growth_rate;
   }
   // growing in good weather for grass HP
-  if (growth_rate > 0.05  &&  grass_age+growth_rate < 3){
+  if (growth_rate > 0.07  &&  grass_age+growth_rate < 3){
     grass_age += growth_rate;
   }
 
@@ -93,22 +94,23 @@ void FarmNode_callback(alpha_two::farmState msg){
 
 
   if(initial_position_x>0 && initial_position_y>0){ //Field 1
-    growth_rate = (double(msg.f1_soil_condition)/10); //0 ~ 0.1
+                                                        // always consider the values coming in from farm.cpp.
+    growth_rate = (double(msg.f1_soil_condition)/1000); // setting it to divide by 1000 gives us 0 ~ 0.2
     grass_update(growth_rate);
   }
 
   else if(initial_position_x>0 && initial_position_y<0){ //Field 2
-    growth_rate = (double(msg.f2_soil_condition)/10);
+    growth_rate = (double(msg.f2_soil_condition)/1000);
     grass_update(growth_rate);
   }
 
   else if(initial_position_x<0 && initial_position_y<0){ //Field 3
-    growth_rate = (double(msg.f3_soil_condition)/10);
+    growth_rate = (double(msg.f3_soil_condition)/1000);
     grass_update(growth_rate);
   }
 
   else if(initial_position_x<0 && initial_position_y>0){ //Field 4
-    growth_rate = (double(msg.f4_soil_condition)/10);
+    growth_rate = (double(msg.f4_soil_condition)/1000);
     grass_update(growth_rate);
   }
 
