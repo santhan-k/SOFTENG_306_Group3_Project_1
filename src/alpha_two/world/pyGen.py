@@ -4,12 +4,15 @@ import subprocess
 import sys
 import random
 
+#Usage Instructions
 if (len(sys.argv)!=3):
     print ("Usage:  python pyGen.py <number of sheep>  <Field number (1-4)>")
     sys.exit()
 numSheep = int(sys.argv[1])
 numGrass = 10
 fieldNumber = int(sys.argv[2])
+
+#Reading myworld.world file
 ins = open( "myworld.world", "r" )
 array = []
 for line in ins:
@@ -18,6 +21,8 @@ ins.close()
 
 commandArray =  []
 sheepNum = 26
+
+#Creating sheep in random places around that chosen field
 for i in range(0,numSheep):
     command =  []
     if (fieldNumber == 1):
@@ -46,6 +51,7 @@ for i in range(0,numSheep):
   
 grassNum = 26 + numSheep*2  
 
+#Creating grass in field 1
 for i in range(0,numGrass):
     x = random.randint(1,29)
     y = random.randint(1,29)
@@ -54,6 +60,7 @@ for i in range(0,numGrass):
     subprocess.Popen("rosrun alpha_two grass "+str(grassNum)+"  "+str(x)+" "+str(y),shell=True,stdout = PIPE)
     grassNum = grassNum + 1
 
+#Creating grass in field 2
 for i in range(0,numGrass):
     x = random.randint(1,29)
     y = -(random.randint(1,29))
@@ -62,6 +69,7 @@ for i in range(0,numGrass):
     subprocess.Popen("rosrun alpha_two grass "+str(grassNum)+"  "+str(x)+" "+str(y),shell=True,stdout = PIPE)
     grassNum = grassNum + 1
 
+#Creating grass in field 3
 for i in range(0,numGrass):
     x = -(random.randint(1,29))
     y = -(random.randint(1,29))
@@ -70,6 +78,7 @@ for i in range(0,numGrass):
     subprocess.Popen("rosrun alpha_two grass "+str(grassNum)+"  "+str(x)+" "+str(y),shell=True,stdout = PIPE)
     grassNum = grassNum + 1
 
+#Creating grass in field 4
 for i in range(0,numGrass):
     x = -(random.randint(1,29))
     y = random.randint(1,29)
@@ -78,12 +87,16 @@ for i in range(0,numGrass):
     subprocess.Popen("rosrun alpha_two grass "+str(grassNum)+"  "+str(x)+" "+str(y),shell=True,stdout = PIPE)
     grassNum = grassNum + 1
 
+#Opening new file to write 
 ins = open( "newmyworldpython.world", "w" )
 
+#Writing to file
 for line in array:
   ins.write("%s\n" % line)
 ins.close()
-#p = Popen("rosrun alpha_two Farmer",shell=True,stdout=PIPE)
+
+
+#Running farm controller script
 p1 = Popen("rosrun alpha_two farm",shell=True,stdout=PIPE)
 p2 = Popen("rosrun alpha_two cloud",shell=True,stdout=PIPE)
 p=Popen("rosrun stage stageros newmyworldpython.world",shell=True,stdout=PIPE) 
