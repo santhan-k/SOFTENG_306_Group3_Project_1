@@ -154,8 +154,6 @@ void StageGrass_callback(alpha_two::grassState msg)
     {
       if(sheep_message.S_ID == msg.lockedBy) //sheep is locked by the grass
       {
-        if(debug)
-          ROS_INFO("Moving towards grass: %d", msg.G_ID);
         angular_z = CalculateAngularVelocity(); //go towards grass
         linear_x = CalculateLinearVelocity(); //slow down if sheep gets close to the grass
       }
@@ -180,6 +178,12 @@ void StageGrass_callback(alpha_two::grassState msg)
     {
       return;
     }
+  }
+  else if(sheep_message.S_State == 2) //sheep is eating grass
+  {
+    ROS_INFO("Eating grass");
+    angular_z = 0;
+    linear_x = 0;
   }
 }
 
@@ -210,9 +214,16 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
       angular_z = CalculateAngularVelocity(); //turn towards grass
       ROS_INFO("linear velocity: %f   angular velocity: %f", linear_x, angular_z);
     }
-
+    
     // if there is an obstacle such as wall or sheep in the way, avoid it
     collisionAvoidance(smallest_range, msg, current_lowest_index);
+    
+    if(sheep_message.S_State == 2) //sheep is eating grass
+    {
+      ROS_INFO("Eating grass");
+      linear_x = 0;
+      angular_z = 0;
+    }
   }
   else //is being herded
   {
@@ -301,20 +312,16 @@ float CalculateAngularVelocity() {
   {
     return difference / (180/M_PI);
   }
-//  float difference = ptheta - theta;
-//  if(difference > 0)
-//  {
-//    return difference / (180/M_PI);
-//  }
-//  else
-//  {
-//    return -difference / (180/M_PI);
-//  }
 }
 
 float CalculateLinearVelocity()
 {
   CalculateGrassDistance(); //this updates grass_distance
+  if(grass_distance < 0.5)
+  {
+    sheep_message.S_State = 2;
+    return 0;
+  }
   return 0.1 * sqrt(grass_distance);
 }
 
