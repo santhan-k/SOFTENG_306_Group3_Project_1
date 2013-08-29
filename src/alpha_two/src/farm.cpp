@@ -53,6 +53,7 @@ void changeWeather(){
     new_farm_msg.rainfall = rand()%50;
     curSeason = 3;
     sunlight = 90;
+
   }
   
   //Winter
@@ -105,10 +106,12 @@ void changeWeather(){
 
 // new_farm_msg.f1_soil_condition = abs(new_farm_msg.f1_soil_condition) + abs(new_farm_msg.rainfall) + abs(sunlight);
 // it used to be the above code
-  new_farm_msg.f1_soil_condition = 50 + abs(new_farm_msg.rainfall) + abs(sunlight);
-  new_farm_msg.f2_soil_condition = 5 + abs(new_farm_msg.rainfall) + abs(sunlight);
-  new_farm_msg.f3_soil_condition = 10 + abs(new_farm_msg.rainfall) + abs(sunlight);
-  new_farm_msg.f4_soil_condition = 40 + abs(new_farm_msg.rainfall) + abs(sunlight);
+
+  // field 1 = green, 2 = brown, 3 = yellow, 4 = light green
+  new_farm_msg.f1_soil_condition = 50 + abs(new_farm_msg.rainfall) + abs(sunlight); // average of 50, 25, 90 =
+  new_farm_msg.f2_soil_condition = 5 + abs(new_farm_msg.rainfall) + abs(sunlight); // average of 5, 5, 70
+  new_farm_msg.f3_soil_condition = 10 + abs(new_farm_msg.rainfall) + abs(sunlight); // average of 10, 20, 50
+  new_farm_msg.f4_soil_condition = 40 + abs(new_farm_msg.rainfall) + abs(sunlight); // average of 40, 10, 5
 
 // old algorithm that was used to scale the soil values. No longer needed.
 /*
@@ -353,10 +356,14 @@ int main(int argc, char **argv){
   new_farm_msg.rainfall = 0;
 
   //is there any significance in these initial values??*************************************
-  new_farm_msg.f1_soil_condition = 50;   
-  new_farm_msg.f2_soil_condition = 50;  
-  new_farm_msg.f3_soil_condition = 50;   
-  new_farm_msg.f4_soil_condition = 50;
+  // nope, they are now manually inserted.
+/*
+  new_farm_msg.f1_soil_condition = 95;   
+  new_farm_msg.f2_soil_condition = 30;  
+  new_farm_msg.f3_soil_condition = 60;   
+  new_farm_msg.f4_soil_condition = 80;
+*/  
+
   sunlight = 80;
 
   ////messages
