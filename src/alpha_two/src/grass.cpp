@@ -29,7 +29,8 @@ double initial_theta;
 double growth_rate;
 //bool isGrassLiving;
 double grass_hp; //variable for determining when the grass dies
-double grass_age; //growth status. ranges from 0-3. also used for rotation speed.
+// grass age is not redundant (since we want to just use the sheep's grass eating speed of 1 per tick, and using the grass_hp's reaction to that sounds good).
+// double grass_age; //growth status. ranges from 0-3. also used for rotation speed.
 
 //for HP recovery : if soil condtion is above 30. 
 //HP will decrease if soil condition is below 30.
@@ -71,22 +72,13 @@ void StageSheep_callback(alpha_two::sheepState msg)
   }
   else if(grass_state.G_State == 1) //locked by a sheep
   {
-    if(grass_state.lockedBy == msg.S_State) //grass is locked to this sheep
-    {
-      if(msg.grass_locked != grass_state.G_ID) //sheep is not locked to this grass
-      {
-        //this may occur from rechecking which grass is closest
-        grass_state.G_State = 0;
-        grass_state.lockedBy = 0;
-      }
-    }
     if(msg.S_State == 2) //sheep is eating this grass
     {
       grass_hp -= 1; //grass is being eaten
       if(grass_hp <= 1) // Check if grass is eaten
       {
         grass_state.G_State = 2; //grass is now eaten
-        grass_state.lockedBy = 0; //grass is no longer locked to a sheep
+        grass_state.lockedby = 0; //grass is no longer locked to a sheep
       }
     }
   }
@@ -94,26 +86,38 @@ void StageSheep_callback(alpha_two::sheepState msg)
 
 void grass_update(double growth_rate){
  
-  if(grass_hp == 0)
+  if(grass_hp <= 1) // if the hp is lower than 1 (by being eaten or by weather) then it dies (G_State = 2)
   {
-    grass_age = 0;
+    grass_hp = 0;
+    grass_state.G_State = 2;  // grass is dead. 
   }
   // growing in good weather for grass HP
   // the ranges for growth_rate need to be adjusted when the soil values from farm.cpp change.
-  else if(growth_rate > 0.07 && grass_hp + growth_rate < 20)
+  else if(growth_rate > 0.06 && grass_hp + growth_rate < 20)
   {
     grass_hp += growth_rate;
+
+    if (grass_hp > 1) // if the grass regains enough HP to start spinning and be eaten again
+    {
+      grass_state.G_State = 0;
+    }
   }
   // growing in bad weather
-  else if(growth_rate <= 0.07 && grass_hp - growth_rate >= 0)
+  else if(growth_rate <= 0.06 && grass_hp - growth_rate >= 0)
   {
     grass_hp -= growth_rate;
   }
-  // growing in good weather for grass HP
-  if (growth_rate > 0.07  &&  grass_age+growth_rate < 3){
-    grass_age += growth_rate;
-  }
 
+
+/*
+  if (growth_rate > 0.06  &&  grass_age+growth_rate < 3)
+  {
+    grass_age += growth_rate;
+  } 
+  else if (growth_rate <= 0.06 && grass_age - growth_rate >= 0)
+  {  
+  }
+*/
 
 }
 
@@ -214,7 +218,7 @@ int main(int argc, char **argv){
   ///messages
   //velocity of this RobotNode
   geometry_msgs::Twist RobotNode_cmdvel;
-  RobotNode_cmdvel.angular.z = 2.0; // this dynamically updates the age of our grass; spinning it faster the older it is.
+  RobotNode_cmdvel.angular.z = grass_hp; // this dynamically updates the age of our grass; spinning it faster the older it is.
   
   grass_state.G_State = 0;
   grass_state.G_ID = atoi(argv[1]);
