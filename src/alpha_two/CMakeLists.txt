@@ -27,6 +27,7 @@ add_message_files(
   farmState.msg
   rainFall.msg
   sheepDogState.msg
+  herdingBar.msg
 )
 
 ## Generate services in the 'srv' folder
