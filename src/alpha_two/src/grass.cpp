@@ -74,8 +74,10 @@ void StageSheep_callback(alpha_two::sheepState msg)
   {
     if(msg.S_State == 2) //sheep is eating this grass
     {
-      grass_hp -= 1; //grass is being eaten
-      if(grass_hp <= 1) // Check if grass is eaten
+
+      // grass eating speed has been changed (from 1). The grass still dies, but it will still spin slowly.
+      grass_hp -= 0.2; //grass is being eaten
+      if(grass_hp <= 0.2) // Check if grass is eaten
       {
         grass_state.G_State = 2; //grass is now eaten
         grass_state.lockedBy = 0; //grass is no longer locked to a sheep
@@ -94,15 +96,14 @@ void StageSheep_callback(alpha_two::sheepState msg)
 
 void grass_update(double growth_rate){
  
-  if(grass_hp <= 1) // if the hp is lower than 1 (by being eaten or by weather) then it dies (G_State = 2)
+  if(grass_hp <= 0.2) // if the hp is lower than 1 (by being eaten or by weather) then it dies (G_State = 2)
   {
-    grass_hp = 0;
     grass_state.G_State = 2;  // grass is dead. 
   }
   // growing in good weather for grass HP
   // the ranges for growth_rate need to be adjusted when the soil values from farm.cpp change.
   // as of 28 Aug 5:30 pm, it receives Soil value 0~100, and it's divided by 1000 (adjusting for Stage tick speed), so 0.000 ~ 0.100
-  else if(growth_rate > 0.05 && grass_hp + growth_rate < 5)
+  if(growth_rate > 0.05 && grass_hp + growth_rate < 5)
   {
     grass_hp += growth_rate;
 
