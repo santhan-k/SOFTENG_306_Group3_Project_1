@@ -81,6 +81,14 @@ void StageSheep_callback(alpha_two::sheepState msg)
         grass_state.lockedBy = 0; //grass is no longer locked to a sheep
       }
     }
+    if(grass_state.lockedBy == msg.S_ID) //sheep is no longer locked to this grass
+    {
+      if(msg.grass_locked != grass_state.G_ID)
+      {
+        grass_state.G_State = 0; //grass is available to be eaten
+        grass_state.lockedBy = 0; //grass is no longer locked to a sheep
+      }
+    } 
   }
 }
 
@@ -225,6 +233,25 @@ int main(int argc, char **argv){
   grass_state.G_ID = atoi(argv[1]);
   initial_position_x = atoi(argv[2]);
   initial_position_y = atoi(argv[3]);
+  
+  // Work out what quadrant this grass is in
+  if(initial_position_x > 0 && initial_position_y > 0) //quadrant 1
+  {
+    grass_state.quadrant = 1;
+  }
+  else if(initial_position_x > 0 && initial_position_y < 0) //quadrant 2
+  {
+    grass_state.quadrant = 2;
+  }
+  else if(initial_position_x < 0 && initial_position_y < 0) //quadrant 3
+  {
+    grass_state.quadrant = 3;
+  }
+  else if(initial_position_x < 0 && initial_position_y > 0) //quadrant 4
+  {
+    grass_state.quadrant = 4;
+  } 
+  
   while (ros::ok()){
     grass_state.x = initial_position_x;
     grass_state.y = initial_position_y;

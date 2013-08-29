@@ -117,14 +117,14 @@ void StageBasePose_callback(nav_msgs::Odometry msg){
  * Thus, use a lot of global variables to keep track of information
  */
 void StageGrass_callback(alpha_two::grassState msg){
-  //if(debug)
-    //ROS_INFO("Received grass message: %d, %d, %d, %d, %d", msg.G_State, msg.G_ID, msg.x, msg.y, msg.lockedBy);
+  if(debug)
+    ROS_INFO("Received grass message: %d, %d, %d, %d, %d", msg.G_State, msg.G_ID, msg.x, msg.y, msg.lockedBy);
   
   // If grass is not in the same field, ignore it
-  if(quadrant != msg.quadrant)
-  {
-    return;
-  }
+  //if(quadrant != msg.quadrant)
+ // {
+   // return;
+  //}
   
   /*
    * Continuously re-check which grass is closest
