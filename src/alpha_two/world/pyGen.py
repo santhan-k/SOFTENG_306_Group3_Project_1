@@ -4,7 +4,7 @@ import subprocess
 import sys
 import random
 numSheep = int(sys.argv[1])
-numGrass = 20
+numGrass = 10
 fieldNumber = int(sys.argv[2])
 ins = open( "myworld.world", "r" )
 array = []
@@ -39,31 +39,40 @@ for i in range(0,numSheep):
 
     subprocess.Popen("rosrun alpha_two R1 "+str(sheepNum)+"  "+str(x)+" "+str(y)+" " +str(angle),shell=True,stdout = PIPE)
     sheepNum = sheepNum + 2   
-    
+  
+grassNum = 26 + numSheep*2  
 
 for i in range(0,numGrass):
     x = random.randint(1,29)
     y = random.randint(1,29)
     line = "myGrass( pose [" +str(x)+" "+ str(y) + " 0 0 ] name \"g"+str(i)+"\" color \"green\" )"
     array.append(line)
+    subprocess.Popen("rosrun alpha_two grass "+str(grassNum)+"  "+str(x)+" "+str(y),shell=True,stdout = PIPE)
+    grassNum = grassNum + 1
 
 for i in range(0,numGrass):
     x = random.randint(1,29)
     y = -(random.randint(1,29))
     line = "myGrass( pose [" +str(x)+" "+ str(y) + " 0 0 ] name \"g"+str(i+numGrass)+"\" color \"green\" )"
     array.append(line)
+    subprocess.Popen("rosrun alpha_two grass "+str(grassNum)+"  "+str(x)+" "+str(y),shell=True,stdout = PIPE)
+    grassNum = grassNum + 1
 
 for i in range(0,numGrass):
     x = -(random.randint(1,29))
     y = -(random.randint(1,29))
     line = "myGrass( pose [" +str(x)+" "+ str(y) + " 0 0 ] name \"g"+str(i+numGrass*2)+"\" color \"green\" )"
     array.append(line)
+    subprocess.Popen("rosrun alpha_two grass "+str(grassNum)+"  "+str(x)+" "+str(y),shell=True,stdout = PIPE)
+    grassNum = grassNum + 1
 
 for i in range(0,numGrass):
     x = -(random.randint(1,29))
     y = random.randint(1,29)
     line = "myGrass( pose [" +str(x)+" "+ str(y) + " 0 0 ] name \"g"+str(i+numGrass*3)+"\" color \"green\" )"
     array.append(line)
+    subprocess.Popen("rosrun alpha_two grass "+str(grassNum)+"  "+str(x)+" "+str(y),shell=True,stdout = PIPE)
+    grassNum = grassNum + 1
 
 ins = open( "newmyworldpython.world", "w" )
 
