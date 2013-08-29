@@ -45,9 +45,9 @@ double initial_theta;
 //used for advertising what the sheep is currently doing
 alpha_two::sheepState sheep_message; //please do not call variables "newmsg" ever again
 
-// X and Y position values of sheepDog1
-double sheepDog1_x;
-double sheepDog1_y;
+// X and Y position values of sheepDog
+double sheepDog_x;
+double sheepDog_y;
 
 // Toggle herding mode
 bool is_being_herded = false;
@@ -78,11 +78,11 @@ void initiateSheepHerding(nav_msgs::Odometry msg){
   px = -msg.pose.pose.position.y;
   py = msg.pose.pose.position.x;
 
-  ROS_INFO("PX: %f",sheepDog1_x);
+  ROS_INFO("PX: %f",sheepDog_x);
   ROS_INFO("shPX: %f",px);
   ROS_INFO("shPY: %f",py);
 
-  if(px < sheepDog1_x){
+  if(px < sheepDog_x){
     ROS_INFO("This Sheep is behind enemy lines.");
     linear_x = 0;
     angular_z = (M_PI / 18) * 5;
@@ -92,7 +92,7 @@ void initiateSheepHerding(nav_msgs::Odometry msg){
     linear_x = 1;
     angular_z = 0;
   }
-  ROS_INFO("diff: %f",px-sheepDog1_x);
+  ROS_INFO("diff: %f",px-sheepDog_x);
 }
 
 void StageBasePose_callback(nav_msgs::Odometry msg){
@@ -230,12 +230,12 @@ void StageLaser_callback(sensor_msgs::LaserScan msg){
   }
 }
 
-void sheepDog1_callback(alpha_two::sheepDogState msg){
-  sheepDog1_x = msg.x;
-  sheepDog1_y = msg.y;
+void sheepDog_callback(alpha_two::sheepDogState msg){
+  sheepDog_x = msg.x;
+  sheepDog_y = msg.y;
   if(debug){
-    ROS_INFO("SheepDog1 position x: %f",sheepDog1_x);
-    ROS_INFO("SheepDog1 position y: %f",sheepDog1_y);
+    ROS_INFO("SheepDog position x: %f",sheepDog_x);
+    ROS_INFO("SheepDog position y: %f",sheepDog_y);
   }
 }
 
@@ -356,8 +356,8 @@ int main(int argc, char** argv){
   rName << "robot_" << argv[1]<<"/base_pose_ground_truth";
   ros::Subscriber StageOdom_base_pose_sub = n.subscribe<nav_msgs::Odometry>(rName.str(),1000,StageBasePose_callback);
 
-  // Listen to custom location messages from SheepDog1
-  ros::Subscriber sheepDog1_position = n.subscribe<alpha_two::sheepDogState>("/sheepDog1_msg",1000,sheepDog1_callback);
+  // Listen to custom location messages from SheepDog
+  ros::Subscriber sheepDog_position = n.subscribe<alpha_two::sheepDogState>("/sheepDog_msg",1000,sheepDog_callback);
 
   ros::Subscriber grassNode_sub = n.subscribe<alpha_two::grassState>("Grass_msg", 1000, StageGrass_callback);
 
