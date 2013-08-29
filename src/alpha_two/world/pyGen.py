@@ -3,6 +3,10 @@ from subprocess import Popen, PIPE
 import subprocess
 import sys
 import random
+
+if (len(sys.argv)!=3):
+    print ("Usage:  python pyGen.py <number of sheep>  <Field number (1-4)>")
+    sys.exit()
 numSheep = int(sys.argv[1])
 numGrass = 10
 fieldNumber = int(sys.argv[2])
