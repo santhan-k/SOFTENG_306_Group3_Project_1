@@ -114,7 +114,7 @@ define myGate position
   bitmap "gate.png"
   mylaser(pose [ 0.050 0.000 0 0.000 ])
   ranger_return 1
-  obstacle_return 1	
+  obstacle_return 0	
   
 )
 
@@ -152,7 +152,7 @@ define myMaze model
 define herdingBarVertical position
 (
   size [0.1 30 2]
-  color_rgba [0.20874 0.780392 0.149019 0]
+  color_rgba [0.20874 0.780392 0.149019 1]
   gui_boundary 0
   herdingBarlaser(pose [ 0.050 0.000 -0.07 0.000 ])
   laser_return 1
@@ -164,7 +164,7 @@ define herdingBarVertical position
 define herdingBarHorizontal position
 (
   size [0.1 30 2]
-  color_rgba [0.20874 0.780392 0.149019 0]
+  color_rgba [0.20874 0.780392 0.149019 1]
   gui_boundary 0
   herdingBarlaser(pose [ 0.050 0.000 -0.07 0.000 ])
   laser_return 1
@@ -295,7 +295,7 @@ herdingBarHorizontal( pose [-15 -30 0 90] name "barFarm3H") # Robot_23
 
 # Field4
 herdingBarVertical( pose [0 15 0 0] name "barFarm4V") # Robot_24
-herdingBarHorizontal( pose [-7.9 0 0 90] name "barFarm4H") # Robot_25
+herdingBarHorizontal( pose [7.9 0 0 90] name "barFarm4H") # Robot_25
 
 # robot_0 = farmer
 # robot_1-4 = Fields
