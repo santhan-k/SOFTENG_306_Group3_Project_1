@@ -110,10 +110,10 @@ void changeWeather(){
 // it used to be the above code
 
   // field 1 = green, 2 = brown, 3 = yellow, 4 = light green
-  new_farm_msg.f1_soil_condition = 50 + abs(new_farm_msg.rainfall) + abs(sunlight); // Always alive, maybe in Summer
-  new_farm_msg.f2_soil_condition = 10 + abs(new_farm_msg.rainfall) + abs(sunlight); // Always dead, maybe in Spring
-  new_farm_msg.f3_soil_condition = 20 + abs(new_farm_msg.rainfall) + abs(sunlight); // Maybe in Winter, Alive in Spring, Dead otherwise
-  new_farm_msg.f4_soil_condition = 40 + abs(new_farm_msg.rainfall) + abs(sunlight); // Dead in Summer, Maybe in Autumn, Alive otherwise
+  new_farm_msg.f1_soil_condition = 50 + new_farm_msg.rainfall + sunlight; // Always alive, maybe in Summer
+  new_farm_msg.f2_soil_condition = 10 + new_farm_msg.rainfall + sunlight; // Always dead, maybe in Spring
+  new_farm_msg.f3_soil_condition = 20 + new_farm_msg.rainfall + sunlight; // Maybe in Winter, Alive in Spring, Dead otherwise
+  new_farm_msg.f4_soil_condition = 40 + new_farm_msg.rainfall + sunlight; // Dead in Summer, Maybe in Autumn, Alive otherwise
 
 // old algorithm that was used to scale the soil values. No longer needed.
 /*
