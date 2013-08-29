@@ -51,29 +51,53 @@ void StageOdom_callback(nav_msgs::Odometry msg){
   //printf("px = %f   py = %f x = %f  y = %f",px, py, onex, oney);
 }
 
-void StageSheep_callback(alpha_two::sheepState msg){
-  
+void StageSheep_callback(alpha_two::sheepState msg)
+{
   //ROS_INFO("RECEIVED Sheep MESSAGE FROM: %d",msg.S_ID);
   //ROS_INFO("Sheep message: %d, %d, %d, %d", msg.S_State, msg.S_ID, msg.health, msg.grass_locked);
-  if(msg.S_State==1 && msg.grass_locked==grass_state.G_ID && grass_state.G_State == 0){
-    grass_state.G_State=1;
-    grass_state.lockedBy = msg.S_ID;
-    ROS_INFO("LOCKED by SHEEP: %d",msg.S_ID);
+  //if(msg.S_State==1 && msg.grass_locked==grass_state.G_ID && grass_state.G_State == 0){
+  //  grass_state.G_State=1;
+  //  grass_state.lockedBy = msg.S_ID;
+  //  ROS_INFO("LOCKED by SHEEP: %d",msg.S_ID);
+  //}
+  if(grass_state.G_State == 0) //free to be locked by a sheep
+  {
+    if(msg.S_State == 1 && msg.grass_locked == grass_state.G_ID) //sheep is locked to this grass
+    {
+      grass_state.G_State = 1;
+      grass_state.lockedBy = msg.S_ID;
+      ROS_INFO("LOCKED by SHEEP: %d",msg.S_ID);
+    }
+  }
+  else if(grass_state.G_State == 1) //locked by a sheep
+  {
+    if(msg.S_State == 2) //sheep is eating this grass
+    {
+      grass_hp -= 1; //grass is being eaten
+      if(grass_hp <= 1) // Check if grass is eaten
+      {
+        grass_state.G_State = 2; //grass is now eaten
+        grass_state.lockedby = 0; //grass is no longer locked to a sheep
+      }
+    }
   }
 }
 
 void grass_update(double growth_rate){
  
-  if (grass_hp==0){
+  if(grass_hp == 0)
+  {
     grass_age = 0;
   }
   // growing in good weather for grass HP
   // the ranges for growth_rate need to be adjusted when the soil values from farm.cpp change.
-  else if (growth_rate > 0.07  &&  grass_hp+growth_rate < 20) {
+  else if(growth_rate > 0.07 && grass_hp + growth_rate < 20)
+  {
     grass_hp += growth_rate;
   }
   // growing in bad weather
-  else if  (growth_rate <= 0.07 && grass_hp-growth_rate >= 0) {
+  else if(growth_rate <= 0.07 && grass_hp - growth_rate >= 0)
+  {
     grass_hp -= growth_rate;
   }
   // growing in good weather for grass HP
