@@ -26,7 +26,9 @@ int state;
 double initial_position_x;
 double initial_position_y;
 double initial_theta;
-double growth_rate;
+double soil_quality;
+double grass_grows = 0.25;
+double grass_dies = 0.25;
 double grass_hp; //variable for determining when the grass dies
 // grass age is not redundant (since we want to just use the sheep's grass eating speed of 1 per tick, and using the grass_hp's reaction to that sounds good).
 // double grass_age; //growth status. ranges from 0-3. also used for rotation speed.
@@ -64,8 +66,8 @@ void StageSheep_callback(alpha_two::sheepState msg)
     {
 
       // grass eating speed has been changed (from 1). The grass still dies, but it will still spin slowly.
-      grass_hp -= 3.5; //grass is being eaten
-      if(grass_hp <= 3.5) // Check if grass is eaten
+      grass_hp -= 0.5; //grass is being eaten
+      if(grass_hp <= 0.5) // Check if grass is eaten
       {
         grass_state.G_State = 2; //grass is now eaten
         grass_state.lockedBy = 0; //grass is no longer locked to a sheep
@@ -82,30 +84,32 @@ void StageSheep_callback(alpha_two::sheepState msg)
   }
 }
 
-void grass_update(double growth_rate){
+void grass_update(double soil_quality){
 
-  if(grass_hp <= 0.5) // if the hp is lower than 1 (by being eaten or by weather) then it dies (G_State = 2)
+  if(grass_hp <= 1) // if the hp is lower than 1 (by being eaten or by weather) then it dies (G_State = 2)
   {
-    grass_state.G_State = 2;  // grass is dead.
+    grass_state.G_State = 2;  // grass is dead (eaten).
   }
-  // growing in good weather for grass HP
-  // the ranges for growth_rate need to be adjusted when the soil values from farm.cpp change.
-  // as of 28 Aug 5:30 pm, it receives Soil value 0~100, and it's divided by 1000 (adjusting for Stage tick speed), so 0.000 ~ 0.100
-  if(growth_rate > 0.05 && grass_hp + growth_rate < 4)  // the second condition ensures that the HP never goes up too high to not show a quick response..
-  {
-    grass_hp += growth_rate;
 
-    if (grass_hp > 1) // if the grass regains enough HP to start spinning and be eaten again
+  if (grass_hp > 3 && grass_state.G_State == 2) // if the grass regains enough HP to start spinning and be eaten again
+  {
+    grass_state.G_State = 0; // the grass can be eaten by sheeps again.
+  }
+
+  if ( grass_state.G_State == 0)
+  {
+       // growing in good weather for grass HP
+    if(soil_quality > 0.05 && grass_hp + grass_grows < 4)  // the second condition ensures that the HP never goes up too high to not show a quick response..
     {
-      grass_state.G_State = 0; // the grass can be eaten by sheeps again.
+    // instead of adding soil_quality, now we're adding a contant number.
+      grass_hp += grass_grows;
+    }
+  // dying in bad weather
+      else if(soil_quality <= 0.05 && grass_hp - grass_dies >= 0) // the second condition ensures that the HP never goes negative.
+    {
+      grass_hp -= grass_dies;
     }
   }
-  // dying in bad weather
-  else if(growth_rate <= 0.05 && grass_hp - growth_rate >= 0) // the second condition ensures that the HP never goes negative.
-  {
-    grass_hp -= growth_rate;
-  }
-
 }
 
 
@@ -116,23 +120,23 @@ void FarmNode_callback(alpha_two::farmState msg){
   // as of 29 Aug, 5:30pm, it sends soil values from 0 to 100.
 
   if(initial_position_x>0 && initial_position_y>0){ //Field 1
-    growth_rate = (double(msg.f1_soil_condition)/1000); // setting it to divide by 1000 gives us 0 ~ 0.1
-    grass_update(growth_rate);
+    soil_quality = (double(msg.f1_soil_condition)/1000); // setting it to divide by 1000 gives us 0 ~ 0.1
+    grass_update(soil_quality);
   }
 
   else if(initial_position_x>0 && initial_position_y<0){ //Field 2
-    growth_rate = (double(msg.f2_soil_condition)/1000);
-    grass_update(growth_rate);
+    soil_quality = (double(msg.f2_soil_condition)/1000);
+    grass_update(soil_quality);
   }
 
   else if(initial_position_x<0 && initial_position_y<0){ //Field 3
-    growth_rate = (double(msg.f3_soil_condition)/1000);
-    grass_update(growth_rate);
+    soil_quality = (double(msg.f3_soil_condition)/1000);
+    grass_update(soil_quality);
   }
 
   else if(initial_position_x<0 && initial_position_y>0){ //Field 4
-    growth_rate = (double(msg.f4_soil_condition)/1000);
-    grass_update(growth_rate);
+    soil_quality = (double(msg.f4_soil_condition)/1000);
+    grass_update(soil_quality);
   }
 
 }
@@ -150,7 +154,7 @@ int main(int argc, char **argv){
   //Initial pose. This is same as the pose that you used in the world file to set the robot pose.
   //initial_theta = M_PI/2.0;
 
-  grass_hp = 2.0; //intial value for grass's hit point. A good value that isn't too high not to be immediately affected by the climate.
+  grass_hp = 2.1; //intial value for grass's hit point. A good value that isn't too high not to be immediately affected by the climate.
 
   //Initial velocity
   linear_x = 0;
@@ -238,8 +242,8 @@ int main(int argc, char **argv){
     ros::spinOnce();
 
     //prints for debugging
-    //printf("Grass HP is: %f \n", grass_hp);
-    //printf("GROWTH RATE: %f \n", growth_rate);
+    printf("Grass HP is: %f \n", grass_hp);
+
 
 
     loop_rate.sleep();
