@@ -7,6 +7,7 @@
 #include "alpha_two/grassState.h"
 #include "alpha_two/sheepState.h"
 #include "alpha_two/sheepDogState.h"
+#include "alpha_two/herdingBar.h"
 #include <sstream>
 #include "math.h"
 #include <time.h>
@@ -109,8 +110,36 @@ void StageBasePose_callback(nav_msgs::Odometry msg)
   //Stage base pose north is to the right. Transform it so upwards is north
   px = -msg.pose.pose.position.y;
   py = msg.pose.pose.position.x;
-  if(is_being_herded == true)
-    initiateSheepHerding(msg);
+  //if(is_being_herded == true)
+    //initiateSheepHerding(msg);
+}
+
+
+bool receivedHerdingMsg = false;
+void HerdingBar_callback(alpha_two::herdingBar msg)
+{ 
+  // Multiple messages are being received from Gates node
+  // boolean below makes sure is_being_herded is set after just the first message.
+  //if (!receivedHerdingMsg)
+  //{
+    if (msg.herdingMode == 0)
+    {
+      is_being_herded = true;
+      ROS_INFO("SHEEP BEING HERDED!");
+      sheep_message.S_State = 3;
+      reset_sheep();
+      
+    }
+		else if (msg.herdingMode == 2)
+    {
+      is_being_herded = false;
+      ROS_INFO("HERDING STOPPED!");
+      sheep_message.S_State = 0;
+      reset_sheep();
+    }
+    //receivedHerdingMsg = true;
+  //}
+
 }
 
 /*
@@ -124,6 +153,11 @@ void StageGrass_callback(alpha_two::grassState msg)
 
   if(quadrant != msg.quadrant) // If grass is not in the same field, ignore it
     return;
+
+  if(is_being_herded)
+  {
+  	return;
+	}
 
   // Continuously re-check which grass is closest if we are not currently eating grass
   if(sheep_message.S_State == 0 || sheep_message.S_State == 1)
@@ -229,7 +263,12 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
   {
     // Store LaserScan data as global variable
     // This allows usage of the LaserScan data during herding mode
-    laserData_msg = msg;
+    // laserData_msg = msg;
+    linear_x = 1;
+    angular_z = 0;    
+    ROS_INFO("INSIDE IF is_being_herded");
+    collisionAvoidance(smallest_range, msg, current_lowest_index);
+    
   }
   else //sheep is not being herded, free to move and eat grass
   {
@@ -249,7 +288,7 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
 
     // Check for collisions with obstacles and attempt to avoid
     collisionAvoidance(smallest_range, msg, current_lowest_index);
-
+    
     if(sheep_message.S_State == 2) //sheep is eating grass
     {
       ROS_INFO("Eating grass");
@@ -259,22 +298,14 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
   }
 }
 
-void sheepDog_callback(alpha_two::sheepDogState msg)
-{
-  sheepDog_x = msg.x;
-  sheepDog_y = msg.y;
-  if(debug)
-  {
-    ROS_INFO("SheepDog position x: %f",sheepDog_x);
-    ROS_INFO("SheepDog position y: %f",sheepDog_y);
-  }
-}
 
 void reset_sheep()
 {
   sheep_message.S_State = 0;
   sheep_message.grass_locked = 0;
   grass_distance = 99999;
+  grass_x = 0;
+  grass_y = 0;
 }
 
 void calculate_quadrant()
@@ -300,13 +331,13 @@ void calculate_quadrant()
 // This function prevents robot(sheep) from colliding with stage objects.
 void collisionAvoidance(double smallest_range, sensor_msgs::LaserScan msg, int current_lowest_index)
 {
-  if(debug)
+  //if(debug)
     ROS_INFO("Lowest index: %d", current_lowest_index);
   // If the lowest range is less than 1.5 in length, the robot will begin
   // rotating to attempt to avoid the obstacle
   if(smallest_range < 1.4) // We are getting close to an obstacle, start turning
   {
-    if(debug)
+    //if(debug)
       ROS_INFO("Collision at beam: %d | Range: %f", current_lowest_index, smallest_range);
     if(smallest_range <= 0.8) //we are really close to colliding, stop moving forward
       linear_x = 0;
@@ -410,12 +441,11 @@ int main(int argc, char** argv)
   rName << "robot_" << argv[1]<<"/base_pose_ground_truth";
   ros::Subscriber StageOdom_base_pose_sub = n.subscribe<nav_msgs::Odometry>(rName.str(),1000,StageBasePose_callback);
 
-  // Listen to custom location messages from SheepDog
-  ros::Subscriber sheepDog_position = n.subscribe<alpha_two::sheepDogState>("/sheepDog_msg",1000,sheepDog_callback);
-
   ros::Subscriber grassNode_sub = n.subscribe<alpha_two::grassState>("Grass_msg", 1000, StageGrass_callback);
 
   ros::Publisher sheepNode_state = n.advertise<alpha_two::sheepState>("Sheep_msg",1000);
+
+  ros::Subscriber herdingBar_state = n.subscribe<alpha_two::herdingBar>("herdingBar",1000, HerdingBar_callback);
 
   //Publisher for poop message
   rName.str("");
@@ -450,6 +480,17 @@ int main(int argc, char** argv)
     RobotNode_cmdvel.angular.z = angular_z;
     // Publish the messages
 
+    if (is_being_herded)
+    {
+      RobotNode_stage_pub.publish(RobotNode_cmdvel);
+			if (!pooping){
+        RobotNode_stage_poop.publish(RobotNode_cmdvel);
+      }
+      else{
+        RobotNode_stage_poop.publish(ill_cmdvel);
+      }
+
+    }else{
     if (ill){
       RobotNode_stage_pub.publish(ill_cmdvel);
       RobotNode_stage_poop.publish(ill_cmdvel);
@@ -486,6 +527,11 @@ int main(int argc, char** argv)
       }
       wellness--;
     }
+
+
+    }
+  
+
     //ROS_INFO("Movement x: %f   y: %f", RobotNode_cmdvel.linear.x, RobotNode_cmdvel.angular.z);
     SheepNode_state.publish(sheep_message);
     ros::spinOnce(); //Must Have this statement in the program
