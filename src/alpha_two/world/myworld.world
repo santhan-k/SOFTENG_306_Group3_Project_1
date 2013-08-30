@@ -291,7 +291,14 @@ define AutumnMessage position (
 
 define myMessageHouse model (
   size [4 20 0.5]
+  boundary 0
+  ranger_return 1
+  bitmap "block.png"
+  obstacle_return 0
+  gui_move 0
 )
+
+
 
 
 # set the resolution of the underlying raytrace model in meters
@@ -346,7 +353,7 @@ myCloud( pose [ 30 36 20 0] name "c0" color_rgba [0.752941176 0.752941176 0.7529
 
 mySheepDog( pose [ 1 1 0 0 ] name "Dog1" )
 
-myMessageHouse(pose [-11.5 36 1 90] name "mes1" color "white")
+myMessageHouse(pose [-11.5 36 1 90] name "mes1" color_rgba [0.666666667 0.831372549 0.17254902 1])
 rainMessage( pose [-10 35 0.1 0] color "black")
  
 SummerMessage( pose [-21 35 0.1 0] color "black")
