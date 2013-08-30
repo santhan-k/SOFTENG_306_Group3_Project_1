@@ -96,7 +96,7 @@ define myTruck position
 
 define endGate0 model
 (
-  size [8.1 60 0.7]
+  size [12 60 0.7]
   boundary 0
   ranger_return 1
   bitmap "endGate0.png"
@@ -106,7 +106,7 @@ define endGate0 model
 
 define endGate1 model
 (
-  size [8.1 60 0.1]
+  size [12 60 0.1]
   boundary 0
   ranger_return 1
   bitmap "endGate1.png"
@@ -141,7 +141,7 @@ define farmLogo model
   ranger_return 1
   bitmap "farm_logo.png"
   obstacle_return 0
-  gui_move 1
+  gui_move 0
 )
 
 
@@ -339,10 +339,10 @@ myGate( pose [ 0 25.91 0.1 90 ] name "g2" color "gray60")
 myGate( pose [ 0 -25.92 0.1 90 ] name "g3" color "gray60")
 myGate( pose [ -26 29.73 0.1 0 ] name "g4" color "gray60")
 
-myTruck( pose [ -30.4 33.1 5 0 ] name "t1" color "black")
+myTruck( pose [ -30.4 33.1 2 0 ] name "t1" color "black")
 endGate0( pose [ -26 60 0.1 0 ] name "eg0" color "grey90")
 endGate1( pose [ -26 60 1.1 0 ] name "eg1" color "grey90")
-endGate2( pose [ -52 34 1.2 0 ] name "eg2" color "grey90")
+endGate2( pose [ -50 34 1.2 0 ] name "eg2" color "grey90")
 ground0(pose [ 0 0 0 0 ] name "gr0" color_rgba [0.666666667 0.831372549 0.17254902 1])
 farmLogo(pose [ 22 35 25 0 ] name "fl0" color "black")
 #endMaze0( pose [ -41.85 35.04 0 0 ] name "eg1" color "white")
@@ -353,13 +353,13 @@ myCloud( pose [ 30 36 20 0] name "c0" color_rgba [0.752941176 0.752941176 0.7529
 
 mySheepDog( pose [ 1 1 0 0 ] name "Dog1" )
 
-myMessageHouse(pose [-11.5 36 1 90] name "mes1" color_rgba [0.666666667 0.831372549 0.17254902 1])
-rainMessage( pose [-10 35 0.1 0] color "black")
+myMessageHouse(pose [-10 36 1 90] name "mes1" color_rgba [0.666666667 0.831372549 0.17254902 1])
+rainMessage( pose [-8 35 0.1 0] color "black")
  
-SummerMessage( pose [-21 35 0.1 0] color "black")
-WinterMessage( pose [-21 35 0.1 0] color "black")
-SpringMessage( pose [-21 35 0.1 0] color "black")
-AutumnMessage( pose [-21 35 0.1 0] color "black")
+SummerMessage( pose [-17 35 0.1 0] color "black")
+WinterMessage( pose [-17 35 0.1 0] color "black")
+SpringMessage( pose [-17 35 0.1 0] color "black")
+AutumnMessage( pose [-17 35 0.1 0] color "black")
 
 # Field1
 herdingBarVertical( pose [0 15 0.1 0] name "barFarm1V") # Robot_18
