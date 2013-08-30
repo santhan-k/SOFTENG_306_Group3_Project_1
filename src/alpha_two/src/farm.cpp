@@ -49,23 +49,20 @@ void changeWeather(){
   //Spring
   if (dayCounter < 183)
   {        
-    //new_farm_msg.rainfall = rand()%20; 
     curSeason = 1;
-    sunlight = 40;
+    sunlight = 41;
   }
 
   //Summer
   else if(dayCounter < 366)
   {
-    //new_farm_msg.rainfall = rand()%20;
     curSeason = 2;
-    sunlight = 0;  
+    sunlight = 0;  // too much sunlight kills
   }
     
   //Autumn
   else if (dayCounter < 549)
   {        
-    //new_farm_msg.rainfall = rand()%20;
     curSeason = 3;
     sunlight = 10;
   }
@@ -73,7 +70,7 @@ void changeWeather(){
   //Winter
   else if (dayCounter < 732)
   {
-    //new_farm_msg.rainfall = rand()%50;
+  
     curSeason = 4;
     sunlight = 10; 
   }
@@ -120,10 +117,10 @@ void changeWeather(){
   // sums up all the factors that affect the soil quality and scales it.
 
   // field 1 = green, 2 = brown, 3 = yellow, 4 = light green
-  new_farm_msg.f1_soil_condition = (41 + rain_amount + sunlight); // Always alive
-  new_farm_msg.f2_soil_condition = (0 + rain_amount + sunlight); // Always dead, maybe in Spring
-  new_farm_msg.f3_soil_condition = (10 + rain_amount + sunlight); // Alive in Spring and Winter, mostly dead otherwise.
-  new_farm_msg.f4_soil_condition = (30 + rain_amount + sunlight); // Sometimes in Spring, mostly dead otherwise.
+  new_farm_msg.f1_soil_condition = (50 + rain_amount + sunlight); // Always alive
+  new_farm_msg.f2_soil_condition = (0 + rain_amount + sunlight); // Always dead, when raining in Spring
+  new_farm_msg.f3_soil_condition = (10 + rain_amount + sunlight); // Alive in Spring and when raining in Winter
+  new_farm_msg.f4_soil_condition = (40 + rain_amount + sunlight); // Alive in Spring, alive when raining during other seasons
 }
 
 /**
@@ -355,9 +352,6 @@ int main(int argc, char **argv){
   
   ros::Rate loop_rate(10);
   
-  // no longer required; going to use the divided year's rain logic.
-  //Initialising soil and weather conditions
-  //new_farm_msg.rainfall = 0;
 
   sunlight = 80;
 
