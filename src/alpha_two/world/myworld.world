@@ -342,7 +342,7 @@ farmLogo(pose [ 22 35 25 0 ] name "fl0" color "black")
 #endMaze1( pose [ -41.85 35.04 1 0 ] name "eg1" color "brown")
 
 
-myCloud( pose [ 30 36 20 0] name "c0" color_rgba [0.752941176 0.752941176 0.752941176 0.6])
+myCloud( pose [ 30 36 20 0] name "c0" color_rgba [0.752941176 0.752941176 0.752941176 0.4])
 
 mySheepDog( pose [ 1 1 0 0 ] name "Dog1" )
 
