@@ -124,6 +124,16 @@ define endGate2 model
   gui_move 0
 )
 
+define ground0 model
+(
+  size [200 200 0.01]
+  boundary 0
+  ranger_return 1
+  bitmap "block.png"
+  obstacle_return 0
+  gui_move 0
+)
+
 define endMaze0 model
 (
   size [40 10 0.7]
@@ -298,23 +308,24 @@ floorplan
 )
 
 #myMaze( pose [-65 0 0 0] name "maze0" color "black")
-myFarmer( pose [ 2 28 0 0 ] name "farmer0" color "black" )
-myField( pose [ 15 15 0 0 ] name "f0" color_rgba [0.20874 0.780392 0.149019 0.9] )
-myField( pose [ -15 15 0 0 ] name "f1" color_rgba [0.5 0.698 0.10588 0.9] )
-myField( pose [ -15 -15 0 0 ] name "f2" color_rgba [0.77647 0.823529 0.0.02359 0.9] )
-myField( pose [ 15 -15 0 0 ] name "f3" color_rgba [0.811764 0.69411 0.07409 0.9] )
+myFarmer( pose [ 2 28 0.1 0 ] name "farmer0" color "black" )
+myField( pose [ 15 15 0.1 0 ] name "f0" color_rgba [0.20874 0.780392 0.149019 0.9] )
+myField( pose [ -15 15 0.1 0 ] name "f1" color_rgba [0.5 0.698 0.10588 0.9] )
+myField( pose [ -15 -15 0.1 0 ] name "f2" color_rgba [0.77647 0.823529 0.0.02359 0.9] )
+myField( pose [ 15 -15 0.1 0 ] name "f3" color_rgba [0.811764 0.69411 0.07409 0.9] )
 
 #Creating gates between all four fields
-myGate( pose [ 25.91 0 0 0 ] name "g0" color "gray60")
-myGate( pose [ -26.01 0 0 0 ] name "g1" color "gray60")
-myGate( pose [ 0 25.91 0 90 ] name "g2" color "gray60")
-myGate( pose [ 0 -25.92 0 90 ] name "g3" color "gray60")
-myGate( pose [ -26 29.73 0 0 ] name "g4" color "gray60")
+myGate( pose [ 25.91 0 0.1 0 ] name "g0" color "gray60")
+myGate( pose [ -26.01 0 0.1 0 ] name "g1" color "gray60")
+myGate( pose [ 0 25.91 0.1 90 ] name "g2" color "gray60")
+myGate( pose [ 0 -25.92 0.1 90 ] name "g3" color "gray60")
+myGate( pose [ -26 29.73 0.1 0 ] name "g4" color "gray60")
 
 myTruck( pose [ -29.5 34 5 0 ] name "t1" color "black")
-endGate0( pose [ -26 50 0 0 ] name "eg0" color "white")
-endGate1( pose [ -26 60 1 0 ] name "eg1" color "grey90")
-endGate2( pose [ -52 34 1.1 0 ] name "eg2" color "grey90")
+endGate0( pose [ -26 50 0.1 0 ] name "eg0" color "grey90")
+endGate1( pose [ -26 60 1.1 0 ] name "eg1" color "grey90")
+endGate2( pose [ -52 34 1.2 0 ] name "eg2" color "grey90")
+ground0(pose [ 0 0 0 0 ] name "gr0" color_rgba [0.666666667 0.831372549 0.17254902 1])
 #endMaze0( pose [ -41.85 35.04 0 0 ] name "eg1" color "white")
 #endMaze1( pose [ -41.85 35.04 1 0 ] name "eg1" color "brown")
 
@@ -324,28 +335,28 @@ myCloud( pose [ 30 36 20 0] name "c0" color_rgba [0.752941176 0.752941176 0.7529
 mySheepDog( pose [ 1 1 0 0 ] name "Dog1" )
 
 myMessageHouse(pose [-11.5 36 1 90] name "mes1" color "white")
-rainMessage( pose [-10 35 0 0] color "black")
+rainMessage( pose [-10 35 0.1 0] color "black")
  
-SummerMessage( pose [-21 35 0 0] color "black")
-WinterMessage( pose [-21 35 0 0] color "black")
-SpringMessage( pose [-21 35 0 0] color "black")
-AutumnMessage( pose [-21 35 0 0] color "black")
+SummerMessage( pose [-21 35 0.1 0] color "black")
+WinterMessage( pose [-21 35 0.1 0] color "black")
+SpringMessage( pose [-21 35 0.1 0] color "black")
+AutumnMessage( pose [-21 35 0.1 0] color "black")
 
 # Field1
-herdingBarVertical( pose [0 15 0 0] name "barFarm1V") # Robot_18
-herdingBarHorizontal( pose [15 30 0 90] name "barFarm1H") # Robot_19
+herdingBarVertical( pose [0 15 0.1 0] name "barFarm1V") # Robot_18
+herdingBarHorizontal( pose [15 30 0.1 90] name "barFarm1H") # Robot_19
 
 # Field2
-herdingBarVertical( pose [30 -15 0 0] name "barFarm2V")# Robot_20
-herdingBarHorizontal( pose [7.9 0 0 90] name "barFarm2H") # Robot_21
+herdingBarVertical( pose [30 -15 0.1 0] name "barFarm2V")# Robot_20
+herdingBarHorizontal( pose [7.9 0 0.1 90] name "barFarm2H") # Robot_21
 
 # Field3
-herdingBarVertical( pose [0 -7.9 0 0] name "barFarm3V") # Robot_22
-herdingBarHorizontal( pose [-15 -30 0 90] name "barFarm3H") # Robot_23
+herdingBarVertical( pose [0 -7.9 0.1 0] name "barFarm3V") # Robot_22
+herdingBarHorizontal( pose [-15 -30 0.1 90] name "barFarm3H") # Robot_23
 
 # Field4
-herdingBarVertical( pose [0 15 0 0] name "barFarm4V") # Robot_24
-herdingBarHorizontal( pose [-7.9 0 0 90] name "barFarm4H") # Robot_25
+herdingBarVertical( pose [0 15 0.1 0] name "barFarm4V") # Robot_24
+herdingBarHorizontal( pose [-7.9 0 0.1 90] name "barFarm4H") # Robot_25
 
 # robot_0 = farmer
 # robot_1-4 = Fields
