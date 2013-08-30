@@ -86,7 +86,7 @@ define mySheepDog position
 
 define myTruck position
 (
-  size [17 6 0.7]
+  size [17 6 2]
   gui_boundary 0
   drive "diff"
   mylaser2(pose [ 0.050 0.000 -0.05 0.000 ])
