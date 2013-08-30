@@ -4,7 +4,6 @@
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/LaserScan.h>
 #include "angles/angles.h"
-#include "alpha_two/herdingBar.h"
 #include <sstream>
 #include "math.h"
 
@@ -114,8 +113,7 @@ void addInstruction(vector<instruction_struct>& instruction_vector, int step_cou
 int main(int argc, char **argv)
 {
 
-  // HerdingBar message struct
-  alpha_two::herdingBar herdingBar_msg;
+
 
   //initialize robot parameters
   //Initial pose. This is same as the pose that you used in the world file to set	the robot pose.
@@ -145,7 +143,6 @@ int main(int argc, char **argv)
   rName.str("");
   rName << "robot_" << argv[1]<<"/base_scan";
   ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>(rName.str(),1000,StageLaser_callback);
-  ros::Publisher HerdingBar_pub = n.advertise<alpha_two::herdingBar>("/herdingBar",1000);
 
   ros::Rate loop_rate(10);
 
@@ -231,9 +228,6 @@ int main(int argc, char **argv)
   {
     // Send message once to sheep that herding has begun. 
     ++current_step_count;     
-     
-    herdingBar_msg.herdingMode = state;
-    HerdingBar_pub.publish(herdingBar_msg); 
     
     // Check if bar needs to be moved across
     if(state == 0 && isHorizontal) 
