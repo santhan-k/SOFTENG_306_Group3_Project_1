@@ -144,6 +144,15 @@ define farmLogo model
   gui_move 0
 )
 
+define seasonBoxLabel model
+(
+  size [18 3 0.1]
+  boundary 0
+  ranger_return 1
+  bitmap "seasonweather.png"
+  obstacle_return 0
+  gui_move 1
+)
 
 define endMaze0 model
 (
@@ -345,6 +354,7 @@ endGate1( pose [ -26 60 1.1 0 ] name "eg1" color "grey90")
 endGate2( pose [ -50 34 1.2 0 ] name "eg2" color "grey90")
 ground0(pose [ 0 0 0 0 ] name "gr0" color_rgba [0.666666667 0.831372549 0.17254902 1])
 farmLogo(pose [ 22 35 25 0 ] name "fl0" color "black")
+seasonBoxLabel(pose [ -10 36 10 0 ] name "sb0" color "black")
 #endMaze0( pose [ -41.85 35.04 0 0 ] name "eg1" color "white")
 #endMaze1( pose [ -41.85 35.04 1 0 ] name "eg1" color "brown")
 
