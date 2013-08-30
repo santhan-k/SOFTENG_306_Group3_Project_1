@@ -78,43 +78,49 @@ void changeWeather(){
     sunlight = 10; 
   }
 
-  else{
+  else
+  {
     dayCounter = 0;
   }
   
   // the rain's amount is now decided here.
   if(dayCounter>0 && dayCounter<100)
   {
-    raining = false;
+    raining = true;
+    rain_amount = rand()%20;
+
   }
   else if (dayCounter >= 100 && dayCounter < 250)
   {
-    raining = true;
-    rain_amount = rand()%30;
+    raining = false;
+    rain_amount = 0;
   }
   else if (dayCounter >= 250 && dayCounter < 380)
   {
-    raining = false;
+    raining = true;
+    rain_amount = rand()%20;
   }
   else if (dayCounter >= 380 && dayCounter < 520)
   {
-    raining = true;
-    rain_amount = rand()%30;
+    raining = false;
+        rain_amount = 0;
   }
   else if (dayCounter >= 520 && dayCounter < 650)
   {
-    raining = false;
-  }
-  else{
     raining = true;
     rain_amount = rand()%50;
+  }
+  else
+  {
+    raining = false;
+    rain_amount = 0;
   }
 
   // Weather changes applied to each field.  
   // sums up all the factors that affect the soil quality and scales it.
 
   // field 1 = green, 2 = brown, 3 = yellow, 4 = light green
-  new_farm_msg.f1_soil_condition = (40 + rain_amount + sunlight); // Always alive
+  new_farm_msg.f1_soil_condition = (41 + rain_amount + sunlight); // Always alive
   new_farm_msg.f2_soil_condition = (0 + rain_amount + sunlight); // Always dead, maybe in Spring
   new_farm_msg.f3_soil_condition = (10 + rain_amount + sunlight); // Alive in Spring and Winter, mostly dead otherwise.
   new_farm_msg.f4_soil_condition = (30 + rain_amount + sunlight); // Sometimes in Spring, mostly dead otherwise.
