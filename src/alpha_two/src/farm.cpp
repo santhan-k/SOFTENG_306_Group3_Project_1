@@ -53,7 +53,7 @@ void changeWeather(){
     sunlight = 41;
       if (raining = true)
     {
-      rain_amount += rand()%5
+      rain_amount += rand()%5;
     }
   }
 
@@ -64,7 +64,7 @@ void changeWeather(){
     sunlight = 0;  // too much sunlight kills
       if (raining = true)
     {
-      rain_amount += rand()%2
+      rain_amount += rand()%2;
     }
   }
     
@@ -75,7 +75,7 @@ void changeWeather(){
     sunlight = 10;
       if (raining = true)
     {
-      rain_amount += rand()%5
+      rain_amount += rand()%5;
     }
   }
 
@@ -87,7 +87,7 @@ void changeWeather(){
     sunlight = 10; 
       if (raining = true)
     {
-      rain_amount += rand()%15
+      rain_amount += rand()%15;
     }
   }
 
