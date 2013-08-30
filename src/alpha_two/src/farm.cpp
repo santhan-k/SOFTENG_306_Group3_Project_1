@@ -51,6 +51,10 @@ void changeWeather(){
   {        
     curSeason = 1;
     sunlight = 41;
+      if (raining = true)
+    {
+      rain_amount += rand()%5
+    }
   }
 
   //Summer
@@ -58,6 +62,10 @@ void changeWeather(){
   {
     curSeason = 2;
     sunlight = 0;  // too much sunlight kills
+      if (raining = true)
+    {
+      rain_amount += rand()%2
+    }
   }
     
   //Autumn
@@ -65,6 +73,10 @@ void changeWeather(){
   {        
     curSeason = 3;
     sunlight = 10;
+      if (raining = true)
+    {
+      rain_amount += rand()%5
+    }
   }
 
   //Winter
@@ -73,6 +85,10 @@ void changeWeather(){
   
     curSeason = 4;
     sunlight = 10; 
+      if (raining = true)
+    {
+      rain_amount += rand()%15
+    }
   }
 
   else
@@ -84,7 +100,7 @@ void changeWeather(){
   if(dayCounter>0 && dayCounter<100)
   {
     raining = true;
-    rain_amount = rand()%20;
+    rain_amount = rand()%15;
 
   }
   else if (dayCounter >= 100 && dayCounter < 250)
@@ -95,7 +111,7 @@ void changeWeather(){
   else if (dayCounter >= 250 && dayCounter < 380)
   {
     raining = true;
-    rain_amount = rand()%20;
+    rain_amount = rand()%15;
   }
   else if (dayCounter >= 380 && dayCounter < 520)
   {
@@ -105,7 +121,7 @@ void changeWeather(){
   else if (dayCounter >= 520 && dayCounter < 650)
   {
     raining = true;
-    rain_amount = rand()%50;
+    rain_amount = rand()%35;
   }
   else
   {
