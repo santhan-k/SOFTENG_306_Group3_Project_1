@@ -4,7 +4,7 @@
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/LaserScan.h>
 #include "angles/angles.h"
-
+#include "alpha_two/herdingBar.h"
 #include <sstream>
 #include "math.h"
 
@@ -43,12 +43,12 @@ void StageOdom_callback(nav_msgs::Odometry msg)
   {
     if(px < -2 && state == 0)
     {
-	  state = 1;    //stops gate once fully opened
-	}
-	else if(px > 4.7 && state == 2)
-	{
-      state = 1;    //stops gate once fully close - in original position
-	}
+	  	state = 1;    //stops gate once fully opened
+		}
+		else if(px > 4.7 && state == 2)
+		{
+		  state = 1;    //stops gate once fully close - in original position
+		}
   }
   else if(gateNumber == 6)
   {
@@ -56,32 +56,32 @@ void StageOdom_callback(nav_msgs::Odometry msg)
     {
       state = 1;  //stops gate once fully opened
     }
-    else if(px < 5 && state == 2)
+    else if(px < 4.3 && state == 2)
     {
       state = 1;  //stops gate once fully close - in original position
     }	
   }
   else if(gateNumber == 7) 
   {
-	if(px < -2 && state == 0) 
-	{
-	  state = 1;  //stops gate once fully opened
-	}
-	else if(px > 4.7 && state == 2)
-	{
-	  state = 1;  //stops gate once fully close - in original position
-	}	
+		if(px < -2 && state == 0) 
+		{
+			state = 1;  //stops gate once fully opened
+		}
+		else if(px > 4.3 && state == 2)
+		{
+			state = 1;  //stops gate once fully close - in original position
+		}	
   }
   else if(gateNumber == 8)
   {
     if(px > 12 && state == 0)
     {
       state = 1;  //stops gate once fully opened
-	}
-	else if(px < 4.7 && state == 2)
-	{
-	  state = 1;  //stops gate once fully close - in original position
-	}
+		}
+		else if(px < 4.3 && state == 2)
+		{
+			state = 1;  //stops gate once fully close - in original position
+		}
   }
   else if(gateNumber == 9) 
   {
@@ -89,7 +89,7 @@ void StageOdom_callback(nav_msgs::Odometry msg)
     {
       state = 1; //stops gate once fully opened
     }
-    else if(px < 4.7 && state == 2)
+    else if(px < 4.3 && state == 2)
     {
       state = 1; //stops gate once fully close - in original position
     }	
@@ -106,7 +106,6 @@ void StageLaser_callback(sensor_msgs::LaserScan msg)
   //you can access the range data from msg.ranges[i]. i = sample number	
 }
 
-
 void addInstruction(vector<instruction_struct>& instruction_vector, int step_count, double linear_x, double angular_z, int next_step)
 {
   instruction_struct *Instruction = new instruction_struct; //create a new instruction_struct
@@ -119,6 +118,9 @@ void addInstruction(vector<instruction_struct>& instruction_vector, int step_cou
 
 int main(int argc, char **argv)
 {
+
+  // HerdingBar message struct
+  alpha_two::herdingBar herdingBar_msg;
 
   //initialize robot parameters
   //Initial pose. This is same as the pose that you used in the world file to set	the robot pose.
@@ -148,6 +150,9 @@ int main(int argc, char **argv)
   rName.str("");
   rName << "robot_" << argv[1]<<"/base_scan";
   ros::Subscriber StageLaser_sub = n.subscribe<sensor_msgs::LaserScan>(rName.str(),1000,StageLaser_callback);
+
+  ros::Publisher HerdingBar_pub = n.advertise<alpha_two::herdingBar>("herdingBar",1000);
+
 
   ros::Rate loop_rate(10);
 
@@ -202,6 +207,11 @@ int main(int argc, char **argv)
 
   while (ros::ok())
   {
+
+      herdingBar_msg.herdingMode = state;
+      HerdingBar_pub.publish(herdingBar_msg); 
+      //ROS_INFO("HELLO");
+
     //messages to stage
     linear_x = instruction_vector[current_step].linear_x;
     angular_z = instruction_vector[current_step].angular_z;
