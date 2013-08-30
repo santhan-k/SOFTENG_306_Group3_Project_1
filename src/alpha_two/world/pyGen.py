@@ -41,7 +41,7 @@ for i in range(0,numSheep):
     line = "myRobot( pose [" +str(x)+" "+str(y) + " 0 "+str(angle)+" ] name \"r"+str(i)+"\" color \"white\" )"
 
     array.append(line)
-    line = "mySheepsPoop( pose [" +str(x)+" "+str(y) + " 0 "+str(angle)+" ] name \"poop"+str(i)+"\" color \"brown\" )"
+    line = "mySheepsPoop( pose [" +str(x)+" "+str(y) + " 0.1 "+str(angle)+" ] name \"poop"+str(i)+"\" color \"brown\" )"
     array.append(line)
     #command.append("source ../../../devel/setup.bash\n")
     command.append("rosrun alpha_two R1 "+str(sheepNum)+"  "+str(x)+" "+str(y)+" " +str(angle)+"\n")    
